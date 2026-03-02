@@ -1,0 +1,61 @@
+graph TB
+    Root[<b>YOUR DATASET</b><br/>What story does it tell?]
+
+    Q1[<b>What structure?</b>]
+    Q2[<b>What values?</b>]
+    Q3[<b>What's missing?</b>]
+    Q4[<b>What relationships?</b>]
+    Q5[<b>What's wrong?</b>]
+
+    Root --> Q1
+    Root --> Q2
+    Root --> Q3
+    Root --> Q4
+    Root --> Q5
+
+    A1_1["• Shape (rows × cols)<br/>• Data types<br/>• Memory usage"]
+    A1_2[<b>Action:</b><br/>Understand scale<br/>and format]
+
+    A2_1["• Distributions<br/>• Unique counts<br/>• Ranges and scales"]
+    A2_2[<b>Action:</b><br/>Identify skewness,<br/>choose transforms]
+
+    A3_1["• Missing patterns<br/>• Percentage missing<br/>• Random or systematic?"]
+    A3_2[<b>Action:</b><br/>Impute, drop,<br/>or flag missing]
+
+    A4_1["• Feature-target correlations<br/>• Feature-feature correlations<br/>• Interactions"]
+    A4_2[<b>Action:</b><br/>Feature selection,<br/>engineer interactions]
+
+    A5_1["• Outliers (IQR method)<br/>• Duplicates<br/>• Logical errors<br/>• Inconsistencies"]
+    A5_2[<b>Action:</b><br/>Remove, cap,<br/>or investigate]
+
+    Q1 --> A1_1
+    A1_1 --> A1_2
+
+    Q2 --> A2_1
+    A2_1 --> A2_2
+
+    Q3 --> A3_1
+    A3_1 --> A3_2
+
+    Q4 --> A4_1
+    A4_1 --> A4_2
+
+    Q5 --> A5_1
+    A5_1 --> A5_2
+
+    style Root fill:#2196F3,stroke:#1976D2,color:#fff
+    style Q1 fill:#4CAF50,stroke:#388E3C,color:#fff
+    style Q2 fill:#4CAF50,stroke:#388E3C,color:#fff
+    style Q3 fill:#4CAF50,stroke:#388E3C,color:#fff
+    style Q4 fill:#4CAF50,stroke:#388E3C,color:#fff
+    style Q5 fill:#4CAF50,stroke:#388E3C,color:#fff
+    style A1_2 fill:#9C27B0,stroke:#7B1FA2,color:#fff
+    style A2_2 fill:#9C27B0,stroke:#7B1FA2,color:#fff
+    style A3_2 fill:#9C27B0,stroke:#7B1FA2,color:#fff
+    style A4_2 fill:#9C27B0,stroke:#7B1FA2,color:#fff
+    style A5_2 fill:#9C27B0,stroke:#7B1FA2,color:#fff
+    style A1_1 fill:#FF9800,stroke:#F57C00,color:#fff
+    style A2_1 fill:#FF9800,stroke:#F57C00,color:#fff
+    style A3_1 fill:#FF9800,stroke:#F57C00,color:#fff
+    style A4_1 fill:#FF9800,stroke:#F57C00,color:#fff
+    style A5_1 fill:#FF9800,stroke:#F57C00,color:#fff

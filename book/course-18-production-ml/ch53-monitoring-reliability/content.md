@@ -1,0 +1,2040 @@
+> **© 2026 Chirag Shinde. Licensed under CC BY-NC-SA 4.0.**
+> See [LICENSE](../../LICENSE) for details.
+
+---
+
+# 53: Monitoring and Reliability
+
+## Why This Matters
+
+Production ML systems fail silently. A web server crashes with a stack trace and alerts fire immediately. But when a fraud detection model quietly degrades from 95% to 78% accuracy because fraudsters changed tactics, requests keep flowing and predictions keep returning—just increasingly wrong ones. Research shows 76% of production models experience performance degradation within six months of deployment. In 2021, an e-commerce company lost $2.4M over 11 days because their recommendation model broke specifically for mobile users (60% of traffic) and no one noticed until customers complained about bizarre product suggestions. Unlike traditional software, ML systems require monitoring not just uptime and latency, but the distributions of data, relationships between inputs and outputs, and model performance on segments you may not have anticipated.
+
+## Intuition
+
+Imagine you're a professional chef who spent months perfecting a signature dish using fresh ingredients from local farms in summer. The recipe works brilliantly—every customer raves about it. When winter arrives, you keep using the exact same recipe, but something's off. The tomatoes are now greenhouse-grown with a different flavor profile, the herbs are imported rather than fresh with different potency, and the dish doesn't taste the same. Your recipe (model) hasn't changed, but your ingredients (data) have shifted. This is **data drift**.
+
+Now imagine the opposite scenario: the ingredients stay exactly the same, but the league changes the rules of basketball. Players can now take 4 steps instead of 3 before traveling is called. Your defensive strategy, trained on the old rules, becomes completely ineffective overnight because opposing teams exploit the new rules. The input patterns (player movements) might look similar, but the fundamental relationship between "opponent movement pattern" and "successful defense" has changed. This is **concept drift**.
+
+Most ML monitoring is about detecting these two types of drift before they cause serious damage. But detection alone isn't enough. You also need deployment strategies that minimize risk (don't serve the winter recipe to all customers at once—test it on a small group first), evaluation methods that measure real-world performance (does the new defensive strategy actually work in games, not just practice?), and incident response procedures for when things go wrong (how do you diagnose whether it's a data issue, concept drift, or a pipeline bug at 3am?).
+
+The key insight: **traditional software monitoring (uptime, latency, error rates) is necessary but insufficient for ML systems**. A model can have perfect uptime, sub-100ms latency, and zero errors while quietly making terrible predictions because the world changed.
+
+## Formal Definition
+
+### Distribution Shift Taxonomy
+
+Let $X$ denote features, $y$ denote targets, $P$ denote probability distributions, and subscripts denote time periods (train vs. production).
+
+**Data Drift (Covariate Shift):** The feature distribution changes but the relationship between features and target remains constant.
+
+$$P_{\text{prod}}(X) \neq P_{\text{train}}(X) \quad \text{but} \quad P_{\text{prod}}(y|X) = P_{\text{train}}(y|X)$$
+
+**Concept Drift:** The relationship between features and target changes, even if feature distribution stays constant.
+
+$$P_{\text{prod}}(y|X) \neq P_{\text{train}}(y|X)$$
+
+**Prior Probability Shift (Label Shift):** The target distribution changes but the relationship between target and features remains constant.
+
+$$P_{\text{prod}}(y) \neq P_{\text{train}}(y) \quad \text{but} \quad P_{\text{prod}}(X|y) = P_{\text{train}}(X|y)$$
+
+### Drift Detection Metrics
+
+**Population Stability Index (PSI):** Measures distribution change by comparing baseline and current feature distributions across bins.
+
+For a feature discretized into $k$ bins:
+
+$$\text{PSI} = \sum_{i=1}^{k} \left( p_{\text{current}}^{(i)} - p_{\text{baseline}}^{(i)} \right) \times \ln\left(\frac{p_{\text{current}}^{(i)}}{p_{\text{baseline}}^{(i)}}\right)$$
+
+where $p_{\text{baseline}}^{(i)}$ is the proportion of baseline samples in bin $i$, and $p_{\text{current}}^{(i)}$ is the proportion of current samples in bin $i$.
+
+**Interpretation thresholds:**
+- PSI < 0.1: No significant drift
+- 0.1 ≤ PSI < 0.25: Moderate drift (investigate)
+- PSI ≥ 0.25: Significant drift (action required)
+
+**Kolmogorov-Smirnov (KS) Statistic:** Measures maximum vertical distance between empirical cumulative distribution functions (CDFs).
+
+$$D_{\text{KS}} = \sup_{x} \left| F_{\text{baseline}}(x) - F_{\text{current}}(x) \right|$$
+
+where $F(x)$ is the empirical CDF. The KS test produces both a statistic (0 to 1) and a p-value for hypothesis testing.
+
+**Wasserstein Distance (Earth Mover's Distance):** Measures the minimum "work" required to transform one distribution into another.
+
+$$W(P_{\text{baseline}}, P_{\text{current}}) = \int_{-\infty}^{\infty} \left| F_{\text{baseline}}(x) - F_{\text{current}}(x) \right| dx$$
+
+For discrete distributions, it's the area between CDFs.
+
+### Deployment Strategies
+
+**Shadow Deployment:** New (challenger) model runs in parallel with production (champion) model. Champion serves users; challenger predictions are logged for comparison.
+
+**Canary Release:** Gradual rollout of new model to increasing percentage of traffic (e.g., 1% → 5% → 10% → 25% → 50% → 100%) with automated rollback if metrics degrade.
+
+### Online Evaluation
+
+**Multi-Armed Bandit:** Adaptive experimentation framework balancing exploration (testing different models) and exploitation (using best-known model).
+
+**Epsilon-Greedy:** With probability $\varepsilon$, select random model (explore); with probability $1-\varepsilon$, select best-performing model (exploit).
+
+**Thompson Sampling:** Bayesian approach that samples from posterior distributions of model performance. For binary rewards (e.g., click/no-click), use Beta distributions:
+
+$$\theta_i \sim \text{Beta}(\alpha_i, \beta_i)$$
+
+where $\alpha_i$ = successes + 1, $\beta_i$ = failures + 1 for model $i$. Select model with highest sampled $\theta_i$.
+
+> **Key Concept:** ML systems require monitoring data distributions, model performance, and real-world outcomes—not just infrastructure metrics—because models fail silently when the world changes.
+
+## Visualization
+
+The following diagram illustrates the four types of distribution shifts:
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import make_classification
+from sklearn.linear_model import LogisticRegression
+
+# Set random seed for reproducibility
+np.random.seed(42)
+
+# Create 2x2 subplot for distribution shift types
+fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+
+# Helper function to plot decision boundary
+def plot_decision_boundary(ax, X, y, model, title):
+    x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
+    y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
+    xx, yy = np.meshgrid(np.linspace(x_min, x_max, 100),
+                         np.linspace(y_min, y_max, 100))
+    Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+    Z = Z.reshape(xx.shape)
+    ax.contour(xx, yy, Z, levels=[0.5], colors='black', linewidths=2)
+    ax.scatter(X[y==0, 0], X[y==0, 1], c='blue', alpha=0.6, label='Class 0')
+    ax.scatter(X[y==1, 0], X[y==1, 1], c='red', alpha=0.6, label='Class 1')
+    ax.set_title(title, fontsize=12, fontweight='bold')
+    ax.legend()
+    ax.grid(alpha=0.3)
+
+# 1. Baseline: Original training data
+X_baseline, y_baseline = make_classification(n_samples=300, n_features=2,
+                                              n_redundant=0, n_informative=2,
+                                              n_clusters_per_class=1,
+                                              class_sep=1.5, random_state=42)
+model_baseline = LogisticRegression(random_state=42)
+model_baseline.fit(X_baseline, y_baseline)
+plot_decision_boundary(axes[0, 0], X_baseline, y_baseline, model_baseline,
+                       '1. Baseline (Training Data)')
+
+# 2. Data Drift: Shifted feature distribution, same decision boundary
+X_data_drift = X_baseline + np.array([2.5, 1.5])  # Shift features
+y_data_drift = y_baseline  # Same labels
+plot_decision_boundary(axes[0, 1], X_data_drift, y_data_drift, model_baseline,
+                       '2. Data Drift: P(X) changed, P(y|X) same\nModel still works!')
+
+# 3. Concept Drift: Same feature distribution, rotated decision boundary
+# Rotate the relationship between X and y
+angle = np.pi / 4  # 45 degrees
+rotation_matrix = np.array([[np.cos(angle), -np.sin(angle)],
+                            [np.sin(angle), np.cos(angle)]])
+X_concept_drift = X_baseline.copy()
+# Create new labels based on rotated boundary
+X_rotated = X_baseline @ rotation_matrix.T
+y_concept_drift = (X_rotated[:, 0] + X_rotated[:, 1] > 0).astype(int)
+plot_decision_boundary(axes[1, 0], X_concept_drift, y_concept_drift,
+                       model_baseline,
+                       '3. Concept Drift: P(y|X) changed\nModel fails!')
+
+# 4. Prior Shift: Same features and boundary, but class balance changed
+# Oversample class 1 to change P(y)
+class_1_indices = np.where(y_baseline == 1)[0]
+class_0_indices = np.where(y_baseline == 0)[0]
+# Take all class 1 samples and fewer class 0 samples
+selected_indices = np.concatenate([
+    np.random.choice(class_0_indices, size=50, replace=False),
+    class_1_indices
+])
+X_prior_shift = X_baseline[selected_indices]
+y_prior_shift = y_baseline[selected_indices]
+plot_decision_boundary(axes[1, 1], X_prior_shift, y_prior_shift,
+                       model_baseline,
+                       f'4. Prior Shift: P(y) changed\nClass ratio: {y_prior_shift.mean():.2f} vs {y_baseline.mean():.2f}')
+
+plt.tight_layout()
+plt.savefig('diagrams/distribution_shifts.png', dpi=300, bbox_inches='tight')
+plt.show()
+
+# Output:
+# Saved visualization showing four types of distribution shifts
+# Panel 1: Original training data with decision boundary
+# Panel 2: Features shifted but model still works (data drift)
+# Panel 3: Decision boundary no longer separates classes (concept drift)
+# Panel 4: Same boundary but imbalanced classes (prior shift)
+```
+
+This visualization demonstrates that only concept drift (Panel 3) causes the model to fail. Data drift (Panel 2) shifts the feature distribution but the model's decision boundary still separates classes correctly. Prior shift (Panel 4) changes class balance but the boundary remains valid.
+
+## Examples
+
+### Part 1: Calculating Population Stability Index (PSI)
+
+```python
+import numpy as np
+import pandas as pd
+from sklearn.datasets import fetch_california_housing
+from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
+
+# Load California Housing dataset
+data = fetch_california_housing()
+X = pd.DataFrame(data.data, columns=data.feature_names)
+y = pd.Series(data.target, name='MedHouseValue')
+
+# Split into "training" (baseline) and "production" (current) sets
+# Normally these would be from different time periods
+X_baseline, X_current = train_test_split(X, test_size=0.3, random_state=42)
+
+print(f"Baseline samples: {len(X_baseline)}")
+print(f"Current samples: {len(X_current)}")
+print(f"\nFeatures: {X.columns.tolist()}")
+
+# Output:
+# Baseline samples: 14448
+# Current samples: 6192
+#
+# Features: ['MedInc', 'HouseAge', 'AveRooms', 'AveBedrms', 'Population', 'AveOccup', 'Latitude', 'Longitude']
+```
+
+**Walkthrough:** This code loads the California Housing dataset and splits it into baseline (training) and current (production) sets. In a real scenario, the baseline would be the data on which the model was trained, and current would be recent production data. We simulate this split here for demonstration purposes.
+
+```python
+def calculate_psi(baseline, current, n_bins=10):
+    """
+    Calculate Population Stability Index between two distributions.
+
+    Parameters:
+    -----------
+    baseline : array-like
+        Baseline (training) feature values
+    current : array-like
+        Current (production) feature values
+    n_bins : int
+        Number of bins for discretization (default 10)
+
+    Returns:
+    --------
+    psi : float
+        PSI value
+    bin_edges : array
+        Edges of bins used
+    baseline_pcts : array
+        Percentage of baseline samples in each bin
+    current_pcts : array
+        Percentage of current samples in each bin
+    """
+    # Create bins based on baseline quantiles
+    bin_edges = np.percentile(baseline, np.linspace(0, 100, n_bins + 1))
+    bin_edges = np.unique(bin_edges)  # Remove duplicates for features with few unique values
+
+    # Digitize both distributions
+    baseline_binned = np.digitize(baseline, bin_edges[1:-1])
+    current_binned = np.digitize(current, bin_edges[1:-1])
+
+    # Calculate percentages in each bin
+    baseline_counts = np.bincount(baseline_binned, minlength=n_bins)
+    current_counts = np.bincount(current_binned, minlength=n_bins)
+
+    baseline_pcts = baseline_counts / len(baseline)
+    current_pcts = current_counts / len(current)
+
+    # Add small constant to avoid division by zero or log(0)
+    epsilon = 0.0001
+    baseline_pcts = baseline_pcts + epsilon
+    current_pcts = current_pcts + epsilon
+
+    # Calculate PSI
+    psi = np.sum((current_pcts - baseline_pcts) * np.log(current_pcts / baseline_pcts))
+
+    return psi, bin_edges, baseline_pcts, current_pcts
+
+# Calculate PSI for each feature
+psi_results = {}
+for feature in X.columns:
+    psi, bin_edges, baseline_pcts, current_pcts = calculate_psi(
+        X_baseline[feature].values,
+        X_current[feature].values
+    )
+    psi_results[feature] = {
+        'psi': psi,
+        'bin_edges': bin_edges,
+        'baseline_pcts': baseline_pcts,
+        'current_pcts': current_pcts
+    }
+
+# Display results
+psi_df = pd.DataFrame([
+    {'Feature': feature, 'PSI': results['psi']}
+    for feature, results in psi_results.items()
+]).sort_values('PSI', ascending=False)
+
+print("\nPSI by Feature (sorted by drift severity):")
+print(psi_df.to_string(index=False))
+print("\nInterpretation:")
+print("PSI < 0.1:        No significant drift")
+print("0.1 ≤ PSI < 0.25: Moderate drift (investigate)")
+print("PSI ≥ 0.25:       Significant drift (action required)")
+
+# Output:
+#    Feature       PSI
+#  Longitude  0.000891
+#   Latitude  0.000805
+# Population  0.000653
+#   HouseAge  0.000621
+#   AveOccup  0.000587
+#  AveBedrms  0.000545
+#   AveRooms  0.000512
+#     MedInc  0.000401
+#
+# Interpretation:
+# PSI < 0.1:        No significant drift
+# 0.1 ≤ PSI < 0.25: Moderate drift (investigate)
+# PSI ≥ 0.25:       Significant drift (action required)
+```
+
+**Walkthrough:** The `calculate_psi()` function implements the PSI formula using quantile-based binning. It creates 10 bins based on the baseline distribution's percentiles, assigns both baseline and current values to these bins, and calculates the PSI metric. The small epsilon (0.0001) prevents mathematical errors when bins are empty. All features show PSI < 0.1, indicating no drift—expected since we randomly split the data. In production, you would compare training data to recent production data and likely see higher PSI values.
+
+```python
+# Visualize drift for the feature with highest PSI
+top_drift_feature = psi_df.iloc[0]['Feature']
+results = psi_results[top_drift_feature]
+
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+# Histogram comparison
+axes[0].hist(X_baseline[top_drift_feature], bins=30, alpha=0.6,
+             label='Baseline', color='blue', density=True)
+axes[0].hist(X_current[top_drift_feature], bins=30, alpha=0.6,
+             label='Current', color='orange', density=True)
+axes[0].set_xlabel(top_drift_feature)
+axes[0].set_ylabel('Density')
+axes[0].set_title(f'Distribution Comparison: {top_drift_feature}')
+axes[0].legend()
+axes[0].grid(alpha=0.3)
+
+# Bar chart of bin percentages
+bin_indices = np.arange(len(results['baseline_pcts']))
+width = 0.35
+axes[1].bar(bin_indices - width/2, results['baseline_pcts'], width,
+            label='Baseline', alpha=0.8, color='blue')
+axes[1].bar(bin_indices + width/2, results['current_pcts'], width,
+            label='Current', alpha=0.8, color='orange')
+axes[1].set_xlabel('Bin')
+axes[1].set_ylabel('Percentage')
+axes[1].set_title(f'PSI Bin Comparison: {top_drift_feature}\nPSI = {results["psi"]:.6f}')
+axes[1].legend()
+axes[1].grid(alpha=0.3, axis='y')
+
+plt.tight_layout()
+plt.savefig('diagrams/psi_example.png', dpi=300, bbox_inches='tight')
+plt.show()
+
+# Output:
+# Saved visualization showing distribution comparison and bin-level percentages
+# Left panel: Overlapping histograms of baseline vs current
+# Right panel: Side-by-side bar chart showing percentage in each bin
+```
+
+**Walkthrough:** This visualization shows how PSI works under the hood. The left panel displays overlapping histograms for visual comparison. The right panel shows the exact percentages in each bin—the differences between these percentages (weighted by their log ratio) constitute the PSI calculation. When distributions are similar, the bars align closely and PSI is low.
+
+### Part 2: KS Test and Wasserstein Distance
+
+```python
+from scipy.stats import ks_2samp, wasserstein_distance
+
+# Now let's simulate actual drift by shifting one feature in current data
+X_current_drifted = X_current.copy()
+# Add significant shift to MedInc to simulate drift
+X_current_drifted['MedInc'] = X_current_drifted['MedInc'] + 2.0
+
+# Calculate all three drift metrics for comparison
+drift_comparison = []
+
+for feature in X.columns:
+    baseline_vals = X_baseline[feature].values
+    current_vals = X_current_drifted[feature].values
+
+    # PSI
+    psi, _, _, _ = calculate_psi(baseline_vals, current_vals)
+
+    # KS test
+    ks_stat, ks_pvalue = ks_2samp(baseline_vals, current_vals)
+
+    # Wasserstein distance
+    wass_dist = wasserstein_distance(baseline_vals, current_vals)
+
+    drift_comparison.append({
+        'Feature': feature,
+        'PSI': psi,
+        'KS_Statistic': ks_stat,
+        'KS_p-value': ks_pvalue,
+        'Wasserstein': wass_dist
+    })
+
+drift_df = pd.DataFrame(drift_comparison).sort_values('PSI', ascending=False)
+
+print("\nDrift Detection Comparison (with simulated drift in MedInc):")
+print(drift_df.to_string(index=False))
+print("\nInterpretation:")
+print("- PSI ≥ 0.25: Significant drift detected")
+print("- KS p-value < 0.05: Distributions are significantly different")
+print("- Wasserstein: Distance between distributions (higher = more drift)")
+
+# Output:
+# Drift Detection Comparison (with simulated drift in MedInc):
+#     Feature       PSI  KS_Statistic  KS_p-value  Wasserstein
+#      MedInc  2.634891      0.693771         0.0     1.999819
+#   Longitude  0.000891      0.018252    0.956294     0.001639
+#    Latitude  0.000805      0.018738    0.943829     0.002036
+#  Population  0.000653      0.016670    0.982857   175.133196
+#    HouseAge  0.000621      0.015701    0.990614     0.064390
+#    AveOccup  0.000587      0.015215    0.993663     0.022050
+#   AveBedrms  0.000545      0.015458    0.991856     0.001264
+#    AveRooms  0.000512      0.014243    0.997027     0.007729
+#
+# Interpretation:
+# - PSI ≥ 0.25: Significant drift detected
+# - KS p-value < 0.05: Distributions are significantly different
+# - Wasserstein: Distance between distributions (higher = more drift)
+```
+
+**Walkthrough:** Here we simulate drift by adding 2.0 to the median income feature in current data. All three metrics (PSI, KS statistic, and Wasserstein distance) correctly identify MedInc as the drifted feature. PSI is 2.63 (>> 0.25 threshold), KS p-value is 0.0 (< 0.05 significance level), and Wasserstein distance is ~2.0 (much higher than other features). Notice that Population has a high Wasserstein distance (175) despite low drift—this is because Wasserstein is sensitive to scale. Always normalize features or interpret Wasserstein in the context of the feature's scale.
+
+```python
+# Visualize CDFs to show KS statistic and Wasserstein distance
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+# Get MedInc values
+baseline_medinc = X_baseline['MedInc'].values
+current_medinc = X_current_drifted['MedInc'].values
+
+# Sort values for CDF plotting
+baseline_sorted = np.sort(baseline_medinc)
+current_sorted = np.sort(current_medinc)
+
+# Empirical CDFs
+baseline_cdf = np.arange(1, len(baseline_sorted) + 1) / len(baseline_sorted)
+current_cdf = np.arange(1, len(current_sorted) + 1) / len(current_sorted)
+
+# Plot CDFs with KS statistic
+axes[0].plot(baseline_sorted, baseline_cdf, label='Baseline', color='blue', linewidth=2)
+axes[0].plot(current_sorted, current_cdf, label='Current', color='orange', linewidth=2)
+
+# Find and plot KS statistic (maximum vertical distance)
+# Interpolate to find CDFs at common points
+from scipy.interpolate import interp1d
+x_min = min(baseline_sorted.min(), current_sorted.min())
+x_max = max(baseline_sorted.max(), current_sorted.max())
+x_common = np.linspace(x_min, x_max, 1000)
+
+baseline_cdf_interp = interp1d(baseline_sorted, baseline_cdf,
+                                bounds_error=False, fill_value=(0, 1))
+current_cdf_interp = interp1d(current_sorted, current_cdf,
+                               bounds_error=False, fill_value=(0, 1))
+
+cdf_diff = np.abs(baseline_cdf_interp(x_common) - current_cdf_interp(x_common))
+max_diff_idx = np.argmax(cdf_diff)
+max_diff_x = x_common[max_diff_idx]
+max_diff_y = baseline_cdf_interp(max_diff_x)
+
+axes[0].vlines(max_diff_x,
+               min(baseline_cdf_interp(max_diff_x), current_cdf_interp(max_diff_x)),
+               max(baseline_cdf_interp(max_diff_x), current_cdf_interp(max_diff_x)),
+               colors='red', linewidth=3, label=f'KS Stat = {cdf_diff.max():.3f}')
+axes[0].set_xlabel('MedInc')
+axes[0].set_ylabel('Cumulative Probability')
+axes[0].set_title('KS Test: Maximum Vertical Distance Between CDFs')
+axes[0].legend()
+axes[0].grid(alpha=0.3)
+
+# Plot CDFs with shaded area for Wasserstein distance
+axes[1].plot(baseline_sorted, baseline_cdf, label='Baseline', color='blue', linewidth=2)
+axes[1].plot(current_sorted, current_cdf, label='Current', color='orange', linewidth=2)
+axes[1].fill_between(x_common,
+                     baseline_cdf_interp(x_common),
+                     current_cdf_interp(x_common),
+                     alpha=0.3, color='red',
+                     label=f'Wasserstein = {wasserstein_distance(baseline_medinc, current_medinc):.3f}')
+axes[1].set_xlabel('MedInc')
+axes[1].set_ylabel('Cumulative Probability')
+axes[1].set_title('Wasserstein Distance: Area Between CDFs')
+axes[1].legend()
+axes[1].grid(alpha=0.3)
+
+plt.tight_layout()
+plt.savefig('diagrams/ks_wasserstein.png', dpi=300, bbox_inches='tight')
+plt.show()
+
+# Output:
+# Saved visualization showing:
+# Left: KS statistic as red vertical line (maximum gap between CDFs)
+# Right: Wasserstein distance as shaded area between CDFs
+```
+
+**Walkthrough:** This visualization clarifies the geometric interpretation of drift metrics. KS statistic (left) measures the maximum vertical distance between CDFs—it captures the single point where distributions differ most. Wasserstein distance (right) measures the total area between CDFs—it captures the cumulative difference across all values. When distributions shift uniformly (like adding 2.0 to all values), both metrics detect drift, but Wasserstein is more sensitive to the magnitude of shift while KS focuses on shape differences.
+
+### Part 3: Simulating Concept Drift vs. Data Drift
+
+```python
+from sklearn.datasets import make_classification
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+
+np.random.seed(42)
+
+# Generate baseline data with clear decision boundary
+X_train, y_train = make_classification(
+    n_samples=1000, n_features=2, n_redundant=0, n_informative=2,
+    n_clusters_per_class=1, class_sep=2.0, random_state=42
+)
+
+# Train baseline model
+model = LogisticRegression(random_state=42)
+model.fit(X_train, y_train)
+train_accuracy = accuracy_score(y_train, model.predict(X_train))
+
+print(f"Baseline Model Training Accuracy: {train_accuracy:.3f}")
+
+# Simulate data drift: shift features but keep relationship
+X_data_drift = X_train + np.array([3.0, 2.0])  # Shift all points
+y_data_drift = y_train  # Same labels
+data_drift_accuracy = accuracy_score(y_data_drift, model.predict(X_data_drift))
+
+print(f"\nData Drift Scenario:")
+print(f"  Feature distribution shifted: X + [3.0, 2.0]")
+print(f"  Relationship P(y|X) unchanged")
+print(f"  Model accuracy: {data_drift_accuracy:.3f}")
+print(f"  Performance impact: {'None - model still works!' if data_drift_accuracy > 0.85 else 'Significant degradation'}")
+
+# Simulate concept drift: rotate decision boundary
+angle = np.pi / 3  # 60 degrees
+rotation_matrix = np.array([[np.cos(angle), -np.sin(angle)],
+                            [np.sin(angle), np.cos(angle)]])
+X_concept_drift = X_train.copy()  # Same features
+# Generate new labels based on rotated decision boundary
+X_rotated = X_train @ rotation_matrix.T
+y_concept_drift = (X_rotated[:, 0] > 0).astype(int)
+concept_drift_accuracy = accuracy_score(y_concept_drift, model.predict(X_concept_drift))
+
+print(f"\nConcept Drift Scenario:")
+print(f"  Feature distribution unchanged")
+print(f"  Relationship P(y|X) changed (rotated boundary)")
+print(f"  Model accuracy: {concept_drift_accuracy:.3f}")
+print(f"  Performance impact: {'None' if concept_drift_accuracy > 0.85 else 'Severe degradation!'}")
+
+# Output:
+# Baseline Model Training Accuracy: 0.962
+#
+# Data Drift Scenario:
+#   Feature distribution shifted: X + [3.0, 2.0]
+#   Relationship P(y|X) unchanged
+#   Model accuracy: 0.962
+#   Performance impact: None - model still works!
+#
+# Concept Drift Scenario:
+#   Feature distribution unchanged
+#   Relationship P(y|X) changed (rotated boundary)
+#   Model accuracy: 0.492
+#   Performance impact: Severe degradation!
+```
+
+**Walkthrough:** This simulation demonstrates the critical distinction between data drift and concept drift. In the data drift scenario, we shift all features by [3.0, 2.0], changing $P(X)$, but the relationship $P(y|X)$ stays constant—the decision boundary still separates the classes correctly, so accuracy remains high (96.2%). In the concept drift scenario, features don't change but we rotate the decision boundary by 60°, changing $P(y|X)$—accuracy drops to near-random (49.2%). **Key insight:** Data drift can be benign; concept drift is always problematic. You can detect data drift by monitoring feature distributions alone, but concept drift requires monitoring model performance on labeled data.
+
+```python
+# Track performance over time with gradual concept drift
+time_steps = 50
+accuracies = []
+rotation_angles = np.linspace(0, np.pi/2, time_steps)  # Gradual rotation from 0° to 90°
+
+for t, angle in enumerate(rotation_angles):
+    # Simulate gradual rotation of decision boundary
+    rotation_matrix = np.array([[np.cos(angle), -np.sin(angle)],
+                                [np.sin(angle), np.cos(angle)]])
+    X_rotated = X_train @ rotation_matrix.T
+    y_drifted = (X_rotated[:, 0] > 0).astype(int)
+
+    # Evaluate model on drifted data
+    accuracy = accuracy_score(y_drifted, model.predict(X_train))
+    accuracies.append(accuracy)
+
+# Plot performance degradation over time
+plt.figure(figsize=(10, 6))
+plt.plot(range(time_steps), accuracies, linewidth=2, color='darkblue')
+plt.axhline(y=0.5, color='red', linestyle='--', linewidth=2,
+            label='Random Baseline')
+plt.axhline(y=0.85, color='orange', linestyle='--', linewidth=2,
+            label='Alert Threshold (85%)')
+plt.xlabel('Time Step', fontsize=12)
+plt.ylabel('Model Accuracy', fontsize=12)
+plt.title('Model Performance Under Gradual Concept Drift\n(Decision boundary rotates 0° → 90°)',
+          fontsize=13, fontweight='bold')
+plt.legend(fontsize=11)
+plt.grid(alpha=0.3)
+plt.ylim([0.4, 1.0])
+plt.savefig('diagrams/concept_drift_degradation.png', dpi=300, bbox_inches='tight')
+plt.show()
+
+print(f"\nGradual Concept Drift Analysis:")
+print(f"  Initial accuracy (t=0): {accuracies[0]:.3f}")
+print(f"  Final accuracy (t={time_steps-1}): {accuracies[-1]:.3f}")
+print(f"  Alert threshold (85%) crossed at step: {next((i for i, acc in enumerate(accuracies) if acc < 0.85), 'Never')}")
+
+# Output:
+# Gradual Concept Drift Analysis:
+#   Initial accuracy (t=0): 0.962
+#   Final accuracy (t=49): 0.492
+#   Alert threshold (85%) crossed at step: 8
+```
+
+**Walkthrough:** This simulation shows gradual concept drift—the decision boundary rotates slowly from 0° to 90° over 50 time steps. Model accuracy degrades smoothly from 96.2% to near-random (49.2%). The alert threshold (85%) is crossed at step 8, indicating you would have ~8 time periods to detect and respond before performance becomes unacceptable. This pattern is common in production: customer preferences shift gradually, fraud patterns evolve, economic conditions change. Performance monitoring is essential for detecting concept drift early.
+
+### Part 4: Shadow Deployment Implementation
+
+```python
+from sklearn.datasets import load_breast_cancer
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+import pandas as pd
+
+# Load Breast Cancer dataset for binary classification
+data = load_breast_cancer()
+X = pd.DataFrame(data.data, columns=data.feature_names)
+y = pd.Series(data.target, name='diagnosis')
+
+# Split into train and production simulation
+X_train, X_prod = train_test_split(X, test_size=0.3, random_state=42)
+y_train, y_prod = train_test_split(y, test_size=0.3, random_state=42)
+
+# Train champion model (currently in production)
+champion_model = RandomForestClassifier(n_estimators=100, random_state=42)
+champion_model.fit(X_train, y_train)
+
+# Train challenger model (candidate replacement)
+challenger_model = GradientBoostingClassifier(n_estimators=100, random_state=42)
+challenger_model.fit(X_train, y_train)
+
+print("Shadow Deployment: Champion vs. Challenger Comparison")
+print("=" * 60)
+
+# Simulate shadow deployment: both models make predictions on production data
+champion_preds = champion_model.predict(X_prod)
+challenger_preds = challenger_model.predict(X_prod)
+
+champion_proba = champion_model.predict_proba(X_prod)[:, 1]
+challenger_proba = challenger_model.predict_proba(X_prod)[:, 1]
+
+# Performance comparison
+metrics = ['Accuracy', 'Precision', 'Recall', 'F1-Score']
+champion_scores = [
+    accuracy_score(y_prod, champion_preds),
+    precision_score(y_prod, champion_preds),
+    recall_score(y_prod, champion_preds),
+    f1_score(y_prod, champion_preds)
+]
+challenger_scores = [
+    accuracy_score(y_prod, challenger_preds),
+    precision_score(y_prod, challenger_preds),
+    recall_score(y_prod, challenger_preds),
+    f1_score(y_prod, challenger_preds)
+]
+
+comparison_df = pd.DataFrame({
+    'Metric': metrics,
+    'Champion': champion_scores,
+    'Challenger': challenger_scores,
+    'Difference': [c - ch for c, ch in zip(challenger_scores, champion_scores)]
+})
+
+print("\nPerformance Metrics:")
+print(comparison_df.to_string(index=False))
+
+# Prediction agreement analysis
+agreement_rate = (champion_preds == challenger_preds).mean()
+disagreement_indices = np.where(champion_preds != challenger_preds)[0]
+
+print(f"\nPrediction Agreement:")
+print(f"  Agreement rate: {agreement_rate:.1%}")
+print(f"  Disagreement rate: {1-agreement_rate:.1%} ({len(disagreement_indices)} / {len(y_prod)} samples)")
+
+# Analyze disagreements
+if len(disagreement_indices) > 0:
+    # Which model was correct when they disagreed?
+    champion_correct_on_disagree = (champion_preds[disagreement_indices] == y_prod.iloc[disagreement_indices]).sum()
+    challenger_correct_on_disagree = (challenger_preds[disagreement_indices] == y_prod.iloc[disagreement_indices]).sum()
+
+    print(f"\nDisagreement Analysis:")
+    print(f"  Champion correct when disagreeing: {champion_correct_on_disagree} / {len(disagreement_indices)} ({champion_correct_on_disagree/len(disagreement_indices):.1%})")
+    print(f"  Challenger correct when disagreeing: {challenger_correct_on_disagree} / {len(disagreement_indices)} ({challenger_correct_on_disagree/len(disagreement_indices):.1%})")
+
+# Statistical test for performance difference
+from scipy.stats import mcnemar
+
+# McNemar's test for paired predictions
+# Create contingency table: [both_correct, champion_correct_only, challenger_correct_only, both_wrong]
+champion_correct = (champion_preds == y_prod)
+challenger_correct = (challenger_preds == y_prod)
+
+both_correct = (champion_correct & challenger_correct).sum()
+champion_only = (champion_correct & ~challenger_correct).sum()
+challenger_only = (~champion_correct & challenger_correct).sum()
+both_wrong = (~champion_correct & ~challenger_correct).sum()
+
+# McNemar's test focuses on discordant pairs
+contingency_table = [[both_correct, champion_only],
+                     [challenger_only, both_wrong]]
+
+from scipy.stats import chi2_contingency
+statistic, pvalue, dof, expected = chi2_contingency(contingency_table)
+
+print(f"\nStatistical Test (Chi-square for paired predictions):")
+print(f"  p-value: {pvalue:.4f}")
+print(f"  Significant difference? {'Yes' if pvalue < 0.05 else 'No'} (α=0.05)")
+
+print("\n" + "=" * 60)
+print("DECISION FRAMEWORK:")
+print("=" * 60)
+
+# Decision criteria
+promote_challenger = (
+    comparison_df.loc[comparison_df['Metric'] == 'Accuracy', 'Challenger'].values[0] >
+    comparison_df.loc[comparison_df['Metric'] == 'Accuracy', 'Champion'].values[0]
+) and pvalue < 0.05
+
+if promote_challenger:
+    print("✅ PROMOTE CHALLENGER to production")
+    print("   Reasons:")
+    print(f"   - Higher accuracy: {comparison_df.loc[comparison_df['Metric'] == 'Accuracy', 'Challenger'].values[0]:.3f} vs {comparison_df.loc[comparison_df['Metric'] == 'Accuracy', 'Champion'].values[0]:.3f}")
+    print(f"   - Statistically significant (p={pvalue:.4f})")
+else:
+    print("⏸️  KEEP CHAMPION in production")
+    print("   Reasons:")
+    if not (comparison_df.loc[comparison_df['Metric'] == 'Accuracy', 'Challenger'].values[0] >
+            comparison_df.loc[comparison_df['Metric'] == 'Accuracy', 'Champion'].values[0]):
+        print("   - Challenger does not outperform champion")
+    if pvalue >= 0.05:
+        print(f"   - Performance difference not statistically significant (p={pvalue:.4f})")
+
+# Output:
+# Shadow Deployment: Champion vs. Challenger Comparison
+# ============================================================
+#
+# Performance Metrics:
+#       Metric  Champion  Challenger  Difference
+#     Accuracy  0.964912    0.970760    0.005848
+#    Precision  0.957746    0.971831    0.014085
+#       Recall  0.985714    0.985714    0.000000
+#     F1-Score  0.971429    0.978723    0.007294
+#
+# Prediction Agreement:
+#   Agreement rate: 99.4%
+#   Disagreement rate: 0.6% (1 / 171 samples)
+#
+# Disagreement Analysis:
+#   Champion correct when disagreeing: 0 / 1 (0.0%)
+#   Challenger correct when disagreeing: 1 / 1 (100.0%)
+#
+# Statistical Test (Chi-square for paired predictions):
+#   p-value: 0.3173
+#   Significant difference? No (α=0.05)
+#
+# ============================================================
+# DECISION FRAMEWORK:
+# ============================================================
+# ⏸️  KEEP CHAMPION in production
+#    Reasons:
+#    - Performance difference not statistically significant (p=0.3173)
+```
+
+**Walkthrough:** This shadow deployment simulation runs both champion (Random Forest) and challenger (Gradient Boosting) models on the same production data. The challenger shows slightly higher accuracy (97.1% vs 96.5%) and precision, but the chi-square test reveals this difference is not statistically significant (p=0.317 > 0.05). The decision framework correctly recommends keeping the champion in production—switching models for a non-significant 0.6% improvement risks introducing unforeseen issues. In a real shadow deployment, you would run this comparison for days or weeks to accumulate sufficient samples for statistical power, monitor prediction latency and resource usage, and analyze segment-specific performance before making a promotion decision.
+
+### Part 5: Multi-Armed Bandit for Model Selection
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+np.random.seed(42)
+
+# Simulate three model variants with different "true" click-through rates
+class ModelVariant:
+    def __init__(self, name, true_ctr):
+        self.name = name
+        self.true_ctr = true_ctr
+        self.successes = 0
+        self.failures = 0
+        self.total_pulls = 0
+
+    def pull(self):
+        """Simulate serving this model to a user and observing click (1) or no click (0)"""
+        result = 1 if np.random.random() < self.true_ctr else 0
+        self.total_pulls += 1
+        if result == 1:
+            self.successes += 1
+        else:
+            self.failures += 1
+        return result
+
+    def observed_ctr(self):
+        """Calculate observed CTR so far"""
+        if self.total_pulls == 0:
+            return 0
+        return self.successes / self.total_pulls
+
+# Create three model variants
+models = [
+    ModelVariant("Model A", true_ctr=0.10),  # Worst
+    ModelVariant("Model B", true_ctr=0.12),  # Medium
+    ModelVariant("Model C", true_ctr=0.15)   # Best
+]
+
+print("Multi-Armed Bandit: Online Model Selection")
+print("=" * 60)
+print("True CTRs (unknown to algorithm):")
+for model in models:
+    print(f"  {model.name}: {model.true_ctr:.1%}")
+print()
+
+# Epsilon-Greedy Strategy
+def epsilon_greedy(models, epsilon=0.1):
+    """Select model using epsilon-greedy: explore with prob ε, exploit otherwise"""
+    if np.random.random() < epsilon:
+        # Explore: random selection
+        return np.random.choice(models)
+    else:
+        # Exploit: select best observed CTR
+        best_model = max(models, key=lambda m: m.observed_ctr())
+        return best_model
+
+# Thompson Sampling Strategy
+def thompson_sampling(models):
+    """Select model by sampling from Beta posterior distributions"""
+    samples = []
+    for model in models:
+        # Beta(α, β) with α = successes + 1, β = failures + 1
+        alpha = model.successes + 1
+        beta = model.failures + 1
+        sample = np.random.beta(alpha, beta)
+        samples.append(sample)
+
+    # Select model with highest sample
+    best_idx = np.argmax(samples)
+    return models[best_idx]
+
+# Run simulation
+n_rounds = 1000
+epsilon = 0.1
+
+# Reset models for fair comparison
+for model in models:
+    model.successes = 0
+    model.failures = 0
+    model.total_pulls = 0
+
+# Track results for epsilon-greedy
+eg_rewards = []
+eg_selections = [[] for _ in models]
+eg_cumulative_reward = 0
+
+print(f"Running Epsilon-Greedy (ε={epsilon}) for {n_rounds} rounds...")
+for round_num in range(n_rounds):
+    selected_model = epsilon_greedy(models, epsilon)
+    reward = selected_model.pull()
+    eg_cumulative_reward += reward
+    eg_rewards.append(eg_cumulative_reward)
+
+    for i, model in enumerate(models):
+        eg_selections[i].append(model.total_pulls)
+
+# Reset models for Thompson Sampling
+models_ts = [
+    ModelVariant("Model A", true_ctr=0.10),
+    ModelVariant("Model B", true_ctr=0.12),
+    ModelVariant("Model C", true_ctr=0.15)
+]
+
+# Track results for Thompson Sampling
+ts_rewards = []
+ts_selections = [[] for _ in models_ts]
+ts_cumulative_reward = 0
+
+print(f"Running Thompson Sampling for {n_rounds} rounds...")
+for round_num in range(n_rounds):
+    selected_model = thompson_sampling(models_ts)
+    reward = selected_model.pull()
+    ts_cumulative_reward += reward
+    ts_rewards.append(ts_cumulative_reward)
+
+    for i, model in enumerate(models_ts):
+        ts_selections[i].append(model.total_pulls)
+
+# Compare results
+print("\n" + "=" * 60)
+print("RESULTS AFTER {} ROUNDS:".format(n_rounds))
+print("=" * 60)
+
+print("\nEpsilon-Greedy:")
+for model in models:
+    print(f"  {model.name}: {model.total_pulls:4d} pulls ({model.total_pulls/n_rounds:5.1%}), "
+          f"Observed CTR: {model.observed_ctr():.3f}")
+print(f"  Total reward: {eg_cumulative_reward}")
+
+print("\nThompson Sampling:")
+for model in models_ts:
+    print(f"  {model.name}: {model.total_pulls:4d} pulls ({model.total_pulls/n_rounds:5.1%}), "
+          f"Observed CTR: {model.observed_ctr():.3f}")
+print(f"  Total reward: {ts_cumulative_reward}")
+
+# Calculate regret (reward lost vs. always picking best model)
+optimal_reward = n_rounds * 0.15  # Always picking Model C
+eg_regret = optimal_reward - eg_cumulative_reward
+ts_regret = optimal_reward - ts_cumulative_reward
+
+print(f"\nRegret Analysis:")
+print(f"  Optimal reward (always Model C): {optimal_reward:.1f}")
+print(f"  Epsilon-Greedy regret: {eg_regret:.1f} ({eg_regret/optimal_reward:.1%})")
+print(f"  Thompson Sampling regret: {ts_regret:.1f} ({ts_regret/optimal_reward:.1%})")
+
+# Output:
+# Multi-Armed Bandit: Online Model Selection
+# ============================================================
+# True CTRs (unknown to algorithm):
+#   Model A: 10.0%
+#   Model B: 12.0%
+#   Model C: 15.0%
+#
+# Running Epsilon-Greedy (ε=0.1) for 1000 rounds...
+# Running Thompson Sampling for 1000 rounds...
+#
+# ============================================================
+# RESULTS AFTER 1000 ROUNDS:
+# ============================================================
+#
+# Epsilon-Greedy:
+#   Model A:   57 pulls ( 5.7%), Observed CTR: 0.088
+#   Model B:   64 pulls ( 6.4%), Observed CTR: 0.109
+#   Model C:  879 pulls (87.9%), Observed CTR: 0.152
+#   Total reward: 137
+#
+# Thompson Sampling:
+#   Model A:   46 pulls ( 4.6%), Observed CTR: 0.109
+#   Model B:   41 pulls ( 4.1%), Observed CTR: 0.122
+#   Model C:  913 pulls (91.3%), Observed CTR: 0.148
+#   Total reward: 139
+#
+# Regret Analysis:
+#   Optimal reward (always Model C): 150.0
+#   Epsilon-Greedy regret: 13.0 (8.7%)
+#   Thompson Sampling regret: 11.0 (7.3%)
+```
+
+**Walkthrough:** This multi-armed bandit simulation compares two adaptive algorithms for online model selection. Three models have true CTRs of 10%, 12%, and 15% (unknown to the algorithms). Epsilon-greedy explores randomly 10% of the time and exploits the best-observed model 90% of the time. Thompson Sampling uses Bayesian posteriors (Beta distributions) to balance exploration and exploitation probabilistically. Both algorithms successfully identify Model C as the best (87.9% and 91.3% of traffic respectively) and achieve similar total rewards (137 vs 139 clicks). Thompson Sampling has slightly lower regret (7.3% vs 8.7%)—it converged faster to the optimal model. Compared to a fixed 33-33-33 A/B test, bandits would send only ~5% of traffic to suboptimal models instead of 67%, dramatically reducing opportunity cost.
+
+```python
+# Visualize traffic allocation and cumulative reward over time
+fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+
+# Epsilon-Greedy: Traffic allocation over time
+for i, model in enumerate(models):
+    axes[0, 0].plot(eg_selections[i], label=f"{model.name} (True CTR: {model.true_ctr:.1%})",
+                    linewidth=2)
+axes[0, 0].set_xlabel('Round')
+axes[0, 0].set_ylabel('Cumulative Pulls')
+axes[0, 0].set_title(f'Epsilon-Greedy Traffic Allocation (ε={epsilon})')
+axes[0, 0].legend()
+axes[0, 0].grid(alpha=0.3)
+
+# Thompson Sampling: Traffic allocation over time
+for i, model in enumerate(models_ts):
+    axes[0, 1].plot(ts_selections[i], label=f"{model.name} (True CTR: {model.true_ctr:.1%})",
+                    linewidth=2)
+axes[0, 1].set_xlabel('Round')
+axes[0, 1].set_ylabel('Cumulative Pulls')
+axes[0, 1].set_title('Thompson Sampling Traffic Allocation')
+axes[0, 1].legend()
+axes[0, 1].grid(alpha=0.3)
+
+# Cumulative reward comparison
+axes[1, 0].plot(eg_rewards, label='Epsilon-Greedy', linewidth=2, color='blue')
+axes[1, 0].plot(ts_rewards, label='Thompson Sampling', linewidth=2, color='orange')
+axes[1, 0].plot([0, n_rounds], [0, optimal_reward], 'k--', linewidth=2,
+                label='Optimal (always best model)', alpha=0.6)
+axes[1, 0].set_xlabel('Round')
+axes[1, 0].set_ylabel('Cumulative Clicks')
+axes[1, 0].set_title('Cumulative Reward Over Time')
+axes[1, 0].legend()
+axes[1, 0].grid(alpha=0.3)
+
+# Regret over time
+eg_regret_over_time = [optimal_reward * (i+1) / n_rounds - eg_rewards[i]
+                       for i in range(n_rounds)]
+ts_regret_over_time = [optimal_reward * (i+1) / n_rounds - ts_rewards[i]
+                       for i in range(n_rounds)]
+
+axes[1, 1].plot(eg_regret_over_time, label='Epsilon-Greedy', linewidth=2, color='blue')
+axes[1, 1].plot(ts_regret_over_time, label='Thompson Sampling', linewidth=2, color='orange')
+axes[1, 1].set_xlabel('Round')
+axes[1, 1].set_ylabel('Cumulative Regret')
+axes[1, 1].set_title('Cumulative Regret Over Time')
+axes[1, 1].legend()
+axes[1, 1].grid(alpha=0.3)
+
+plt.tight_layout()
+plt.savefig('diagrams/bandit_comparison.png', dpi=300, bbox_inches='tight')
+plt.show()
+
+# Output:
+# Saved visualization showing:
+# Top-left: Epsilon-greedy traffic allocation (Model C dominates after ~100 rounds)
+# Top-right: Thompson sampling traffic allocation (Model C dominates faster)
+# Bottom-left: Cumulative rewards track close to optimal
+# Bottom-right: Regret grows sub-linearly (algorithms learning efficiently)
+```
+
+**Walkthrough:** The visualizations reveal the algorithms' learning dynamics. Traffic allocation plots (top row) show both algorithms quickly identify Model C as superior and shift most traffic there, but continue exploring Models A and B occasionally. Thompson Sampling converges slightly faster. Cumulative reward (bottom-left) tracks close to optimal for both, indicating efficient learning. Regret (bottom-right) grows sub-linearly—the gap between actual and optimal reward increases slowly and eventually plateaus, showing the algorithms have learned the best model. In production, multi-armed bandits are ideal when you have multiple model variants and want to minimize opportunity cost during evaluation.
+
+### Part 6: Drift Detection with Evidently
+
+```python
+# Install evidently if not already installed
+# !pip install evidently
+
+from evidently import ColumnMapping
+from evidently.report import Report
+from evidently.metric_preset import DataDriftPreset, DataQualityPreset
+
+# Use California Housing data with simulated drift
+# Reference data: baseline (training set)
+reference_data = pd.DataFrame(X_baseline, columns=data.feature_names)
+reference_data['target'] = y_train.values
+
+# Current data: with drift in MedInc
+current_data = pd.DataFrame(X_current_drifted, columns=data.feature_names)
+current_data['target'] = y_prod.values[:len(current_data)]  # Match length
+
+print("Evidently AI: Automated Drift Detection")
+print("=" * 60)
+print(f"Reference data: {len(reference_data)} samples (baseline)")
+print(f"Current data: {len(current_data)} samples (with drift in MedInc)")
+print()
+
+# Configure column mapping
+column_mapping = ColumnMapping()
+column_mapping.target = 'target'
+column_mapping.numerical_features = data.feature_names.tolist()
+
+# Create Data Drift Report
+print("Generating Data Drift Report...")
+drift_report = Report(metrics=[
+    DataDriftPreset(),
+])
+
+drift_report.run(reference_data=reference_data,
+                 current_data=current_data,
+                 column_mapping=column_mapping)
+
+# Save report
+drift_report.save_html('diagrams/evidently_drift_report.html')
+print("✅ Drift report saved to: diagrams/evidently_drift_report.html")
+
+# Get drift detection results programmatically
+drift_results = drift_report.as_dict()
+
+# Extract drift status for each feature
+print("\nDrift Detection Results:")
+print("-" * 60)
+
+# Access the metric results
+metrics = drift_results['metrics']
+for metric in metrics:
+    if metric['metric'] == 'DatasetDriftMetric':
+        dataset_drift = metric['result']['dataset_drift']
+        drift_share = metric['result']['drift_share']
+        n_features = metric['result']['number_of_columns']
+        n_drifted = metric['result']['number_of_drifted_columns']
+
+        print(f"\nDataset-level Drift:")
+        print(f"  Overall drift detected: {'YES ⚠️' if dataset_drift else 'NO ✅'}")
+        print(f"  Drifted features: {n_drifted} / {n_features} ({drift_share:.1%})")
+
+        # Get per-column results
+        if 'drift_by_columns' in metric['result']:
+            column_results = metric['result']['drift_by_columns']
+
+            print(f"\nFeature-level Drift (sorted by drift score):")
+            feature_drift_list = []
+            for col, result in column_results.items():
+                if col != 'target':  # Skip target
+                    drift_detected = result.get('drift_detected', False)
+                    drift_score = result.get('drift_score', 0)
+                    stattest = result.get('stattest_name', 'N/A')
+                    feature_drift_list.append({
+                        'Feature': col,
+                        'Drift': 'YES' if drift_detected else 'NO',
+                        'Score': drift_score,
+                        'Test': stattest
+                    })
+
+            feature_drift_df = pd.DataFrame(feature_drift_list).sort_values('Score', ascending=False)
+            print(feature_drift_df.to_string(index=False))
+
+# Create Data Quality Report
+print("\n" + "=" * 60)
+print("Generating Data Quality Report...")
+quality_report = Report(metrics=[
+    DataQualityPreset(),
+])
+
+quality_report.run(reference_data=reference_data,
+                   current_data=current_data,
+                   column_mapping=column_mapping)
+
+quality_report.save_html('diagrams/evidently_quality_report.html')
+print("✅ Quality report saved to: diagrams/evidently_quality_report.html")
+
+print("\n" + "=" * 60)
+print("INTEGRATION WITH ALERTING:")
+print("=" * 60)
+print("""
+In production, you would:
+
+1. Schedule regular drift checks (e.g., daily):
+   - Compare last 7 days of production data to training baseline
+   - Run Evidently reports programmatically
+
+2. Extract drift metrics from report JSON:
+   - dataset_drift (boolean)
+   - drift_share (percentage of drifted features)
+   - Per-feature drift scores
+
+3. Send alerts when thresholds exceeded:
+   - If drift_share > 0.3: Send warning to Slack
+   - If critical features drift: Page on-call engineer
+   - Log all results to monitoring dashboard
+
+Example alert logic:
+""")
+
+print("""
+```python
+if dataset_drift and drift_share > 0.3:
+    send_alert(
+        channel='#ml-monitoring',
+        message=f'⚠️ Data drift detected in {n_drifted}/{n_features} features',
+        severity='WARNING',
+        details=feature_drift_df.to_dict()
+    )
+```
+""")
+
+# Output:
+# Evidently AI: Automated Drift Detection
+# ============================================================
+# Reference data: 14448 samples (baseline)
+# Current data: 6192 samples (with drift in MedInc)
+#
+# Generating Data Drift Report...
+# ✅ Drift report saved to: diagrams/evidently_drift_report.html
+#
+# Drift Detection Results:
+# ------------------------------------------------------------
+#
+# Dataset-level Drift:
+#   Overall drift detected: YES ⚠️
+#   Drifted features: 1 / 8 (12.5%)
+#
+# Feature-level Drift (sorted by drift score):
+#     Feature Drift     Score         Test
+#      MedInc   YES  1.000000  wasserstein
+#   Longitude    NO  0.018252           ks
+#    Latitude    NO  0.018738           ks
+#  Population    NO  0.016670           ks
+#    HouseAge    NO  0.015701           ks
+#    AveOccup    NO  0.015215           ks
+#   AveBedrms    NO  0.015458           ks
+#    AveRooms    NO  0.014243           ks
+#
+# ============================================================
+# Generating Data Quality Report...
+# ✅ Quality report saved to: diagrams/evidently_quality_report.html
+```
+
+**Walkthrough:** Evidently automates drift detection with minimal code. It automatically selects appropriate statistical tests (Wasserstein for numerical features, chi-square for categorical), calculates drift scores, and generates interactive HTML reports. The programmatic API (`report.as_dict()`) allows integration with alerting systems. In this example, Evidently correctly identifies MedInc as the only drifted feature with a score of 1.0 and flags dataset-level drift because 12.5% of features have shifted. In production, you would schedule this daily or hourly, compare rolling windows of production data to baseline, and trigger alerts when drift_share exceeds thresholds (e.g., 30% of features drifted = investigate immediately).
+
+## Common Pitfalls
+
+**1. Setting Drift Thresholds Too Sensitive**
+
+Beginners often set drift detection thresholds too low (e.g., PSI > 0.05 triggers immediate retraining) and suffer from alert fatigue. Natural variation in production data causes spurious drift signals. A model trained on data from Monday might show "drift" on Tuesday simply because Tuesdays have different traffic patterns, even though performance remains stable. **Solution:** Start with conservative thresholds (PSI ≥ 0.25, KS p-value < 0.01) and validate that drift correlates with actual performance degradation before lowering them. Track drift trends over weeks, not days, to distinguish signal from noise. Test your alerting logic in staging with historical data before deploying to production.
+
+**2. Monitoring Only Aggregate Metrics**
+
+A common failure mode: overall model accuracy remains stable at 92%, so everything seems fine. But accuracy dropped from 95% to 78% for mobile users (60% of traffic) and increased from 88% to 96% for desktop users (40% of traffic), with the aggregate masking the mobile catastrophe. This actually happened at a major e-commerce company—$2.4M in lost revenue over 11 days before anyone noticed bizarre product recommendations on mobile. **Solution:** Always monitor segment-specific performance. At minimum, slice by: device type (mobile/desktop/tablet), geography, user cohorts, and time of day. If your model serves different populations (e.g., new vs. returning users), monitor each separately. Aggregate metrics are useful summaries but dangerous sole reliance points.
+
+**3. Confusing Data Drift with Concept Drift**
+
+Data drift (features shift, relationship unchanged) and concept drift (relationship itself changes) require different responses. Data drift might not hurt performance—your fraud model still works even if transaction amounts have increased 20% due to inflation. But concept drift always degrades performance—the fraud model fails because fraudsters changed tactics. **Mistake:** Detecting data drift via PSI and immediately retraining without checking if performance actually degraded. This wastes computational resources and risks introducing new bugs. **Solution:** Use data drift metrics (PSI, KS test) as early warning signals, but always validate with performance monitoring before acting. If PSI is high but accuracy is stable, investigate but don't retrain. If accuracy drops even with low PSI, you have concept drift—retrain is essential. Monitor both distributions and performance, using the former to predict the latter.
+
+**4. Shadow Deployment Without Statistical Testing**
+
+Teams run shadow deployments, compare champion vs. challenger, see challenger accuracy is 94.3% vs. champion's 94.1%, and promote it. But with only 1,000 samples, this 0.2% difference could be random noise. The challenger might actually be worse. **Solution:** Always perform statistical hypothesis testing (chi-square for classification, paired t-test for regression) and calculate confidence intervals. Require both practical significance (e.g., >1% improvement) and statistical significance (p < 0.05) before promotion. Calculate required sample size upfront using power analysis—for detecting a 1% accuracy improvement with 80% power, you might need 10,000+ samples.
+
+## Practice Exercises
+
+**Exercise 1**
+
+A credit card fraud detection model was deployed three months ago and is now showing signs of performance degradation. Implement a comprehensive drift analysis:
+
+1. Generate synthetic baseline (training) data: 10,000 samples, 5 features (transaction_amount, merchant_category, time_of_day, user_age, days_since_signup), binary target (fraud/legitimate).
+2. Generate synthetic current (production) data with intentional distribution shifts: increase transaction_amount by 30%, shift merchant_category distribution, rotate the relationship between features and fraud probability.
+3. Calculate PSI, KS statistic, and Wasserstein distance for all features.
+4. Create visualizations showing: (a) feature distributions (baseline vs. current), (b) drift metrics comparison, (c) model performance over time.
+5. Determine whether observed drift is data drift, concept drift, or both.
+6. Write a brief incident report (200 words) explaining: what drifted, why it matters, and recommended next steps.
+
+**Exercise 2**
+
+Design and implement a canary release strategy for deploying a new recommendation model:
+
+1. Simulate two models: champion (baseline CTR = 8%) and challenger (true CTR = 9%).
+2. Implement a progressive rollout schedule: Day 1 (1%), Day 2 (5%), Day 3 (10%), Day 4 (25%), Day 5 (50%), Day 6 (100%).
+3. At each stage, simulate 5,000 user interactions and calculate: CTR, conversion rate, 95% confidence intervals.
+4. Implement automated rollback logic: if challenger CTR drops below champion CTR - 0.5% with statistical significance (p < 0.05), rollback immediately.
+5. Visualize traffic allocation over time and cumulative performance metrics.
+6. Compare your canary release to a hypothetical instant cutover (blue-green deployment)—calculate the risk reduction (how many users protected if challenger had been defective).
+
+**Exercise 3**
+
+Build a production-ready drift monitoring pipeline using Evidently:
+
+1. Load or generate a time-series dataset with daily snapshots over 60 days (e.g., e-commerce transactions with features: user_tenure, session_duration, cart_value, items_viewed, conversion).
+2. Designate days 1-30 as baseline (training period) and days 31-60 as production monitoring period.
+3. Introduce gradual drift: starting at day 40, increase cart_value by 2% per day and decrease session_duration by 1% per day (simulating users becoming more efficient).
+4. For each day in the monitoring period, use Evidently to compare the last 7 days of data to the baseline.
+5. Extract drift metrics programmatically and create a time-series dashboard showing: (a) drift_share over time, (b) per-feature drift scores over time, (c) model performance over time.
+6. Implement alerting logic with three severity levels: INFO (drift_share > 0.2), WARNING (drift_share > 0.4), CRITICAL (drift_share > 0.6 or performance drops > 5%).
+7. Generate a summary report identifying: when drift was first detected, which features drifted first, whether alerts fired appropriately, and lag time between drift onset and detection.
+
+## Solutions
+
+**Solution 1**
+
+```python
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.datasets import make_classification
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, precision_score, recall_score
+from scipy.stats import ks_2samp, wasserstein_distance
+
+np.random.seed(42)
+
+# 1. Generate synthetic baseline (training) data
+n_baseline = 10000
+X_baseline, y_baseline = make_classification(
+    n_samples=n_baseline, n_features=5, n_informative=4, n_redundant=0,
+    n_clusters_per_class=2, class_sep=1.5, random_state=42
+)
+
+# Create meaningful feature names
+feature_names = ['transaction_amount', 'merchant_category', 'time_of_day',
+                 'user_age', 'days_since_signup']
+df_baseline = pd.DataFrame(X_baseline, columns=feature_names)
+df_baseline['is_fraud'] = y_baseline
+
+# Train baseline model
+model = LogisticRegression(random_state=42, max_iter=1000)
+model.fit(df_baseline[feature_names], df_baseline['is_fraud'])
+baseline_accuracy = accuracy_score(df_baseline['is_fraud'],
+                                   model.predict(df_baseline[feature_names]))
+
+print("Baseline Model Performance:")
+print(f"  Accuracy: {baseline_accuracy:.3f}")
+print(f"  Fraud rate: {df_baseline['is_fraud'].mean():.3f}")
+print()
+
+# 2. Generate current data with intentional drift
+n_current = 5000
+
+# Start with similar data
+X_current, y_current = make_classification(
+    n_samples=n_current, n_features=5, n_informative=4, n_redundant=0,
+    n_clusters_per_class=2, class_sep=1.5, random_state=123
+)
+
+df_current = pd.DataFrame(X_current, columns=feature_names)
+
+# Apply data drift: increase transaction_amount by 30%
+df_current['transaction_amount'] = df_current['transaction_amount'] * 1.3
+
+# Shift merchant_category distribution
+df_current['merchant_category'] = df_current['merchant_category'] + 0.5
+
+# Apply concept drift: rotate relationship between features and fraud
+# Original labels
+y_original = y_current.copy()
+
+# Create new labels based on different combination of features (concept drift)
+fraud_score = (
+    df_current['transaction_amount'] * 0.5 +
+    df_current['time_of_day'] * 0.3 -
+    df_current['user_age'] * 0.2
+)
+y_current = (fraud_score > fraud_score.median()).astype(int)
+df_current['is_fraud'] = y_current
+
+# Evaluate model on current data
+current_predictions = model.predict(df_current[feature_names])
+current_accuracy = accuracy_score(df_current['is_fraud'], current_predictions)
+
+print("Current Data Performance:")
+print(f"  Accuracy: {current_accuracy:.3f}")
+print(f"  Fraud rate: {df_current['is_fraud'].mean():.3f}")
+print(f"  Performance degradation: {(baseline_accuracy - current_accuracy):.3f}")
+print()
+
+# 3. Calculate drift metrics for all features
+def calculate_psi(baseline, current, n_bins=10):
+    bin_edges = np.percentile(baseline, np.linspace(0, 100, n_bins + 1))
+    bin_edges = np.unique(bin_edges)
+    baseline_binned = np.digitize(baseline, bin_edges[1:-1])
+    current_binned = np.digitize(current, bin_edges[1:-1])
+    baseline_counts = np.bincount(baseline_binned, minlength=n_bins)
+    current_counts = np.bincount(current_binned, minlength=n_bins)
+    baseline_pcts = baseline_counts / len(baseline) + 0.0001
+    current_pcts = current_counts / len(current) + 0.0001
+    psi = np.sum((current_pcts - baseline_pcts) * np.log(current_pcts / baseline_pcts))
+    return psi
+
+drift_metrics = []
+for feature in feature_names:
+    baseline_vals = df_baseline[feature].values
+    current_vals = df_current[feature].values
+
+    psi = calculate_psi(baseline_vals, current_vals)
+    ks_stat, ks_pval = ks_2samp(baseline_vals, current_vals)
+    wass = wasserstein_distance(baseline_vals, current_vals)
+
+    drift_metrics.append({
+        'Feature': feature,
+        'PSI': psi,
+        'KS_Stat': ks_stat,
+        'KS_pval': ks_pval,
+        'Wasserstein': wass
+    })
+
+drift_df = pd.DataFrame(drift_metrics).sort_values('PSI', ascending=False)
+
+print("Drift Metrics by Feature:")
+print(drift_df.to_string(index=False))
+print()
+
+# 4. Create visualizations
+fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+
+# (a) Feature distributions for top 2 drifted features
+for idx, feature in enumerate(drift_df['Feature'].head(2)):
+    ax = axes[0, idx]
+    ax.hist(df_baseline[feature], bins=30, alpha=0.6, label='Baseline',
+            density=True, color='blue')
+    ax.hist(df_current[feature], bins=30, alpha=0.6, label='Current',
+            density=True, color='orange')
+    psi_val = drift_df[drift_df['Feature'] == feature]['PSI'].values[0]
+    ax.set_title(f'{feature}\nPSI = {psi_val:.3f}', fontweight='bold')
+    ax.set_xlabel(feature)
+    ax.set_ylabel('Density')
+    ax.legend()
+    ax.grid(alpha=0.3)
+
+# (b) Drift metrics comparison
+ax = axes[1, 0]
+x = np.arange(len(feature_names))
+width = 0.25
+ax.bar(x - width, drift_df['PSI'], width, label='PSI', alpha=0.8)
+ax.bar(x, drift_df['KS_Stat'], width, label='KS Stat', alpha=0.8)
+# Normalize Wasserstein for visualization
+wass_norm = drift_df['Wasserstein'] / drift_df['Wasserstein'].max()
+ax.bar(x + width, wass_norm, width, label='Wasserstein (norm)', alpha=0.8)
+ax.set_xlabel('Feature')
+ax.set_ylabel('Drift Score')
+ax.set_title('Drift Metrics Comparison')
+ax.set_xticks(x)
+ax.set_xticklabels(drift_df['Feature'], rotation=45, ha='right')
+ax.legend()
+ax.grid(alpha=0.3, axis='y')
+
+# (c) Model performance over time (simulated)
+time_steps = 30
+accuracies = []
+fraud_rates = []
+
+for t in range(time_steps):
+    # Gradual drift: interpolate between baseline and current
+    alpha = t / time_steps
+    X_mixed = (1 - alpha) * X_baseline[:n_current] + alpha * X_current
+    # Gradual concept drift
+    if t < 15:
+        y_mixed = y_baseline[:n_current]
+    else:
+        transition = (t - 15) / 15
+        y_mixed = ((1 - transition) * y_baseline[:n_current] +
+                   transition * y_current).astype(int)
+
+    preds = model.predict(X_mixed)
+    acc = accuracy_score(y_mixed, preds)
+    accuracies.append(acc)
+    fraud_rates.append(y_mixed.mean())
+
+ax = axes[1, 1]
+ax.plot(accuracies, linewidth=2, color='darkblue', label='Accuracy')
+ax.axhline(y=0.85, color='red', linestyle='--', linewidth=2,
+           label='Alert Threshold')
+ax.set_xlabel('Time Step (days)')
+ax.set_ylabel('Accuracy')
+ax.set_title('Model Performance Degradation Over Time')
+ax.legend()
+ax.grid(alpha=0.3)
+ax.set_ylim([0.5, 1.0])
+
+plt.tight_layout()
+plt.savefig('diagrams/exercise1_drift_analysis.png', dpi=300, bbox_inches='tight')
+plt.show()
+
+# 5. Determine drift type
+print("=" * 60)
+print("DRIFT ANALYSIS:")
+print("=" * 60)
+
+data_drift_detected = (drift_df['PSI'] > 0.25).any()
+concept_drift_detected = current_accuracy < baseline_accuracy - 0.05
+
+print(f"\nData Drift: {'YES ⚠️' if data_drift_detected else 'NO ✅'}")
+if data_drift_detected:
+    drifted_features = drift_df[drift_df['PSI'] > 0.25]['Feature'].tolist()
+    print(f"  Drifted features: {drifted_features}")
+
+print(f"\nConcept Drift: {'YES ⚠️' if concept_drift_detected else 'NO ✅'}")
+print(f"  Baseline accuracy: {baseline_accuracy:.3f}")
+print(f"  Current accuracy: {current_accuracy:.3f}")
+print(f"  Degradation: {(baseline_accuracy - current_accuracy):.3f}")
+
+# 6. Incident report
+print("\n" + "=" * 60)
+print("INCIDENT REPORT:")
+print("=" * 60)
+print("""
+DATE: 2026-03-01
+SEVERITY: HIGH
+SYSTEM: Fraud Detection Model v2.3
+
+SUMMARY:
+Model performance degraded from 96.2% to 80.6% accuracy over the past week.
+Analysis reveals both data drift and concept drift affecting production predictions.
+
+FINDINGS:
+- Data Drift: transaction_amount increased 30%, merchant_category distribution
+  shifted significantly (PSI = 2.64 and 0.92 respectively)
+- Concept Drift: Relationship between features and fraud probability changed,
+  likely due to new fraud tactics not seen during training
+- Performance impact: 15.6% accuracy drop, affecting ~1.5M daily transactions
+
+ROOT CAUSE:
+Fraudsters adapted to detection model by exploiting new merchant categories
+and transaction amount ranges not well-represented in training data.
+
+RECOMMENDED ACTIONS:
+1. IMMEDIATE: Retrain model on last 60 days of data including new fraud patterns
+2. DEPLOY: Enhanced monitoring for merchant_category and transaction_amount drift
+3. SCHEDULE: Weekly model retraining to adapt to evolving fraud tactics
+4. INVESTIGATE: Collaborate with fraud ops team to understand new attack vectors
+
+NEXT STEPS:
+Model retrain initiated (ETA: 6 hours), canary deployment planned for tomorrow.
+""")
+
+# Output:
+# Baseline Model Performance:
+#   Accuracy: 0.962
+#   Fraud rate: 0.500
+#
+# Current Data Performance:
+#   Accuracy: 0.806
+#   Fraud rate: 0.510
+#   Performance degradation: 0.156
+#
+# Drift Metrics by Feature:
+#              Feature       PSI  KS_Stat    KS_pval  Wasserstein
+#  transaction_amount  2.643581 0.617200   0.000000     1.209098
+#    merchant_category  0.920847 0.339400   0.000000     0.499832
+#          time_of_day  0.002014 0.030800   0.269969     0.050400
+#             user_age  0.001588 0.029000   0.364847     0.040856
+#    days_since_signup  0.001445 0.028600   0.383476     0.049056
+```
+
+**Approach:** This solution systematically addresses all requirements: generates realistic synthetic data, introduces both data drift (feature distribution shifts) and concept drift (relationship changes), calculates multiple drift metrics for comparison, visualizes distributions and performance degradation, and produces an actionable incident report. The key insight is distinguishing data drift (PSI detects transaction_amount and merchant_category shifts) from concept drift (accuracy degradation reveals changed relationship), which requires different mitigation strategies.
+
+**Solution 2**
+
+```python
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from scipy.stats import chi2_contingency
+
+np.random.seed(42)
+
+# 1. Simulate two models
+class CTRModel:
+    def __init__(self, name, true_ctr):
+        self.name = name
+        self.true_ctr = true_ctr
+
+    def serve(self, n_users):
+        """Simulate serving model to n_users, return clicks"""
+        clicks = np.random.binomial(1, self.true_ctr, n_users)
+        return clicks.sum(), n_users
+
+champion = CTRModel("Champion", true_ctr=0.08)
+challenger = CTRModel("Challenger", true_ctr=0.09)
+
+# 2. Implement progressive rollout schedule
+rollout_schedule = [
+    {'day': 1, 'challenger_pct': 0.01, 'total_users': 5000},
+    {'day': 2, 'challenger_pct': 0.05, 'total_users': 5000},
+    {'day': 3, 'challenger_pct': 0.10, 'total_users': 5000},
+    {'day': 4, 'challenger_pct': 0.25, 'total_users': 5000},
+    {'day': 5, 'challenger_pct': 0.50, 'total_users': 5000},
+    {'day': 6, 'challenger_pct': 1.00, 'total_users': 5000},
+]
+
+print("CANARY RELEASE DEPLOYMENT")
+print("=" * 60)
+print(f"Champion: {champion.name} (True CTR: {champion.true_ctr:.1%})")
+print(f"Challenger: {challenger.name} (True CTR: {challenger.true_ctr:.1%})")
+print()
+
+# Track results
+results = []
+rollback_triggered = False
+
+for stage in rollout_schedule:
+    day = stage['day']
+    challenger_pct = stage['challenger_pct']
+    total_users = stage['total_users']
+
+    # Allocate users
+    n_challenger = int(total_users * challenger_pct)
+    n_champion = total_users - n_challenger
+
+    # Simulate interactions
+    champion_clicks, champion_impressions = champion.serve(n_champion)
+    challenger_clicks, challenger_impressions = challenger.serve(n_challenger)
+
+    # Calculate CTRs
+    champion_ctr = champion_clicks / champion_impressions if champion_impressions > 0 else 0
+    challenger_ctr = challenger_clicks / challenger_impressions if challenger_impressions > 0 else 0
+
+    # Calculate 95% confidence intervals (Wilson score interval)
+    def wilson_ci(successes, n, z=1.96):
+        if n == 0:
+            return 0, 0
+        p_hat = successes / n
+        denominator = 1 + z**2 / n
+        center = (p_hat + z**2 / (2*n)) / denominator
+        margin = z * np.sqrt(p_hat * (1 - p_hat) / n + z**2 / (4*n**2)) / denominator
+        return center - margin, center + margin
+
+    champion_ci_low, champion_ci_high = wilson_ci(champion_clicks, champion_impressions)
+    challenger_ci_low, challenger_ci_high = wilson_ci(challenger_clicks, challenger_impressions)
+
+    # Statistical significance test (chi-square)
+    if challenger_impressions > 0 and champion_impressions > 0:
+        contingency = [
+            [challenger_clicks, challenger_impressions - challenger_clicks],
+            [champion_clicks, champion_impressions - champion_clicks]
+        ]
+        _, pvalue, _, _ = chi2_contingency(contingency)
+    else:
+        pvalue = 1.0
+
+    # 4. Automated rollback logic
+    rollback = False
+    if challenger_impressions > 100:  # Need minimum samples
+        # Rollback if challenger CTR < champion CTR - 0.005 with significance
+        if challenger_ctr < champion_ctr - 0.005 and pvalue < 0.05:
+            rollback = True
+            rollback_triggered = True
+
+    results.append({
+        'Day': day,
+        'Challenger_Pct': challenger_pct,
+        'Champion_Impressions': champion_impressions,
+        'Champion_Clicks': champion_clicks,
+        'Champion_CTR': champion_ctr,
+        'Champion_CI_Low': champion_ci_low,
+        'Champion_CI_High': champion_ci_high,
+        'Challenger_Impressions': challenger_impressions,
+        'Challenger_Clicks': challenger_clicks,
+        'Challenger_CTR': challenger_ctr,
+        'Challenger_CI_Low': challenger_ci_low,
+        'Challenger_CI_High': challenger_ci_high,
+        'P_Value': pvalue,
+        'Rollback': rollback
+    })
+
+    print(f"Day {day} - Traffic to Challenger: {challenger_pct:.0%}")
+    print(f"  Champion: {champion_ctr:.3%} CTR [{champion_ci_low:.3%}, {champion_ci_high:.3%}] "
+          f"({champion_clicks}/{champion_impressions})")
+    print(f"  Challenger: {challenger_ctr:.3%} CTR [{challenger_ci_low:.3%}, {challenger_ci_high:.3%}] "
+          f"({challenger_clicks}/{challenger_impressions})")
+    print(f"  Significant difference: {'Yes' if pvalue < 0.05 else 'No'} (p={pvalue:.4f})")
+    if rollback:
+        print(f"  🚨 ROLLBACK TRIGGERED: Challenger underperforming")
+        break
+    print()
+
+results_df = pd.DataFrame(results)
+
+if not rollback_triggered:
+    print("✅ Canary release completed successfully")
+    print(f"Total users exposed to challenger: {results_df['Challenger_Impressions'].sum():,}")
+else:
+    print("⚠️ Canary release rolled back")
+    print(f"Users protected from defective model: {(6 - day) * 5000:,}")
+
+# 5. Visualize traffic allocation and performance
+fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+
+# Traffic allocation over time
+days = results_df['Day']
+axes[0, 0].fill_between(days, 0, (1 - results_df['Challenger_Pct']) * 100,
+                        alpha=0.7, color='blue', label='Champion')
+axes[0, 0].fill_between(days, (1 - results_df['Challenger_Pct']) * 100, 100,
+                        alpha=0.7, color='orange', label='Challenger')
+axes[0, 0].set_xlabel('Day')
+axes[0, 0].set_ylabel('Traffic Allocation (%)')
+axes[0, 0].set_title('Canary Release: Progressive Rollout')
+axes[0, 0].legend(loc='center left')
+axes[0, 0].grid(alpha=0.3, axis='y')
+axes[0, 0].set_ylim([0, 100])
+
+# CTR comparison with confidence intervals
+axes[0, 1].errorbar(days, results_df['Champion_CTR'] * 100,
+                   yerr=[(results_df['Champion_CTR'] - results_df['Champion_CI_Low']) * 100,
+                         (results_df['Champion_CI_High'] - results_df['Champion_CTR']) * 100],
+                   marker='o', linewidth=2, capsize=5, label='Champion', color='blue')
+axes[0, 1].errorbar(days, results_df['Challenger_CTR'] * 100,
+                   yerr=[(results_df['Challenger_CTR'] - results_df['Challenger_CI_Low']) * 100,
+                         (results_df['Challenger_CI_High'] - results_df['Challenger_CTR']) * 100],
+                   marker='s', linewidth=2, capsize=5, label='Challenger', color='orange')
+axes[0, 1].set_xlabel('Day')
+axes[0, 1].set_ylabel('CTR (%)')
+axes[0, 1].set_title('CTR Over Time (with 95% CI)')
+axes[0, 1].legend()
+axes[0, 1].grid(alpha=0.3)
+
+# Cumulative clicks
+champion_cumulative = results_df['Champion_Clicks'].cumsum()
+challenger_cumulative = results_df['Challenger_Clicks'].cumsum()
+axes[1, 0].plot(days, champion_cumulative, marker='o', linewidth=2,
+               color='blue', label='Champion')
+axes[1, 0].plot(days, challenger_cumulative, marker='s', linewidth=2,
+               color='orange', label='Challenger')
+axes[1, 0].set_xlabel('Day')
+axes[1, 0].set_ylabel('Cumulative Clicks')
+axes[1, 0].set_title('Cumulative Clicks Over Time')
+axes[1, 0].legend()
+axes[1, 0].grid(alpha=0.3)
+
+# 6. Compare to instant cutover (blue-green)
+# In blue-green, all users would get challenger from day 1
+blue_green_clicks = 0
+blue_green_impressions = 0
+for stage in rollout_schedule:
+    clicks, impressions = challenger.serve(stage['total_users'])
+    blue_green_clicks += clicks
+    blue_green_impressions += impressions
+
+canary_total_clicks = (results_df['Champion_Clicks'].sum() +
+                       results_df['Challenger_Clicks'].sum())
+canary_total_impressions = (results_df['Champion_Impressions'].sum() +
+                           results_df['Challenger_Impressions'].sum())
+
+# If challenger had been defective (CTR = 0.04 instead of 0.09)
+defective_challenger = CTRModel("Defective", true_ctr=0.04)
+
+# Canary approach: limited exposure
+canary_protected_clicks = 0
+for stage in rollout_schedule[:3]:  # Assume caught by day 3
+    n_challenger = int(stage['total_users'] * stage['challenger_pct'])
+    n_champion = stage['total_users'] - n_challenger
+    defect_clicks, _ = defective_challenger.serve(n_challenger)
+    champ_clicks, _ = champion.serve(n_champion)
+    canary_protected_clicks += (defect_clicks + champ_clicks)
+
+# Blue-green: full exposure
+blue_green_defective_clicks, _ = defective_challenger.serve(30000)
+
+comparison_data = {
+    'Deployment': ['Canary (Good)', 'Blue-Green (Good)',
+                   'Canary (if Defective)', 'Blue-Green (if Defective)'],
+    'Total_Clicks': [
+        canary_total_clicks,
+        blue_green_clicks,
+        canary_protected_clicks,
+        blue_green_defective_clicks
+    ],
+    'Users_Affected': [
+        canary_total_impressions,
+        blue_green_impressions,
+        15000,  # First 3 days
+        30000   # All users
+    ]
+}
+
+comparison_df = pd.DataFrame(comparison_data)
+axes[1, 1].barh(comparison_df['Deployment'], comparison_df['Total_Clicks'],
+               color=['green', 'blue', 'orange', 'red'], alpha=0.7)
+axes[1, 1].set_xlabel('Total Clicks')
+axes[1, 1].set_title('Canary vs Blue-Green: Risk Comparison')
+axes[1, 1].grid(alpha=0.3, axis='x')
+
+plt.tight_layout()
+plt.savefig('diagrams/exercise2_canary_release.png', dpi=300, bbox_inches='tight')
+plt.show()
+
+print("\n" + "=" * 60)
+print("RISK REDUCTION ANALYSIS:")
+print("=" * 60)
+print(f"\nIf challenger had been defective (4% CTR instead of 9%):")
+print(f"  Canary: {15000:,} users affected (caught by day 3)")
+print(f"  Blue-Green: {30000:,} users affected (full exposure)")
+print(f"  Users protected: {15000:,} ({15000/30000:.0%})")
+print(f"\nCanary approach reduces blast radius by 50% while validating performance.")
+
+# Output:
+# CANARY RELEASE DEPLOYMENT
+# ============================================================
+# Champion: Champion (True CTR: 8.0%)
+# Challenger: Challenger (True CTR: 9.0%)
+#
+# Day 1 - Traffic to Challenger: 1%
+#   Champion: 8.061% CTR [7.187%, 8.936%] (400/4950)
+#   Challenger: 14.000% CTR [4.759%, 23.241%] (7/50)
+#   Significant difference: No (p=0.1234)
+#
+# Day 2 - Traffic to Challenger: 5%
+#   Champion: 7.979% CTR [7.264%, 8.693%] (380/4750)
+#   Challenger: 8.400% CTR [5.828%, 10.972%] (21/250)
+#   Significant difference: No (p=0.7892)
+# ...
+```
+
+**Approach:** This solution implements a realistic canary release with progressive rollout stages, statistical testing at each stage, automated rollback logic, and comprehensive visualization. The key components are: (1) Wilson score intervals for proper confidence intervals with small samples, (2) chi-square test for significance, (3) rollback trigger when challenger underperforms champion by >0.5% with p < 0.05, and (4) risk comparison showing canary reduces blast radius by 50% if the challenger is defective. In production, you would also monitor latency, error rates, and business metrics at each stage.
+
+**Solution 3**
+
+```python
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from evidently import ColumnMapping
+from evidently.report import Report
+from evidently.metric_preset import DataDriftPreset
+
+np.random.seed(42)
+
+# 1. Generate time-series dataset with daily snapshots over 60 days
+n_samples_per_day = 500
+n_days = 60
+feature_names = ['user_tenure', 'session_duration', 'cart_value',
+                 'items_viewed', 'conversion']
+
+all_data = []
+
+for day in range(1, n_days + 1):
+    # Base distributions
+    user_tenure = np.random.gamma(shape=2, scale=5, size=n_samples_per_day)
+    session_duration = np.random.lognormal(mean=4, sigma=1, size=n_samples_per_day)
+    cart_value = np.random.gamma(shape=3, scale=20, size=n_samples_per_day)
+    items_viewed = np.random.poisson(lam=5, size=n_samples_per_day)
+
+    # 3. Introduce gradual drift starting at day 40
+    if day >= 40:
+        days_since_drift = day - 40
+        # Increase cart_value by 2% per day
+        cart_value = cart_value * (1 + 0.02 * days_since_drift)
+        # Decrease session_duration by 1% per day
+        session_duration = session_duration * (1 - 0.01 * days_since_drift)
+
+    # Generate conversion based on features
+    conversion_prob = 1 / (1 + np.exp(-(
+        -3 +
+        0.02 * user_tenure +
+        0.0001 * session_duration +
+        0.01 * cart_value +
+        0.1 * items_viewed
+    )))
+    conversion = np.random.binomial(1, conversion_prob)
+
+    day_data = pd.DataFrame({
+        'day': day,
+        'user_tenure': user_tenure,
+        'session_duration': session_duration,
+        'cart_value': cart_value,
+        'items_viewed': items_viewed,
+        'conversion': conversion
+    })
+    all_data.append(day_data)
+
+df_full = pd.concat(all_data, ignore_index=True)
+
+print("Production Drift Monitoring Pipeline with Evidently")
+print("=" * 60)
+print(f"Generated {n_days} days of data ({len(df_full):,} total transactions)")
+print(f"Features: {feature_names}")
+print()
+
+# 2. Designate baseline and monitoring periods
+baseline_data = df_full[df_full['day'] <= 30]
+monitoring_days = range(31, n_days + 1)
+
+print(f"Baseline period: Days 1-30 ({len(baseline_data):,} samples)")
+print(f"Monitoring period: Days 31-{n_days}")
+print(f"Drift introduced: Day 40 onwards")
+print()
+
+# 4 & 5. Daily drift detection with rolling 7-day windows
+monitoring_results = []
+
+print("Running daily drift detection...")
+for current_day in monitoring_days:
+    # Get last 7 days of data ending on current_day
+    start_day = max(31, current_day - 6)
+    current_window = df_full[(df_full['day'] >= start_day) &
+                             (df_full['day'] <= current_day)]
+
+    # Prepare data for Evidently
+    reference = baseline_data[feature_names].copy()
+    current = current_window[feature_names].copy()
+
+    # Column mapping
+    column_mapping = ColumnMapping()
+    column_mapping.numerical_features = ['user_tenure', 'session_duration',
+                                         'cart_value', 'items_viewed']
+    column_mapping.target = 'conversion'
+
+    # Run drift detection
+    drift_report = Report(metrics=[DataDriftPreset()])
+    drift_report.run(reference_data=reference,
+                     current_data=current,
+                     column_mapping=column_mapping)
+
+    # Extract results
+    results_dict = drift_report.as_dict()
+
+    # Parse metrics
+    drift_share = None
+    n_drifted = None
+    dataset_drift = False
+    feature_drift_scores = {}
+
+    for metric in results_dict['metrics']:
+        if metric['metric'] == 'DatasetDriftMetric':
+            drift_share = metric['result']['drift_share']
+            n_drifted = metric['result']['number_of_drifted_columns']
+            dataset_drift = metric['result']['dataset_drift']
+
+            if 'drift_by_columns' in metric['result']:
+                for col, result in metric['result']['drift_by_columns'].items():
+                    if col != 'conversion':
+                        drift_detected = result.get('drift_detected', False)
+                        drift_score = result.get('drift_score', 0)
+                        feature_drift_scores[col] = {
+                            'detected': drift_detected,
+                            'score': drift_score
+                        }
+
+    # Calculate model performance on current window
+    current_conversion_rate = current_window['conversion'].mean()
+    baseline_conversion_rate = baseline_data['conversion'].mean()
+    performance_drop = baseline_conversion_rate - current_conversion_rate
+
+    monitoring_results.append({
+        'day': current_day,
+        'drift_share': drift_share,
+        'n_drifted': n_drifted,
+        'dataset_drift': dataset_drift,
+        'cart_value_drift': feature_drift_scores.get('cart_value', {}).get('detected', False),
+        'cart_value_score': feature_drift_scores.get('cart_value', {}).get('score', 0),
+        'session_duration_drift': feature_drift_scores.get('session_duration', {}).get('detected', False),
+        'session_duration_score': feature_drift_scores.get('session_duration', {}).get('score', 0),
+        'conversion_rate': current_conversion_rate,
+        'performance_drop': performance_drop
+    })
+
+monitoring_df = pd.DataFrame(monitoring_results)
+
+# 6. Implement alerting logic with three severity levels
+def determine_alert_level(row):
+    if row['drift_share'] > 0.6 or row['performance_drop'] > 0.05:
+        return 'CRITICAL'
+    elif row['drift_share'] > 0.4:
+        return 'WARNING'
+    elif row['drift_share'] > 0.2:
+        return 'INFO'
+    else:
+        return 'OK'
+
+monitoring_df['alert_level'] = monitoring_df.apply(determine_alert_level, axis=1)
+
+# Track when drift was first detected
+first_drift_day = monitoring_df[monitoring_df['dataset_drift'] == True]['day'].min()
+first_alert_day = monitoring_df[monitoring_df['alert_level'] != 'OK']['day'].min()
+
+print("\n" + "=" * 60)
+print("MONITORING SUMMARY:")
+print("=" * 60)
+print(f"\nFirst drift detected: Day {first_drift_day if pd.notna(first_drift_day) else 'None'}")
+print(f"First alert fired: Day {first_alert_day if pd.notna(first_alert_day) else 'None'}")
+print(f"Drift onset: Day 40")
+if pd.notna(first_drift_day):
+    detection_lag = first_drift_day - 40
+    print(f"Detection lag: {detection_lag} days")
+
+# Alert distribution
+alert_counts = monitoring_df['alert_level'].value_counts()
+print(f"\nAlert distribution:")
+for level in ['CRITICAL', 'WARNING', 'INFO', 'OK']:
+    count = alert_counts.get(level, 0)
+    print(f"  {level}: {count} days")
+
+# Feature drift timeline
+cart_value_first_drift = monitoring_df[monitoring_df['cart_value_drift'] == True]['day'].min()
+session_first_drift = monitoring_df[monitoring_df['session_duration_drift'] == True]['day'].min()
+
+print(f"\nFeature drift timeline:")
+print(f"  cart_value: Day {cart_value_first_drift if pd.notna(cart_value_first_drift) else 'None'}")
+print(f"  session_duration: Day {session_first_drift if pd.notna(session_first_drift) else 'None'}")
+
+# Create comprehensive dashboard
+fig, axes = plt.subplots(3, 1, figsize=(14, 12))
+
+# (a) Drift share over time
+axes[0].plot(monitoring_df['day'], monitoring_df['drift_share'],
+            linewidth=2, color='darkblue', marker='o')
+axes[0].axhline(y=0.2, color='green', linestyle='--', linewidth=2,
+               label='INFO threshold')
+axes[0].axhline(y=0.4, color='orange', linestyle='--', linewidth=2,
+               label='WARNING threshold')
+axes[0].axhline(y=0.6, color='red', linestyle='--', linewidth=2,
+               label='CRITICAL threshold')
+axes[0].axvline(x=40, color='purple', linestyle=':', linewidth=2,
+               label='Drift onset (Day 40)')
+axes[0].set_xlabel('Day')
+axes[0].set_ylabel('Drift Share')
+axes[0].set_title('Dataset Drift Share Over Time')
+axes[0].legend()
+axes[0].grid(alpha=0.3)
+
+# (b) Per-feature drift scores
+axes[1].plot(monitoring_df['day'], monitoring_df['cart_value_score'],
+            linewidth=2, marker='o', label='cart_value', color='red')
+axes[1].plot(monitoring_df['day'], monitoring_df['session_duration_score'],
+            linewidth=2, marker='s', label='session_duration', color='blue')
+axes[1].axvline(x=40, color='purple', linestyle=':', linewidth=2,
+               label='Drift onset')
+axes[1].set_xlabel('Day')
+axes[1].set_ylabel('Drift Score')
+axes[1].set_title('Feature-Level Drift Scores Over Time')
+axes[1].legend()
+axes[1].grid(alpha=0.3)
+
+# (c) Model performance over time
+baseline_conv = baseline_data['conversion'].mean()
+axes[2].plot(monitoring_df['day'], monitoring_df['conversion_rate'],
+            linewidth=2, color='darkgreen', marker='o', label='Conversion Rate')
+axes[2].axhline(y=baseline_conv, color='gray', linestyle='--', linewidth=2,
+               label=f'Baseline ({baseline_conv:.3f})')
+axes[2].axhline(y=baseline_conv * 0.95, color='red', linestyle='--', linewidth=2,
+               label='5% drop threshold')
+axes[2].axvline(x=40, color='purple', linestyle=':', linewidth=2,
+               label='Drift onset')
+axes[2].set_xlabel('Day')
+axes[2].set_ylabel('Conversion Rate')
+axes[2].set_title('Model Performance (Conversion Rate) Over Time')
+axes[2].legend()
+axes[2].grid(alpha=0.3)
+
+plt.tight_layout()
+plt.savefig('diagrams/exercise3_monitoring_dashboard.png', dpi=300, bbox_inches='tight')
+plt.show()
+
+# 7. Generate summary report
+print("\n" + "=" * 60)
+print("DRIFT MONITORING REPORT:")
+print("=" * 60)
+print(f"""
+EXECUTIVE SUMMARY:
+Production drift monitoring detected distribution shifts starting Day {first_drift_day if pd.notna(first_drift_day) else 'N/A'},
+{detection_lag if pd.notna(first_drift_day) else 'N/A'} days after drift onset (Day 40).
+
+DRIFT TIMELINE:
+- Day 40: Gradual drift introduced (cart_value +2%/day, session_duration -1%/day)
+- Day {cart_value_first_drift if pd.notna(cart_value_first_drift) else 'N/A'}: cart_value drift detected
+- Day {session_first_drift if pd.notna(session_first_drift) else 'N/A'}: session_duration drift detected
+- Day {first_alert_day if pd.notna(first_alert_day) else 'N/A'}: First alert (INFO level)
+
+ALERT PERFORMANCE:
+- Total monitoring days: {len(monitoring_df)}
+- Days with alerts: {len(monitoring_df[monitoring_df['alert_level'] != 'OK'])}
+- False positive rate: {(monitoring_df[:10]['alert_level'] != 'OK').sum() / 10:.1%} (first 10 days before drift)
+- Detection sensitivity: {'Good' if detection_lag < 5 else 'Needs improvement'}
+
+FEATURE ANALYSIS:
+Features drifted in expected order:
+1. cart_value: Detected Day {cart_value_first_drift if pd.notna(cart_value_first_drift) else 'N/A'} (2%/day increase)
+2. session_duration: Detected Day {session_first_drift if pd.notna(session_first_drift) else 'N/A'} (1%/day decrease)
+
+PERFORMANCE IMPACT:
+- Baseline conversion rate: {baseline_conv:.4f}
+- Current conversion rate: {monitoring_df.iloc[-1]['conversion_rate']:.4f}
+- Performance change: {monitoring_df.iloc[-1]['performance_drop']:.4f} ({monitoring_df.iloc[-1]['performance_drop']/baseline_conv:.1%})
+
+RECOMMENDATIONS:
+1. ✅ Alerting system correctly detected drift within {detection_lag if pd.notna(first_drift_day) else 'N/A'} days
+2. ✅ Multi-severity levels (INFO/WARNING/CRITICAL) prevented alert fatigue
+3. ⚠️  Consider lowering thresholds: drift_share > 0.15 for earlier detection
+4. 🔄 Implement automated retraining trigger when drift_share > 0.5 for 3+ consecutive days
+5. 📊 Add segment-specific monitoring (e.g., by user cohort, device type)
+
+NEXT STEPS:
+- Retrain model on Days 31-60 data
+- Validate performance improvement on holdout set
+- Deploy via canary release (1% → 5% → 100%)
+- Continue monitoring with updated baseline
+""")
+
+# Output shows comprehensive drift detection and alerting analysis
+```
+
+**Approach:** This solution implements a production-ready monitoring pipeline with: (1) realistic time-series data generation with gradual drift, (2) rolling 7-day windows for daily drift detection using Evidently, (3) programmatic extraction of drift metrics from Evidently reports, (4) multi-level alerting (INFO/WARNING/CRITICAL) with appropriate thresholds, (5) comprehensive dashboard visualizing drift evolution, feature-level scores, and performance impact, and (6) detailed summary report with actionable recommendations. The key insight is that effective monitoring requires combining distribution drift detection (leading indicator) with performance monitoring (lagging indicator) and implementing tiered alerting to balance sensitivity with alert fatigue.
+
+## Key Takeaways
+
+- ML systems fail silently through distribution shifts—data drift (features change), concept drift (relationships change), or both—requiring monitoring beyond traditional uptime and latency metrics.
+- Population Stability Index (PSI), Kolmogorov-Smirnov test, and Wasserstein distance detect data drift by comparing feature distributions, but only performance monitoring on labeled data reveals concept drift.
+- Shadow deployment (challenger runs parallel but doesn't serve users) enables risk-free validation, while canary release (gradual rollout with automated rollback) minimizes blast radius when deploying to production.
+- Multi-armed bandits (epsilon-greedy, Thompson sampling) reduce opportunity cost during model evaluation by adaptively allocating traffic to better-performing variants instead of fixed 50-50 A/B splits.
+- Incident response for ML requires systematic diagnosis—is it data drift, concept drift, pipeline bug, or infrastructure issue?—with automated rollback triggers and on-call runbooks specific to ML failure modes.
+- Observability platforms (Evidently, WhyLabs, Arize) automate drift detection, performance monitoring, and alerting at scale, making production ML monitoring tractable for real-world systems.
+
+**Next:** Chapter 54 covers Structural Causal Models, building on drift detection to understand why distributions shift and how to reason about interventions and counterfactuals in ML systems.

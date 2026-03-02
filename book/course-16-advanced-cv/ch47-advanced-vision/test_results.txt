@@ -1,0 +1,22 @@
+Code Review Results
+==================
+
+Rating: BROKEN
+Blocks Tested: 4/9 passing
+
+Failures:
+1. Depth Estimation Imports
+   Error: ModuleNotFoundError: No module named 'cv2'
+
+2. SAM Imports
+   Error: ModuleNotFoundError: No module named 'cv2'
+
+3. Medical Imaging Structure
+   Error: ModuleNotFoundError: No module named 'torchvision'
+
+4. Document AI Structure
+   Error: ModuleNotFoundError: No module named 'cv2'
+
+5. Data Structures and Utilities
+   Error: AssertionError: Regex extraction failed
+

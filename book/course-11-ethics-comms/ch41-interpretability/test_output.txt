@@ -1,0 +1,172 @@
+Traceback (most recent call last):
+  File "/home/chirag/ds-book/book/course-11-ethics-comms/ch41-interpretability/test_code.py", line 246, in test_block_4_shap_waterfall
+    print(f"True label: {'Malignant' if y_test.iloc[instance_idx] == 1 else 'Benign'}")
+                                        ^^^^^^^^^^^
+AttributeError: 'numpy.ndarray' object has no attribute 'iloc'
+Traceback (most recent call last):
+  File "/home/chirag/ds-book/book/course-11-ethics-comms/ch41-interpretability/test_code.py", line 294, in test_block_5_shap_summary
+    shap_values_class1 = global_shap_values_class1
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^
+NameError: name 'global_shap_values_class1' is not defined
+Traceback (most recent call last):
+  File "/home/chirag/ds-book/book/course-11-ethics-comms/ch41-interpretability/test_code.py", line 475, in test_block_8_dice_counterfactuals
+    import dice_ml
+ModuleNotFoundError: No module named 'dice_ml'
+
+======================================================================
+CHAPTER 41: MODEL INTERPRETABILITY & EXPLAINABILITY
+CODE VALIDATION TEST SUITE
+======================================================================
+
+======================================================================
+TEST 1: Interpretability Spectrum Visualization
+======================================================================
+✓ PASS: Visualization created successfully
+
+======================================================================
+TEST 2: Comparing Interpretable and Black-Box Models
+======================================================================
+Dataset shape: (398, 30)
+Features (first 5): ['mean radius', 'mean texture', 'mean perimeter', 'mean area', 'mean smoothness']
+Target distribution: {1: 250, 0: 148}
+
+Logistic Regression AUC: 0.9889
+Random Forest AUC: 0.9913
+Performance difference: 0.0024
+
+Top 5 features pushing toward MALIGNANT (positive coefficients):
+        feature  coefficient
+    mean radius     1.079310
+  texture error     0.836251
+perimeter error     0.542180
+   worst radius     0.172339
+   mean texture     0.063565
+
+Top 5 features pushing toward BENIGN (negative coefficients):
+             feature  coefficient
+      mean concavity    -0.480090
+worst concave points    -0.510151
+      worst symmetry    -0.748529
+   worst compactness    -0.841669
+     worst concavity    -1.247807
+
+✓ PASS: Models trained and compared successfully
+
+======================================================================
+TEST 3: Permutation Feature Importance
+======================================================================
+Top 10 features by permutation importance:
+             feature  importance_mean  importance_std
+          worst area         0.009769        0.003908
+worst concave points         0.006454        0.003672
+       worst texture         0.001730        0.001060
+      mean concavity         0.001592        0.000885
+     worst perimeter         0.001468        0.001117
+ mean concave points         0.001161        0.000654
+   compactness error         0.000905        0.000243
+    worst smoothness         0.000781        0.000604
+     perimeter error         0.000679        0.000222
+        mean texture         0.000657        0.000672
+
+✓ PASS: Permutation importance computed successfully
+
+======================================================================
+TEST 4: SHAP Waterfall Plot
+======================================================================
+SHAP values shape: (171, 30, 2)
+Base value (expected model output): 0.6284
+
+Instance 0 prediction: 0.0800 (probability of malignant)
+✗ FAIL: 'numpy.ndarray' object has no attribute 'iloc'
+
+======================================================================
+TEST 5: SHAP Summary Plot
+======================================================================
+✗ FAIL: name 'global_shap_values_class1' is not defined
+
+======================================================================
+TEST 6: LIME Text Explanation
+======================================================================
+Text classifier accuracy: 0.9376
+Classes: ['comp.graphics', 'sci.med']
+
+Document 10 (first 300 chars):
+Hi,
+  I need to know if there is a 256 color graphics mode that allows multiple
+pages.  I want something like mode 0x10 (640x350x16 2 pages).  I have been
+experimenting with graphics by calling the BIOS with borland turbo c.  I
+feel like I am flying blind in this area, and could use all the help tha...
+
+True label: comp.graphics
+Predicted: comp.graphics (prob=0.8656)
+
+LIME Explanation (top features):
+  'graphics': -0.1335 → comp.graphics
+  'mode': -0.0441 → comp.graphics
+  'Hi': -0.0309 → comp.graphics
+  'area': +0.0302 → sci.med
+  'Thanks': -0.0235 → comp.graphics
+  'experimenting': +0.0222 → sci.med
+  'need': -0.0213 → comp.graphics
+  '256': -0.0207 → comp.graphics
+  'color': -0.0172 → comp.graphics
+  'use': -0.0098 → comp.graphics
+
+Full explanation saved to 'lime_text_explanation.html'
+
+✓ PASS: LIME text explanation created successfully
+
+======================================================================
+TEST 7: Partial Dependence and ICE Plots
+======================================================================
+Gradient Boosting R² score: 0.8193
+Feature names: ['MedInc', 'HouseAge', 'AveRooms', 'AveBedrms', 'Population', 'AveOccup', 'Latitude', 'Longitude']
+
+✓ PASS: PDP and ICE plots created successfully
+
+======================================================================
+TEST 8: Counterfactual Explanations with DiCE
+======================================================================
+✗ FAIL: No module named 'dice_ml'
+
+======================================================================
+TEST 9: Solution Code Blocks
+======================================================================
+
+--- Solution 1: Wine Dataset ---
+✗ FAIL: All arrays must be of the same length
+
+--- Solution 2: Diabetes PDP/ICE ---
+✓ PASS
+
+--- Solution 4: Text Classification with LIME ---
+Explained misclassified document with 10 features
+✓ PASS
+
+--- Solution 5: Iris with Correlated Features ---
+Lowest importance feature: sepal width (cm)
+✓ PASS
+
+======================================================================
+SOLUTION TESTS SUMMARY
+======================================================================
+Solution 1: ✗ FAIL
+Solution 2: ✓ PASS
+Solution 4: ✓ PASS
+Solution 5: ✓ PASS
+
+======================================================================
+FINAL TEST SUMMARY
+======================================================================
+visualization..................................... ✓ PASS
+comparing_models.................................. ✓ PASS
+permutation....................................... ✓ PASS
+shap_waterfall.................................... ✗ FAIL
+shap_summary...................................... ✗ FAIL
+lime_text......................................... ✓ PASS
+pdp_ice........................................... ✓ PASS
+dice.............................................. ✗ FAIL
+solutions......................................... ✗ FAIL
+======================================================================
+TOTAL: 5/9 tests passed
+======================================================================

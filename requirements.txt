@@ -1,0 +1,68 @@
+# Core data science
+numpy
+pandas
+scipy
+matplotlib
+seaborn
+
+# Machine learning
+scikit-learn
+xgboost
+lightgbm
+catboost
+optuna
+
+# Deep learning
+torch
+torchvision
+tensorflow
+
+# NLP
+nltk
+spacy
+gensim
+transformers
+datasets
+
+# Time series
+statsmodels
+prophet
+pmdarima
+
+# Recommendation systems
+scikit-surprise
+
+# Explainability
+shap
+lime
+
+# Big data
+pyspark
+
+# MLOps & deployment
+mlflow
+fastapi
+uvicorn
+pydantic
+
+# Graphs
+networkx
+
+# Image
+Pillow
+
+# Web & API
+requests
+
+# Visualization (extra)
+plotly
+
+# Notebooks
+jupyterlab
+jupytext
+nbformat
+
+# Utilities
+joblib
+psutil
+tqdm

@@ -1,0 +1,54 @@
+graph LR
+    subgraph Findings["<b>EDA FINDINGS</b>"]
+        F1["<b>Missing Values</b><br/>Features with gaps"]
+        F2["<b>Skewed Distribution</b><br/>Asymmetric data"]
+        F3["<b>Outliers</b><br/>Extreme values"]
+        F4["<b>High Correlation</b><br/>Redundant features"]
+        F5["<b>Class Imbalance</b><br/>Unequal target classes"]
+    end
+
+    subgraph Decisions["<b>DECISIONS</b>"]
+        D1["• Drop rows<br/>• Impute (mean/median/mode)<br/>• Flag as missing indicator"]
+        D2["• Log transform<br/>• Square root transform<br/>• Keep as-is<br/>• Bin into categories"]
+        D3["• Remove (if errors)<br/>• Cap at threshold<br/>• Keep (if legitimate)<br/>• Investigate domain"]
+        D4["• Feature selection<br/>• Apply regularization<br/>• PCA / dimensionality reduction<br/>• Keep for different models"]
+        D5["• Oversample minority (SMOTE)<br/>• Undersample majority<br/>• Class weights<br/>• Use F1/AUC metrics"]
+    end
+
+    subgraph Impact["<b>MODELING IMPACT</b>"]
+        I1["Better data quality"]
+        I2["Improved model performance"]
+        I3["More robust predictions"]
+        I4["Reduced overfitting"]
+        I5["Fair evaluation"]
+    end
+
+    F1 --> D1
+    F2 --> D2
+    F3 --> D3
+    F4 --> D4
+    F5 --> D5
+
+    D1 --> I1
+    D2 --> I2
+    D3 --> I3
+    D4 --> I4
+    D5 --> I5
+
+    style F1 fill:#FF9800,stroke:#F57C00,color:#fff
+    style F2 fill:#FF9800,stroke:#F57C00,color:#fff
+    style F3 fill:#FF9800,stroke:#F57C00,color:#fff
+    style F4 fill:#FF9800,stroke:#F57C00,color:#fff
+    style F5 fill:#FF9800,stroke:#F57C00,color:#fff
+
+    style D1 fill:#2196F3,stroke:#1976D2,color:#fff
+    style D2 fill:#2196F3,stroke:#1976D2,color:#fff
+    style D3 fill:#2196F3,stroke:#1976D2,color:#fff
+    style D4 fill:#2196F3,stroke:#1976D2,color:#fff
+    style D5 fill:#2196F3,stroke:#1976D2,color:#fff
+
+    style I1 fill:#4CAF50,stroke:#388E3C,color:#fff
+    style I2 fill:#4CAF50,stroke:#388E3C,color:#fff
+    style I3 fill:#4CAF50,stroke:#388E3C,color:#fff
+    style I4 fill:#4CAF50,stroke:#388E3C,color:#fff
+    style I5 fill:#4CAF50,stroke:#388E3C,color:#fff

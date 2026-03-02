@@ -1,0 +1,36 @@
+flowchart TD
+    Start["What do you want to show?"] --> OneVar["Distribution of ONE variable"]
+    Start --> TwoVar["Relationship between TWO variables"]
+    Start --> Groups["Comparison across GROUPS"]
+    Start --> Many["Correlation among MANY variables"]
+    Start --> Time["Change over TIME"]
+
+    OneVar --> Continuous1["Continuous?"]
+    OneVar --> Categorical1["Categorical?"]
+
+    Continuous1 --> Hist["Histogram<br/>Box Plot<br/>Violin Plot<br/>KDE"]
+    Categorical1 --> Bar1["Bar Chart"]
+
+    TwoVar --> BothCont["Both continuous?"]
+    TwoVar --> OneCat["One categorical,<br/>one continuous?"]
+    TwoVar --> BothCat["Both categorical?"]
+
+    BothCont --> Scatter["Scatter Plot<br/>Line Plot (if ordered)"]
+    OneCat --> Box["Box Plot<br/>Violin Plot"]
+    BothCat --> GroupBar["Grouped Bar Chart<br/>Heatmap"]
+
+    Groups --> GroupPlots["Box Plot<br/>Violin Plot<br/>Grouped Bar Chart"]
+
+    Many --> CorrPlots["Correlation Heatmap<br/>Pair Plot"]
+
+    Time --> TimePlots["Line Plot<br/>Area Chart"]
+
+    style Start fill:#2196F3,stroke:#1976D2,stroke-width:3px,color:#fff
+    style Hist fill:#4CAF50,stroke:#388E3C,stroke-width:2px,color:#fff
+    style Bar1 fill:#4CAF50,stroke:#388E3C,stroke-width:2px,color:#fff
+    style Scatter fill:#4CAF50,stroke:#388E3C,stroke-width:2px,color:#fff
+    style Box fill:#4CAF50,stroke:#388E3C,stroke-width:2px,color:#fff
+    style GroupBar fill:#4CAF50,stroke:#388E3C,stroke-width:2px,color:#fff
+    style GroupPlots fill:#4CAF50,stroke:#388E3C,stroke-width:2px,color:#fff
+    style CorrPlots fill:#4CAF50,stroke:#388E3C,stroke-width:2px,color:#fff
+    style TimePlots fill:#4CAF50,stroke:#388E3C,stroke-width:2px,color:#fff

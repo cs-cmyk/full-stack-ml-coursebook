@@ -1,0 +1,8 @@
+title,authors,venue,year,topic,status,key_insight,rating,date_added,date_read
+Attention Is All You Need,Vaswani et al.,NeurIPS,2017,Transformers,deep,Self-attention replaces recurrence for sequence modeling. Multi-head attention enables parallel processing. Positional encoding preserves order information.,5,2026-03-01,2026-03-01
+BERT: Pre-training of Deep Bidirectional Transformers,Devlin et al.,NAACL,2019,Language Models,read,Bidirectional pre-training on masked language modeling + next sentence prediction. Fine-tuning for downstream tasks. Transfer learning for NLP.,5,2026-03-01,2026-03-01
+Deep Residual Learning for Image Recognition,He et al.,CVPR,2016,Computer Vision,read,Skip connections enable training very deep networks (>100 layers). Identity mapping solves degradation problem. Batch normalization critical.,5,2026-03-01,2026-03-01
+Generative Adversarial Networks,Goodfellow et al.,NeurIPS,2014,Generative Models,read,Generator vs discriminator game. Minimax objective. Unstable training but powerful when it works.,4,2026-03-01,2026-03-01
+Denoising Diffusion Probabilistic Models,Ho et al.,NeurIPS,2020,Generative Models,scanned,,0,2026-03-01,
+Constitutional AI: Harmlessness from AI Feedback,Bai et al.,arXiv,2022,AI Safety,read,Self-improvement via critique/revision. Reduces need for human feedback. Constitution defines values.,4,2026-03-01,2026-03-01
+LoRA: Low-Rank Adaptation of Large Language Models,Hu et al.,ICLR,2022,Language Models,implemented,"Fine-tune LLMs by updating only low-rank adapter matrices. Reduces parameters by 10,000x. Matches full fine-tuning performance.",5,2026-03-01,2026-03-01

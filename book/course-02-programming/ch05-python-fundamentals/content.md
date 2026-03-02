@@ -1,0 +1,1822 @@
+> **© 2026 Chirag Shinde. Licensed under CC BY-NC-SA 4.0.**
+> See [LICENSE](../../LICENSE) for details.
+
+---
+
+# Chapter 5: Python Fundamentals for Data Science
+
+## Why This Matters
+
+Every machine learning model, every dataset analyzed, and every insight extracted starts with Python code. Whether at Netflix optimizing recommendation algorithms, at Google training cancer-detection models, or analyzing custom data, the fundamentals in this chapter form the foundation. Python is the universal language of data science—and mastering these building blocks transforms mathematical concepts from Course 1 into working code that solves real problems.
+
+## Intuition
+
+Think of programming as giving instructions to an incredibly fast but literal-minded assistant. This assistant can perform millions of calculations per second, remember vast amounts of information, and never gets tired—but it only does exactly what instructed, nothing more, nothing less.
+
+Learning Python is like learning to communicate with this assistant effectively. Store information (variables), make decisions (control flow), organize data (data structures), and create reusable instructions (functions). Each concept builds on the previous one, just like learning a spoken language: first words (variables), then sentences (expressions), then paragraphs (functions), and finally complete stories (programs).
+
+What makes Python special for data science is its readability. Compare `calculate_mean(data)` to the cryptic syntax of some other languages. Python reads almost like English, which means less time decoding syntax and more time solving problems. This "executable pseudocode" quality is why Python has become the standard language for data science, machine learning, and AI.
+
+The beauty of Python is that it's both beginner-friendly and powerful. The same fundamental concepts covered today—loops, lists, functions—are used by engineers at tech giants processing billions of data points. This is not a "toy" language; these are the real tools used in production systems worldwide.
+
+Throughout this chapter, every Python concept connects to data science applications. When learning about lists, see how they'll become NumPy arrays. When learning about dictionaries, understand how they organize dataset metadata. And when learning about functions, build the foundation for creating custom machine learning pipelines.
+
+## Formal Definition
+
+**Python** is a high-level, interpreted, dynamically-typed programming language with automatic memory management. For data science, use Python 3.8+ with its extensive ecosystem of libraries including NumPy, pandas, scikit-learn, and Matplotlib.
+
+**Key Characteristics:**
+- **High-level:** Abstracts away low-level details like memory management
+- **Interpreted:** Code executes line by line without separate compilation step
+- **Dynamically-typed:** Variable types determined at runtime, not declared explicitly
+- **Object-oriented:** Everything is an object with attributes and methods
+- **Significant whitespace:** Indentation defines code blocks (unlike curly braces in C/Java)
+
+**Python Philosophy (PEP 20 - The Zen of Python):**
+- Beautiful is better than ugly
+- Explicit is better than implicit
+- Simple is better than complex
+- Readability counts
+- There should be one—and preferably only one—obvious way to do it
+
+> **Key Concept:** Python transforms mathematical concepts into executable code through intuitive syntax that prioritizes readability and rapid prototyping, making it the ideal language for data science.
+
+## Visualization: Python in the Data Science Ecosystem
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    DATA SCIENCE WORKFLOW                     │
+├─────────────────────────────────────────────────────────────┤
+│                                                               │
+│  Mathematical Concepts (Course 1)                            │
+│  ↓                                                            │
+│  Python Fundamentals (This Chapter)                          │
+│  • Variables, Types, Operators                               │
+│  • Control Flow (if, for, while)                             │
+│  • Data Structures (list, dict, tuple, set)                  │
+│  • Functions                                                  │
+│  ↓                                                            │
+│  Data Science Libraries (Ch 6+)                              │
+│  • NumPy: Arrays and vectorization                           │
+│  • pandas: DataFrames and data manipulation                  │
+│  • Matplotlib: Visualization                                 │
+│  • scikit-learn: Machine learning                            │
+│  ↓                                                            │
+│  Real-World Applications                                     │
+│  • Model Training                                            │
+│  • Predictions                                               │
+│  • Insights                                                  │
+│                                                               │
+└─────────────────────────────────────────────────────────────┘
+```
+
+## Section 1: Variables and Data Types
+
+### Why Variables Matter
+
+Variables are the most fundamental concept in programming—they store, retrieve, and manipulate data. In data science, variables hold everything from single values like learning rate α = 0.01 to entire datasets with thousands of samples. Without variables, there would be no way to work with data.
+
+### Intuition: Variables as Labeled Boxes
+
+Think of variables as labeled storage boxes in a warehouse. Each box has a name written on it (the variable name) and contains some value. When that value is needed, reference the box by name, and Python retrieves the contents.
+
+```
+┌─────────────┐     ┌──────────────────┐     ┌─────────────┐
+│  n_samples  │ ──→ │       150        │     │   int       │
+└─────────────┘     └──────────────────┘     └─────────────┘
+   Variable              Value                   Type
+      Name
+```
+
+However, there's an important nuance: variables are actually *labels* or *references* pointing to objects in memory, not boxes that contain values directly. This distinction matters for understanding mutability (explored with lists).
+
+![Variable Reference Model](diagrams/variable_reference_model.png)
+
+### Core Data Types
+
+Python has several built-in data types essential for data science:
+
+**Numeric Types:**
+- `int`: Whole numbers (e.g., sample counts, indices)
+- `float`: Decimal numbers (e.g., learning rates, measurements)
+
+**Text Type:**
+- `str`: Text/string data (e.g., feature names, labels)
+
+**Boolean Type:**
+- `bool`: True or False (e.g., convergence flags, filters)
+
+**Type System:**
+Python is **dynamically typed**—types are not declared explicitly. Python infers them automatically:
+
+```python
+x = 10        # x is int
+x = "hello"   # Now x is str (perfectly valid!)
+```
+
+## Examples 1: Variables, Types, and Basic Operations
+
+```python
+# Variables and Data Types in Data Science Context
+# All imports at the top
+import math
+
+# Creating variables for a machine learning scenario
+# These represent common quantities from Course 1
+n_samples = 150          # Total number of data samples (int)
+n_features = 4           # Number of features per sample (int)
+learning_rate = 0.01     # Step size for gradient descent (float)
+model_name = "LinearRegression"  # Model identifier (string)
+is_converged = False     # Convergence flag (boolean)
+
+# Display variables and their types
+print("=== Dataset Configuration ===")
+print(f"Samples: {n_samples}, Type: {type(n_samples)}")
+print(f"Features: {n_features}, Type: {type(n_features)}")
+print(f"Learning rate (α): {learning_rate}, Type: {type(learning_rate)}")
+print(f"Model: {model_name}, Type: {type(model_name)}")
+print(f"Converged: {is_converged}, Type: {type(is_converged)}")
+
+# Arithmetic operations
+total_datapoints = n_samples * n_features
+print(f"\nTotal datapoints: {total_datapoints}")
+# Output: Total datapoints: 600
+
+# Computing training iterations needed
+max_iterations = 1000
+updates_per_epoch = n_samples
+total_updates = max_iterations * updates_per_epoch
+print(f"Total parameter updates: {total_updates}")
+# Output: Total parameter updates: 150000
+
+# Computing train/test split (80/20 rule)
+train_ratio = 0.8
+n_train = int(n_samples * train_ratio)
+n_test = n_samples - n_train
+print(f"\nTrain samples: {n_train}, Test samples: {n_test}")
+# Output: Train samples: 120, Test samples: 30
+
+# Boolean comparisons (critical for algorithms)
+is_small_alpha = learning_rate < 0.05
+has_enough_data = n_samples >= 100
+print(f"\nUsing small learning rate? {is_small_alpha}")
+# Output: Using small learning rate? True
+print(f"Sufficient training data? {has_enough_data}")
+# Output: Sufficient training data? True
+
+# String operations
+uppercase_model = model_name.upper()
+print(f"\nModel name (uppercase): {uppercase_model}")
+# Output: Model name (uppercase): LINEARREGRESSION
+
+# Type conversion
+alpha_string = str(learning_rate)
+print(f"Learning rate as string: '{alpha_string}', Type: {type(alpha_string)}")
+# Output: Learning rate as string: '0.01', Type: <class 'str'>
+
+# Computing convergence criterion (theoretical threshold)
+tolerance = 1e-6  # Scientific notation: 0.000001
+convergence_threshold = math.sqrt(tolerance)
+print(f"\nConvergence threshold: {convergence_threshold:.10f}")
+# Output: Convergence threshold: 0.0010000000
+
+# F-string formatting (modern Python)
+summary = f"Training {model_name} on {n_samples} samples with α={learning_rate}"
+print(f"\n{summary}")
+# Output: Training LinearRegression on 150 samples with α=0.01
+```
+
+### Walkthrough
+
+**Lines 1-5:** Five variables are created representing common data science quantities. Notice the naming convention: `snake_case` with descriptive names like `n_samples` (echoing mathematical notation *n* from Course 1) and `learning_rate` (representing α).
+
+**Lines 7-13:** The `print()` function displays output. The `type()` function reveals each variable's type. Notice types weren't declared—Python inferred them automatically. The f-string syntax `f"..."` allows embedding expressions inside `{}` for formatted output.
+
+**Lines 15-19:** Arithmetic operations work as expected. `n_samples * n_features` computes the total size of the feature matrix **X**, which would be 150 × 4 = 600 values. This demonstrates how Python handles mathematical operations naturally.
+
+**Lines 21-25:** Total parameter updates during training are computed. In gradient descent, each iteration processes all samples, so total updates = iterations × samples. This kind of calculation is routine in ML workflows.
+
+**Lines 27-31:** The `int()` function converts float to integer. An 80/20 train-test split is computed: 150 × 0.8 = 120 training samples, leaving 30 for testing. The `int()` conversion is necessary because array indices must be integers.
+
+**Lines 33-38:** Boolean comparisons return `True` or `False`. These are essential for conditional logic: "Is the learning rate small?" (affects convergence speed), "Is there enough data?" (affects model reliability). The comparison operators `<` and `>=` are intuitive.
+
+**Lines 40-43:** Strings have methods like `.upper()` that create modified versions. Note: strings are **immutable**—`.upper()` returns a new string; it doesn't modify the original.
+
+**Lines 45-48:** Type conversion functions like `str()`, `int()`, `float()` convert between types. Converting a number to string is useful for concatenation or formatting, but mathematical operations can't be performed on string representations of numbers without converting back.
+
+**Lines 50-54:** Scientific notation `1e-6` means 1 × 10⁻⁶ = 0.000001. This compact notation is common for small tolerances in numerical algorithms. `math.sqrt()` from the `math` module computes the square root. The format specifier `:.10f` displays 10 decimal places.
+
+**Lines 56-59:** F-strings (Python 3.6+) are the modern way to format strings. The `f` prefix allows embedding expressions directly inside `{}` braces. This is more readable and efficient than older methods like `%` formatting or `.format()`.
+
+### Key Insights from Examples 1
+
+1. **Variables store references, not values directly:** When writing `x = 10`, a label `x` is created that points to an integer object with value 10 in memory.
+
+2. **Dynamic typing is flexible but requires awareness:** The same variable can hold different types over time, but operations must match types (e.g., can't add string to int without conversion).
+
+3. **Naming conventions matter:** Use descriptive names (`learning_rate` not `lr`), `snake_case` for variables, and names that echo mathematical notation when appropriate (`n_samples` for *n*, `alpha` for α).
+
+4. **F-strings are the modern standard:** They're faster, more readable, and more concise than alternatives. Use them for all string formatting.
+
+## Section 2: Control Flow—Making Decisions
+
+### Why Control Flow Matters
+
+Real data science problems require making decisions based on data: "Is this value an outlier?" "Should training stop?" "Does this sample belong to class A or B?" Control flow statements—`if`, `elif`, `else`, and loops—enable these data-driven decisions.
+
+### Intuition: Decision Trees in Code
+
+Control flow is like a flowchart drawn on paper. At each decision point, ask a yes/no question: "Is the accuracy above 90%?" If yes, go down one path; if no, go down another. Python's `if` statements directly encode these decision trees.
+
+```
+Start
+  ↓
+Is score >= 80?
+  ↓           ↓
+ Yes          No
+  ↓           ↓
+"Pass"   Is score >= 60?
+              ↓        ↓
+             Yes       No
+              ↓        ↓
+           "Pass"   "Fail"
+```
+
+
+![Control Flow Decision Tree](diagrams/control_flow_tree.png)
+### The Indentation Rule (CRITICAL)
+
+Unlike most languages that use curly braces `{}` to define code blocks, Python uses **indentation**. This is not optional or cosmetic—indentation *defines* the structure of code. The standard is 4 spaces (never tabs, never mix).
+
+```python
+if condition:
+    # This code runs if condition is True
+    # Indentation shows it's "inside" the if block
+    do_something()
+# This code runs regardless (back to original indentation level)
+```
+
+Incorrect indentation causes `IndentationError` or, worse, changes program logic silently. Modern IDEs like VS Code automatically handle indentation, but the rule must be understood.
+
+## Examples 2: Control Flow for Data Classification
+
+```python
+# Control Flow: Filtering and Classifying Data
+# No imports needed (pure Python)
+
+# Simulating exam scores for 15 students (0-100 scale)
+scores = [85, 92, 58, 73, 45, 88, 91, 67, 54, 78, 95, 82, 49, 70, 86]
+
+print("=== Student Score Classification ===\n")
+
+# Classification criteria:
+# Excellence: >= 85
+# Pass: 60-84
+# Fail: < 60
+
+# Initialize counters
+count_excellence = 0
+count_pass = 0
+count_fail = 0
+
+# Classify each score using if/elif/else
+for i, score in enumerate(scores):
+    # Determine classification
+    if score >= 85:
+        classification = "Excellence"
+        count_excellence += 1
+    elif score >= 60:
+        classification = "Pass"
+        count_pass += 1
+    else:
+        classification = "Fail"
+        count_fail += 1
+
+    # Display each student's result
+    print(f"Student {i+1}: Score {score:3d} → {classification}")
+
+# Display summary statistics
+print("\n=== Summary Statistics ===")
+print(f"Total students: {len(scores)}")
+print(f"Excellence (≥85): {count_excellence} ({count_excellence/len(scores)*100:.1f}%)")
+print(f"Pass (60-84): {count_pass} ({count_pass/len(scores)*100:.1f}%)")
+print(f"Fail (<60): {count_fail} ({count_fail/len(scores)*100:.1f}%)")
+
+# Calculate pass rate (including excellence)
+pass_rate = (count_excellence + count_pass) / len(scores) * 100
+print(f"\nOverall pass rate: {pass_rate:.1f}%")
+# Output: Overall pass rate: 80.0%
+
+# Find the first perfect score (demonstrate break)
+print("\n=== Finding Perfect Scores ===")
+found_perfect = False
+for i, score in enumerate(scores):
+    if score == 100:
+        print(f"Found perfect score at position {i}!")
+        found_perfect = True
+        break  # Exit loop early
+
+if not found_perfect:
+    print("No perfect scores found.")
+# Output: No perfect scores found.
+
+# Find top performers using logical operators
+print("\n=== Top Performers (Score ≥ 90) ===")
+for i, score in enumerate(scores):
+    if score >= 90 and score <= 100:  # Combining conditions
+        print(f"Student {i+1}: {score}")
+# Output:
+# Student 2: 92
+# Student 7: 91
+# Student 11: 95
+
+# Demonstrate continue (skip certain iterations)
+print("\n=== Passing Students Only (Skipping Failures) ===")
+for i, score in enumerate(scores):
+    if score < 60:
+        continue  # Skip to next iteration
+    print(f"Student {i+1}: {score} (Passing)")
+# Output shows only students with score >= 60
+
+# While loop example: convergence check simulation
+print("\n=== Simulating Convergence Check ===")
+current_loss = 1.0
+iteration = 0
+max_iterations = 10
+tolerance = 0.01
+
+while current_loss > tolerance and iteration < max_iterations:
+    # Simulate loss decreasing (in real ML, this would be computed)
+    current_loss = current_loss * 0.7
+    iteration += 1
+    print(f"Iteration {iteration}: Loss = {current_loss:.4f}")
+
+if current_loss <= tolerance:
+    print(f"✓ Converged after {iteration} iterations!")
+else:
+    print(f"✗ Did not converge within {max_iterations} iterations")
+# Output: ✓ Converged after 7 iterations!
+```
+
+### Walkthrough
+
+**Lines 1-5:** A list of 15 exam scores is created. Lists (covered in detail in Section 3) are ordered sequences enclosed in square brackets `[]`. Here, each score represents one student's performance.
+
+**Lines 13-16:** Counter variables are initialized to 0. These track how many students fall into each category. The `=` operator assigns values; `+=` is shorthand for `count = count + 1`.
+
+**Lines 18-31:** The `for` loop iterates over each score. The `enumerate()` function returns both the index (`i`) and value (`score`) for each item. This is more elegant than manually tracking indices.
+
+**Lines 20-29:** The `if/elif/else` structure implements the decision tree. Python evaluates conditions top-to-bottom, executing only the first matching block:
+- `if score >= 85:` checks first condition
+- `elif score >= 60:` checks second condition (only if first was False)
+- `else:` catches all remaining cases (score < 60)
+
+Notice the indentation: all code inside each block is indented 4 spaces. The `count_excellence += 1` line increments the counter using the augmented assignment operator.
+
+**Lines 33-40:** Summary statistics are computed and displayed. The expression `count_excellence/len(scores)*100` calculates the percentage. The format specifier `:.1f` displays one decimal place.
+
+**Lines 42-44:** Pass rate is computed by combining excellence and pass categories. In data science, this kind of aggregation is common when evaluating model performance.
+
+**Lines 46-55:** The `break` statement exits a loop immediately. Here, a search for a perfect score (100) is performed, and if found, the loop would exit early rather than checking remaining scores. Since the data has no 100s, the loop completes and `found_perfect` remains False.
+
+**Lines 57-62:** Logical operators `and` and `or` combine conditions. `score >= 90 and score <= 100` means both conditions must be True. Python also supports chained comparisons: `90 <= score <= 100` (more readable).
+
+**Lines 64-70:** The `continue` statement skips the rest of the current iteration and moves to the next one. Here, students with failing scores are skipped, printing only passing students. This is useful for filtering.
+
+**Lines 72-87:** A `while` loop repeats as long as its condition is True. This simulates gradient descent convergence: checking both that loss is above tolerance AND the max iterations hasn't been exceeded (preventing infinite loops).
+
+In real ML, loss would be computed from model predictions, but here it's simulated decreasing by 30% each iteration (`current_loss * 0.7`). The condition `current_loss > tolerance and iteration < max_iterations` uses the `and` operator—both must be True to continue.
+
+**Lines 85-88:** After the loop, which condition caused exit is checked. If `current_loss <= tolerance`, convergence was successful. Otherwise, max iterations was hit without converging. This pattern is common in optimization algorithms.
+
+### Key Insights from Examples 2
+
+1. **Indentation is syntax, not style:** Four spaces define code blocks. Incorrect indentation changes meaning or causes errors. Enable "show whitespace" in the editor to visualize this.
+
+2. **if/elif/else order matters:** Python checks conditions sequentially, executing only the first True block. Order from most specific to most general.
+
+3. **for loops iterate over sequences:** The pattern `for item in sequence:` is ubiquitous in Python. Use `enumerate()` when both index and value are needed.
+
+4. **while loops need guaranteed termination:** Always ensure the condition eventually becomes False. Include a max iteration count as a safety mechanism (common in ML algorithms).
+
+5. **break and continue control loop flow:** `break` exits entirely; `continue` skips to next iteration. Use sparingly for readability.
+
+## Section 3: Data Structures—Lists
+
+### Why Lists Matter
+
+Lists are Python's most versatile data structure—ordered, mutable collections that can hold any type of data. In data science, lists are the precursor to NumPy arrays: before loading data into a powerful array structure, lists are often used to organize feature names, store iteration results, or collect samples. Understanding lists deeply prepares for the vectorized operations in Chapter 6.
+
+### Intuition: Lists as Shopping Carts
+
+Think of a Python list as a shopping cart at a grocery store. It's possible to:
+- **Add items:** `cart.append("milk")`
+- **Remove items:** `cart.remove("bread")`
+- **Check contents:** `cart[0]` (first item)
+- **Count items:** `len(cart)`
+- **Rearrange:** `cart.sort()`
+
+The cart maintains order (first item in is at position 0), and contents can be modified freely (mutable). Each position has an index (starting from 0), and items can be accessed by their position.
+
+### Zero-Based Indexing (CRITICAL CONCEPT)
+
+Python uses **zero-based indexing:** the first element is at index 0, not 1. This differs from human counting but has deep technical reasons:
+
+**Why zero-based?**
+1. **Memory offset:** Index represents distance from starting address: `address = base + (index * size)`
+2. **Elegant slicing:** With 0-based indexing, `a[0:n]` means "first n elements" and `a[i:i+n]` means "n elements starting at i"
+3. **Historical precedent:** C (Python's implementation language) uses 0-based indexing
+
+**Indexing notation:**
+```
+List:     [10, 20, 30, 40, 50]
+Index:      0   1   2   3   4
+Negative:  -5  -4  -3  -2  -1
+```
+
+Negative indices count from the end: `-1` is the last element, `-2` is second-to-last, etc.
+
+
+![Zero-Based Indexing](diagrams/zero_based_indexing.png)
+### List Operations
+
+**Creating lists:**
+```python
+features = [2.3, 1.8, 3.1]           # Literal
+empty = []                            # Empty list
+from_range = list(range(10))         # [0, 1, 2, ..., 9]
+```
+
+**Accessing elements:**
+```python
+first = features[0]      # 2.3
+last = features[-1]      # 3.1
+```
+
+**Slicing (extracting sublists):**
+```python
+features[start:end:step]  # General form
+features[1:3]             # [1.8, 3.1] (indices 1 and 2, NOT 3)
+features[:2]              # [2.3, 1.8] (first 2 elements)
+features[1:]              # [1.8, 3.1] (from index 1 onward)
+```
+
+
+![List Slicing](diagrams/list_slicing.png)
+**Modifying lists (mutable):**
+```python
+features.append(2.7)      # Add to end
+features.extend([4.0, 3.5])  # Add multiple
+features.insert(1, 1.5)   # Insert at index 1
+features.remove(3.1)      # Remove first occurrence of value
+item = features.pop(2)    # Remove and return by index
+```
+
+**List comprehensions (elegant transformations):**
+```python
+squares = [x**2 for x in range(10)]
+filtered = [x for x in data if x > threshold]
+```
+
+## Examples 3: Working with Lists for Data Operations
+
+```python
+# List Operations for Data Manipulation
+# Simulating feature values for analysis
+
+# Create list representing 10 feature measurements
+features = [2.3, 1.8, 3.1, 2.7, 4.0, 1.5, 3.8, 2.1, 3.5, 2.9]
+
+print("=== Original Feature Values ===")
+print(f"Features: {features}")
+print(f"Number of features: {len(features)}")
+print(f"Type: {type(features)}")
+
+# Basic statistics using built-in functions
+min_value = min(features)
+max_value = max(features)
+total = sum(features)
+mean = total / len(features)
+
+print(f"\n=== Summary Statistics ===")
+print(f"Min: {min_value:.2f}")
+print(f"Max: {max_value:.2f}")
+print(f"Mean: {mean:.2f}")
+# Output: Min: 1.50, Max: 4.00, Mean: 2.77
+
+# Indexing and slicing
+print(f"\n=== Indexing Examples ===")
+print(f"First feature: features[0] = {features[0]}")
+print(f"Last feature: features[-1] = {features[-1]}")
+print(f"Third feature: features[2] = {features[2]}")
+# Output: First feature: features[0] = 2.3
+
+# Slicing for train/test split (first 7 for train, last 3 for test)
+train_features = features[:7]  # Indices 0-6
+test_features = features[7:]   # Indices 7-9
+
+print(f"\n=== Train/Test Split ===")
+print(f"Train ({len(train_features)} samples): {train_features}")
+print(f"Test ({len(test_features)} samples): {test_features}")
+# Output: Train (7 samples): [2.3, 1.8, 3.1, 2.7, 4.0, 1.5, 3.8]
+
+# Computing standard deviation manually
+squared_diffs = [(x - mean)**2 for x in features]
+variance = sum(squared_diffs) / len(features)
+std_dev = variance ** 0.5  # Square root
+
+print(f"\n=== Variability ===")
+print(f"Variance: {variance:.4f}")
+print(f"Standard deviation: {std_dev:.4f}")
+# Output: Variance: 0.5841, Standard deviation: 0.7643
+
+# List comprehension: Normalize features to [0, 1] range (min-max scaling)
+# Formula: (x - min) / (max - min)
+normalized = [(x - min_value) / (max_value - min_value) for x in features]
+
+print(f"\n=== Normalized Features (Min-Max Scaling) ===")
+for i, (original, norm) in enumerate(zip(features, normalized)):
+    print(f"Feature {i}: {original:.2f} → {norm:.4f}")
+# Output shows each value scaled to [0, 1]
+
+# List comprehension with condition: Filter outliers
+threshold = mean + 2 * std_dev  # Values beyond 2 std devs from mean
+outliers = [x for x in features if x > threshold]
+normal_values = [x for x in features if x <= threshold]
+
+print(f"\n=== Outlier Detection (> {threshold:.2f}) ===")
+print(f"Outliers: {outliers}")
+print(f"Normal values: {normal_values}")
+# Output: Outliers: [] or [4.0] depending on calculation
+
+# Creating index-value pairs (useful for tracking)
+indexed_features = [(i, val) for i, val in enumerate(features)]
+print(f"\n=== Indexed Features ===")
+for idx, val in indexed_features[:3]:  # Show first 3
+    print(f"Index {idx}: {val}")
+# Output: Index 0: 2.3, Index 1: 1.8, Index 2: 3.1
+
+# Sorting (creates new list, doesn't modify original)
+sorted_features = sorted(features)
+sorted_desc = sorted(features, reverse=True)
+
+print(f"\n=== Sorting ===")
+print(f"Original: {features}")
+print(f"Ascending: {sorted_features}")
+print(f"Descending: {sorted_desc}")
+# Output shows three different lists
+
+# Demonstrating mutability: modifying list in place
+features_copy = features.copy()  # Create independent copy
+features_copy.append(5.2)
+features_copy[0] = 999.9
+
+print(f"\n=== Mutability Demonstration ===")
+print(f"Original features: {features}")
+print(f"Modified copy: {features_copy}")
+# Output shows original is unchanged, copy is modified
+
+# List methods for data management
+print(f"\n=== Membership Testing ===")
+print(f"Is 3.1 in features? {3.1 in features}")
+print(f"Is 10.0 in features? {10.0 in features}")
+# Output: Is 3.1 in features? True
+
+# Count occurrences
+count_27 = features.count(2.7)
+print(f"Occurrences of 2.7: {count_27}")
+# Output: Occurrences of 2.7: 1
+
+# Finding index of value
+try:
+    position = features.index(3.1)
+    print(f"First occurrence of 3.1 at index: {position}")
+except ValueError:
+    print("Value not found in list")
+# Output: First occurrence of 3.1 at index: 2
+```
+
+### Walkthrough
+
+**Lines 1-10:** A list of 10 numeric values representing feature measurements is created. The `len()` function returns list length. The `type()` function confirms this is a `list` object.
+
+**Lines 12-21:** Python's built-in functions `min()`, `max()`, and `sum()` work on lists. Mean is computed manually by dividing sum by count. These operations preview what NumPy will do much faster on arrays.
+
+**Lines 23-29:** Indexing uses square brackets: `features[0]` retrieves the first element. Negative indices count from end: `features[-1]` is last element. Remember: first index is 0, not 1!
+
+**Lines 31-37:** Slicing extracts sublists. The syntax `[start:end]` includes `start` but excludes `end`. So `features[:7]` gets indices 0-6 (7 elements), and `features[7:]` gets index 7 onward. This implements a 70/30 train-test split.
+
+**Lines 39-46:** Standard deviation is computed manually using a list comprehension. The expression `[(x - mean)**2 for x in features]` creates a new list where each element is the squared difference from mean. This demonstrates how comprehensions elegantly transform data. Then sum, divide by count (variance), and take square root (std dev).
+
+**Lines 48-53:** Min-max scaling transforms features to [0, 1] range. The formula `(x - min) / (max - min)` maps the smallest value to 0, largest to 1, and others proportionally. The list comprehension applies this to every element in one line. The `zip()` function pairs original and normalized values for display.
+
+**Lines 55-61:** List comprehensions can include conditions. The `if` clause filters elements: `[x for x in features if x > threshold]` keeps only values exceeding the threshold. This separates outliers (beyond 2 standard deviations) from normal values—a common preprocessing step.
+
+**Lines 63-68:** The `enumerate()` function returns index-value pairs. The comprehension `[(i, val) for i, val in enumerate(features)]` creates tuples of `(index, value)`. This is useful for tracking which sample corresponds to which value.
+
+**Lines 70-76:** The `sorted()` function returns a new sorted list without modifying the original. The parameter `reverse=True` sorts descending. Note the difference: `sorted(list)` creates new list; `list.sort()` modifies in place.
+
+**Lines 78-85:** Lists are **mutable**—they can be changed after creation. However, assignment like `features_copy = features` creates another reference to the *same* list. To create an independent copy, use `.copy()`. This is demonstrated by modifying the copy with `.append()` and index assignment, showing the original remains unchanged.
+
+**Lines 87-92:** The `in` operator tests membership: `3.1 in features` returns True if 3.1 exists in the list. This is an O(n) operation (checks sequentially), but it's very readable.
+
+**Lines 94-96:** The `.count()` method returns how many times a value appears. Useful for checking duplicate samples or category frequencies.
+
+**Lines 98-103:** The `.index()` method finds the first index where a value appears. It raises `ValueError` if the value doesn't exist, so it's wrapped in a `try/except` block (basic error handling). For now, understand that this catches potential errors gracefully.
+
+### Key Insights from Examples 3
+
+1. **Lists are the gateway to NumPy arrays:** Every operation here (min, max, mean, normalization) will be much faster on NumPy arrays, but the logic is identical. Understanding lists prepares for vectorization.
+
+2. **Slicing is powerful and efficient:** The `[start:end:step]` syntax efficiently extracts sublists. For train-test splits before learning scikit-learn's tools, slicing is essential.
+
+3. **List comprehensions are Pythonic:** The pattern `[expression for item in iterable if condition]` is faster and more readable than equivalent loops for simple transformations.
+
+4. **Zero-based indexing requires practice:** The first element is `[0]`, the last is `[-1]`, and `[start:end]` excludes `end`. This is consistent but feels unnatural initially.
+
+5. **Mutability matters:** Lists can be modified after creation. This is powerful but requires understanding references. When an independent copy is wanted, use `.copy()`.
+
+6. **Lists will become arrays:** In Chapter 6, `import numpy as np; arr = np.array(features)` converts a list to a NumPy array, unlocking vectorized operations that are 10-100× faster.
+
+## Section 4: Data Structures—Dictionaries
+
+### Why Dictionaries Matter
+
+Dictionaries are Python's implementation of associative arrays—they map unique keys to values for fast lookup (O(1) average case). In data science, dictionaries organize configuration settings, dataset metadata, hyperparameters, and categorical mappings. When seeing JSON data from APIs or config files, dictionary-like structures are being used.
+
+### Intuition: Dictionaries as Contact Lists
+
+A dictionary is like a phone's contact list: look up a person by name (key) and get their phone number (value). No need to remember the position—just the name.
+
+```
+Contact List (Dictionary):
+"Alice" → "555-1234"
+"Bob"   → "555-5678"
+"Charlie" → "555-9012"
+```
+
+**Key features:**
+- **Keys must be unique:** No two contacts named "Alice"
+- **Keys must be immutable:** Use strings, numbers, or tuples (not lists)
+- **Values can be anything:** Numbers, strings, lists, even other dictionaries
+- **Fast lookup:** Finding Alice's number is instant, regardless of contact list size
+
+
+![Dictionary Structure](diagrams/dictionary_structure.png)
+### Dictionary Operations
+
+**Creating dictionaries:**
+```python
+config = {"learning_rate": 0.01, "epochs": 100}  # Literal
+empty = {}                                        # Empty dict
+from_pairs = dict([("a", 1), ("b", 2)])         # From pairs
+```
+
+**Accessing values:**
+```python
+lr = config["learning_rate"]           # Direct access (KeyError if missing)
+lr = config.get("learning_rate", 0.1)  # Safe access with default
+```
+
+**Adding/updating:**
+```python
+config["batch_size"] = 32   # Add new key-value pair
+config["epochs"] = 200      # Update existing value
+```
+
+**Iteration:**
+```python
+for key in config:                      # Iterate over keys
+for value in config.values():           # Iterate over values
+for key, value in config.items():       # Iterate over pairs
+```
+
+**Checking existence:**
+```python
+if "epochs" in config:   # True if key exists
+```
+
+## Examples 4: Dictionaries for Dataset Metadata
+
+```python
+# Dictionaries for Dataset Configuration and Metadata
+# Simulating metadata structure similar to sklearn datasets
+
+# Create dictionary with dataset metadata (mimicking Iris dataset)
+iris_metadata = {
+    "name": "Iris",
+    "n_samples": 150,
+    "n_features": 4,
+    "feature_names": ["sepal_length", "sepal_width", "petal_length", "petal_width"],
+    "n_classes": 3,
+    "class_names": ["setosa", "versicolor", "virginica"],
+    "source": "UCI Machine Learning Repository"
+}
+
+print("=== Dataset Metadata ===")
+print(f"Dataset: {iris_metadata['name']}")
+print(f"Samples: {iris_metadata['n_samples']}")
+print(f"Features: {iris_metadata['n_features']}")
+print(f"Classes: {iris_metadata['n_classes']}")
+# Output: Dataset: Iris, Samples: 150, Features: 4, Classes: 3
+
+# Accessing nested structures (list inside dict)
+print(f"\n=== Feature Names ===")
+for i, feature in enumerate(iris_metadata["feature_names"]):
+    print(f"Feature {i}: {feature}")
+# Output: Feature 0: sepal_length, Feature 1: sepal_width, etc.
+
+# Safe access with .get() method (avoids KeyError)
+target_names = iris_metadata.get("target_names", "Not specified")
+description = iris_metadata.get("description", "No description available")
+
+print(f"\n=== Safe Access Examples ===")
+print(f"Target names: {target_names}")
+print(f"Description: {description}")
+# Output: Target names: Not specified (key doesn't exist)
+
+# Adding new metadata
+iris_metadata["date_loaded"] = "2026-02-28"
+iris_metadata["train_test_split"] = {"train": 120, "test": 30}
+
+print(f"\n=== Updated Metadata ===")
+print(f"Date loaded: {iris_metadata['date_loaded']}")
+print(f"Split: {iris_metadata['train_test_split']}")
+# Output: Date loaded: 2026-02-28
+
+# Modifying existing values
+iris_metadata["n_samples"] = 120  # Update after train-test split
+print(f"Training samples: {iris_metadata['n_samples']}")
+# Output: Training samples: 120
+
+# Iterating over all key-value pairs
+print(f"\n=== Complete Metadata Report ===")
+for key, value in iris_metadata.items():
+    # Format value for readability
+    if isinstance(value, list):
+        value_str = f"[{len(value)} items]"
+    elif isinstance(value, dict):
+        value_str = f"{{{len(value)} keys}}"
+    else:
+        value_str = str(value)
+    print(f"  {key}: {value_str}")
+# Output shows all metadata in formatted way
+
+# Checking membership
+print(f"\n=== Membership Tests ===")
+print(f"Has 'feature_names'? {'feature_names' in iris_metadata}")
+print(f"Has 'target'? {'target' in iris_metadata}")
+# Output: Has 'feature_names'? True, Has 'target'? False
+
+# Creating a hyperparameter configuration dictionary
+hyperparameters = {
+    "model_type": "RandomForest",
+    "n_estimators": 100,
+    "max_depth": 10,
+    "min_samples_split": 2,
+    "random_state": 42,
+    "class_weight": "balanced"
+}
+
+print(f"\n=== Model Configuration ===")
+for param, value in hyperparameters.items():
+    print(f"  {param}: {value}")
+
+# Using dictionary to map categories to numeric codes
+category_mapping = {
+    "setosa": 0,
+    "versicolor": 1,
+    "virginica": 2
+}
+
+# Simulating encoding categorical labels to numbers
+sample_labels = ["setosa", "versicolor", "setosa", "virginica", "versicolor"]
+encoded_labels = [category_mapping[label] for label in sample_labels]
+
+print(f"\n=== Category Encoding ===")
+print(f"Original: {sample_labels}")
+print(f"Encoded: {encoded_labels}")
+# Output: Original: ['setosa', 'versicolor', ...], Encoded: [0, 1, 0, 2, 1]
+
+# Creating nested dictionary for experiment tracking
+experiment_log = {
+    "experiment_1": {
+        "model": "LogisticRegression",
+        "accuracy": 0.89,
+        "training_time": 2.3,
+        "date": "2026-02-01"
+    },
+    "experiment_2": {
+        "model": "RandomForest",
+        "accuracy": 0.94,
+        "training_time": 15.7,
+        "date": "2026-02-15"
+    },
+    "experiment_3": {
+        "model": "SVM",
+        "accuracy": 0.91,
+        "training_time": 8.4,
+        "date": "2026-02-28"
+    }
+}
+
+# Finding best performing experiment
+print(f"\n=== Experiment Comparison ===")
+best_experiment = None
+best_accuracy = 0
+
+for exp_name, exp_data in experiment_log.items():
+    accuracy = exp_data["accuracy"]
+    print(f"{exp_name}: {exp_data['model']} → Accuracy: {accuracy:.2f}")
+
+    if accuracy > best_accuracy:
+        best_accuracy = accuracy
+        best_experiment = exp_name
+
+print(f"\nBest performing: {best_experiment} with {best_accuracy:.2f} accuracy")
+# Output: Best performing: experiment_2 with 0.94 accuracy
+
+# Dictionary methods summary
+print(f"\n=== Dictionary Methods ===")
+print(f"Keys: {list(hyperparameters.keys())[:3]}...")  # First 3 keys
+print(f"Values: {list(hyperparameters.values())[:3]}...")  # First 3 values
+print(f"Number of items: {len(hyperparameters)}")
+# Output shows dictionary contents and size
+```
+
+### Walkthrough
+
+**Lines 1-14:** A dictionary mimicking the metadata structure from `sklearn.datasets.load_iris()` is created. Keys are strings (`"name"`, `"n_samples"`), and values are mixed types: strings, integers, lists. Notice the use of curly braces `{}` and colon `:` separating keys from values.
+
+**Lines 16-21:** Accessing dictionary values uses square bracket notation: `iris_metadata["name"]` retrieves the value associated with key `"name"`. If the key doesn't exist, this raises `KeyError`.
+
+**Lines 23-27:** Nested data structures are common: `feature_names` is a list inside the dictionary. It's accessed like any value, then iterated over the list. This shows how dictionaries and lists compose naturally.
+
+**Lines 29-35:** The `.get()` method provides safe access: `dict.get(key, default)` returns the value if key exists, otherwise returns `default`. This prevents `KeyError` when accessing potentially missing keys—essential for robust code.
+
+**Lines 37-43:** Dictionaries are mutable. The syntax `dict[key] = value` either adds a new key-value pair (if key doesn't exist) or updates the value (if key exists). Here `date_loaded` and `train_test_split` are added, demonstrating that values can be any type (even other dictionaries).
+
+**Lines 45-48:** Updating an existing key uses the same syntax as adding. Here `n_samples` is updated from 150 to 120, perhaps after filtering to training set.
+
+**Lines 50-61:** The `.items()` method returns key-value pairs, perfect for iteration. The pattern `for key, value in dict.items():` is idiomatic Python. `isinstance()` is used to check value types and format output nicely, demonstrating introspection.
+
+**Lines 63-67:** The `in` operator tests key existence: `"feature_names" in iris_metadata` returns `True` if that key exists. This is O(1) on average—dictionaries use hash tables internally for fast lookup.
+
+**Lines 69-79:** A second dictionary for model hyperparameters is created. This pattern is ubiquitous in ML: passing configuration as a dict to training functions. Iterating with `.items()` displays all parameters.
+
+**Lines 81-93:** A practical use case: mapping category names to numeric codes. Many ML algorithms require numeric targets, so a dictionary is created that maps species names to integers (0, 1, 2). The list comprehension `[category_mapping[label] for label in sample_labels]` performs vectorized encoding—look up each label and replace with its code.
+
+**Lines 95-118:** Nested dictionaries organize complex data. Here, each experiment is a dictionary containing model details. A nested loop is used to find the best-performing experiment: iterate over experiments, compare accuracies, track the maximum. This demonstrates how dictionaries naturally represent structured data.
+
+**Lines 120-124:** Summary of useful dictionary methods: `.keys()` returns all keys, `.values()` returns all values, `.items()` returns pairs, and `len()` counts items. They're converted to lists for display (otherwise dict_keys objects are seen).
+
+### Key Insights from Examples 4
+
+1. **Dictionaries organize configuration:** Rather than scattered variables, group related settings in a dict. This makes code more maintainable and easier to pass around.
+
+2. **Nested structures model real data:** Real-world data is hierarchical (experiments contain models, datasets contain metadata). Dictionaries and lists compose naturally to represent this.
+
+3. **Use .get() for robustness:** Direct access `dict[key]` fails if key is missing. Use `dict.get(key, default)` when a key might not exist. This prevents crashes and makes code more defensive.
+
+4. **Dictionaries are mutable:** Like lists, dictionaries can be modified after creation. This is powerful but requires understanding that assigning a dict to another variable creates a reference, not a copy.
+
+5. **Fast lookup by key:** Dictionaries use hash tables, giving O(1) average lookup time. This makes them ideal for mappings (category encoding, configuration) where fast access by name is needed.
+
+6. **Keys must be immutable:** Strings, numbers, and tuples can be keys. Lists cannot (they're mutable and thus not hashable). This is a technical constraint but rarely a practical problem.
+
+7. **Dictionaries will inform DataFrames:** In pandas (Chapter 6), DataFrames can be thought of as dictionaries of columns, where each key is a column name and each value is a Series (array-like). Understanding dicts prepares for this.
+
+## Section 5: Functions—Organizing Reusable Code
+
+### Why Functions Matter
+
+Functions are the fundamental unit of code organization. They encapsulate logic into reusable, testable, documented units. In data science, functions wrap preprocessing steps, evaluation metrics, custom transformations, and model training procedures. Without functions, code would be repeated throughout projects, making bugs inevitable and maintenance impossible.
+
+### Intuition: Functions as Recipes
+
+A function is like a recipe in a cookbook:
+
+**Recipe: "Make Smoothie"**
+- **Ingredients (parameters):** fruit, liquid, ice
+- **Instructions (function body):** Blend ingredients for 30 seconds
+- **Final dish (return value):** Smoothie
+
+The same recipe can be used with different ingredients:
+- `make_smoothie("banana", "milk", 3)` → banana smoothie
+- `make_smoothie("strawberry", "yogurt", 5)` → strawberry smoothie
+
+The recipe (function) stays the same; only the inputs change. This reusability is the core value of functions.
+
+### Function Anatomy
+
+```python
+def function_name(parameters):
+    """
+    Docstring: What the function does, what it takes, what it returns.
+    """
+    # Function body: code that runs when function is called
+    result = # some computation
+    return result  # Output value (optional)
+```
+
+**Key components:**
+1. **`def` keyword:** Declares a function
+2. **Function name:** Descriptive, `snake_case` (e.g., `calculate_mean`)
+3. **Parameters:** Inputs (can have zero, one, or many)
+4. **Docstring:** Triple-quoted string documenting purpose (good practice)
+5. **Body:** Indented code that executes when called
+6. **`return` statement:** Specifies output (returns `None` if omitted)
+
+
+![Function Anatomy](diagrams/function_anatomy.png)
+### Function Features
+
+**Default parameters:**
+```python
+def greet(name, greeting="Hello"):
+    return f"{greeting}, {name}!"
+
+greet("Alice")              # Uses default: "Hello, Alice!"
+greet("Bob", "Hi")          # Custom: "Hi, Bob!"
+```
+
+**Keyword arguments:**
+```python
+result = calculate_score(weight=0.7, bias=0.3)  # Explicit, order-independent
+```
+
+**Scope (LEGB Rule):**
+Variables defined inside functions are **local**—they don't exist outside. Python searches for variables in this order:
+1. **L**ocal: Inside current function
+2. **E**nclosing: In enclosing function (nested functions)
+3. **G**lobal: Module level
+4. **B**uilt-in: Python's built-in namespace (e.g., `len`, `print`)
+
+## Examples 5: Functions for Reusable Data Operations
+
+```python
+# Functions for Reusable Data Science Operations
+# All imports at the top
+import math
+
+def calculate_statistics(data):
+    """
+    Calculate descriptive statistics for a list of numeric values.
+
+    Parameters:
+    -----------
+    data : list of float
+        Numeric measurements
+
+    Returns:
+    --------
+    dict : Dictionary containing mean, median, std, min, and max
+    """
+    if not data:  # Handle empty list
+        return {"error": "Empty data provided"}
+
+    n = len(data)
+    sorted_data = sorted(data)
+
+    # Mean
+    mean = sum(data) / n
+
+    # Median (middle value or average of two middle values)
+    if n % 2 == 1:
+        median = sorted_data[n // 2]
+    else:
+        median = (sorted_data[n // 2 - 1] + sorted_data[n // 2]) / 2
+
+    # Standard deviation (population)
+    squared_diffs = [(x - mean) ** 2 for x in data]
+    variance = sum(squared_diffs) / n
+    std = math.sqrt(variance)
+
+    # Min and max
+    min_val = min(data)
+    max_val = max(data)
+
+    return {
+        "mean": mean,
+        "median": median,
+        "std": std,
+        "min": min_val,
+        "max": max_val,
+        "count": n
+    }
+
+
+def normalize(data, method="minmax"):
+    """
+    Normalize data using specified method.
+
+    Parameters:
+    -----------
+    data : list of float
+        Values to normalize
+    method : str, optional (default="minmax")
+        Normalization method: "minmax" or "zscore"
+
+    Returns:
+    --------
+    list : Normalized values
+    """
+    if not data:
+        return []
+
+    if method == "minmax":
+        # Scale to [0, 1]: (x - min) / (max - min)
+        min_val = min(data)
+        max_val = max(data)
+
+        if max_val == min_val:  # Avoid division by zero
+            return [0.5] * len(data)  # All values same → map to 0.5
+
+        return [(x - min_val) / (max_val - min_val) for x in data]
+
+    elif method == "zscore":
+        # Standardize to mean=0, std=1: (x - μ) / σ
+        mean = sum(data) / len(data)
+        squared_diffs = [(x - mean) ** 2 for x in data]
+        variance = sum(squared_diffs) / len(data)
+        std = math.sqrt(variance)
+
+        if std == 0:  # Avoid division by zero
+            return [0.0] * len(data)
+
+        return [(x - mean) / std for x in data]
+
+    else:
+        raise ValueError(f"Unknown method: {method}. Use 'minmax' or 'zscore'.")
+
+
+def filter_outliers(data, threshold=2.0):
+    """
+    Remove outliers beyond threshold standard deviations from mean.
+
+    Parameters:
+    -----------
+    data : list of float
+        Values to filter
+    threshold : float, optional (default=2.0)
+        Number of standard deviations for outlier boundary
+
+    Returns:
+    --------
+    tuple : (filtered_data, outliers_removed)
+        filtered_data: List without outliers
+        outliers_removed: List of outlier values
+    """
+    if not data:
+        return ([], [])
+
+    # Calculate mean and std
+    mean = sum(data) / len(data)
+    squared_diffs = [(x - mean) ** 2 for x in data]
+    variance = sum(squared_diffs) / len(data)
+    std = math.sqrt(variance)
+
+    # Define outlier boundaries
+    lower_bound = mean - threshold * std
+    upper_bound = mean + threshold * std
+
+    # Separate normal values from outliers
+    filtered = [x for x in data if lower_bound <= x <= upper_bound]
+    outliers = [x for x in data if x < lower_bound or x > upper_bound]
+
+    return (filtered, outliers)
+
+
+def train_test_split_simple(data, train_ratio=0.8):
+    """
+    Split data into training and test sets.
+
+    Parameters:
+    -----------
+    data : list
+        Data to split
+    train_ratio : float, optional (default=0.8)
+        Proportion for training (0.0 to 1.0)
+
+    Returns:
+    --------
+    tuple : (train_data, test_data)
+    """
+    if not 0 < train_ratio < 1:
+        raise ValueError("train_ratio must be between 0 and 1")
+
+    if not data:
+        return ([], [])
+
+    split_index = int(len(data) * train_ratio)
+    train_data = data[:split_index]
+    test_data = data[split_index:]
+
+    return (train_data, test_data)
+
+
+# ============================================================
+# USING THE FUNCTIONS
+# ============================================================
+
+print("=== Function Demonstration: Data Preprocessing Pipeline ===\n")
+
+# Sample dataset: measurements with one outlier
+measurements = [12.1, 15.3, 14.2, 13.8, 99.9, 16.1, 14.5, 15.8, 13.2, 17.2]
+
+print("Original measurements:")
+print(measurements)
+print()
+
+# Step 1: Calculate initial statistics
+print("--- Step 1: Initial Statistics ---")
+stats = calculate_statistics(measurements)
+for key, value in stats.items():
+    if isinstance(value, float):
+        print(f"  {key}: {value:.2f}")
+    else:
+        print(f"  {key}: {value}")
+# Output: mean: 21.21, median: 14.85, std: 26.22, min: 12.10, max: 99.90
+
+print()
+
+# Step 2: Filter outliers (threshold=2.0 std devs)
+print("--- Step 2: Outlier Removal ---")
+cleaned, outliers = filter_outliers(measurements, threshold=2.0)
+print(f"Outliers removed: {outliers}")
+print(f"Cleaned data: {cleaned}")
+# Output: Outliers removed: [99.9]
+
+print()
+
+# Step 3: Statistics after cleaning
+print("--- Step 3: Statistics After Cleaning ---")
+stats_cleaned = calculate_statistics(cleaned)
+for key, value in stats_cleaned.items():
+    if isinstance(value, float):
+        print(f"  {key}: {value:.2f}")
+    else:
+        print(f"  {key}: {value}")
+# Output: mean: 14.68, median: 14.85, std: 1.49
+
+print()
+
+# Step 4: Normalize using min-max scaling
+print("--- Step 4: Min-Max Normalization ---")
+normalized_minmax = normalize(cleaned, method="minmax")
+print("Normalized (minmax):")
+for original, norm in zip(cleaned[:5], normalized_minmax[:5]):  # Show first 5
+    print(f"  {original:.2f} → {norm:.4f}")
+# Output shows values scaled to [0, 1]
+
+print()
+
+# Step 5: Normalize using z-score standardization
+print("--- Step 5: Z-Score Standardization ---")
+normalized_zscore = normalize(cleaned, method="zscore")
+print("Normalized (zscore):")
+for original, norm in zip(cleaned[:5], normalized_zscore[:5]):  # Show first 5
+    print(f"  {original:.2f} → {norm:.4f}")
+# Output shows values with mean≈0, std≈1
+
+print()
+
+# Step 6: Train-test split
+print("--- Step 6: Train-Test Split (80/20) ---")
+train_set, test_set = train_test_split_simple(cleaned, train_ratio=0.8)
+print(f"Training set ({len(train_set)} samples): {train_set}")
+print(f"Test set ({len(test_set)} samples): {test_set}")
+# Output: Training set (7 samples): [12.1, 15.3, ...], Test set (2 samples): [...]
+
+print()
+
+# Demonstrate default parameters
+print("--- Default Parameters Demonstration ---")
+default_split = train_test_split_simple(cleaned)  # Uses default 0.8
+custom_split = train_test_split_simple(cleaned, train_ratio=0.7)  # Custom 0.7
+print(f"Default split (80/20): {len(default_split[0])}/{len(default_split[1])}")
+print(f"Custom split (70/30): {len(custom_split[0])}/{len(custom_split[1])}")
+# Output: Default split (80/20): 7/2, Custom split (70/30): 6/3
+
+print()
+
+# Demonstrate keyword arguments
+print("--- Keyword Arguments Demonstration ---")
+result1 = normalize(cleaned, method="minmax")
+result2 = normalize(method="zscore", data=cleaned)  # Order doesn't matter with keywords
+print(f"Both calls valid with keyword args")
+# Output confirms both syntaxes work
+
+print()
+
+# Error handling demonstration
+print("--- Error Handling ---")
+try:
+    bad_result = normalize(cleaned, method="invalid")
+except ValueError as e:
+    print(f"Caught error: {e}")
+# Output: Caught error: Unknown method: invalid. Use 'minmax' or 'zscore'.
+
+print("\n=== Pipeline Complete ===")
+```
+
+### Walkthrough
+
+**Lines 1-48 (`calculate_statistics` function):**
+A function that computes five key statistics from a list is defined. The function signature `def calculate_statistics(data):` declares one parameter `data`.
+
+The docstring (lines 5-16) documents what the function does, what it expects, and what it returns. This is good practice—docstrings make functions self-documenting.
+
+Lines 18-19 handle the edge case of empty input, returning an error message. This demonstrates defensive programming.
+
+Lines 21-38 compute statistics step-by-step:
+- **Mean:** Sum divided by count
+- **Median:** Middle value (requires sorting first). If odd count, take middle element; if even, average two middle elements
+- **Standard deviation:** Compute squared differences from mean, average them (variance), then take square root
+- **Min/Max:** Built-in functions
+
+Line 40-47 return a dictionary containing all statistics. Returning a dict is better than returning five separate values—it's self-documenting and extensible.
+
+**Lines 51-95 (`normalize` function):**
+This function demonstrates default parameters and branching logic. The signature `def normalize(data, method="minmax"):` provides a default value for `method`. If the caller doesn't provide it, `"minmax"` is used.
+
+Lines 62-73 implement min-max scaling. Line 68 handles the edge case where all values are identical (max == min), which would cause division by zero. 0.5 is returned for all values—a reasonable midpoint.
+
+Lines 75-88 implement z-score standardization. Line 84 handles the zero-variance case.
+
+Lines 90-92 raise a `ValueError` if an unknown method is provided. This is better than silently failing—it gives the caller clear feedback about what went wrong.
+
+**Lines 98-131 (`filter_outliers` function):**
+This function demonstrates returning multiple values via a tuple. Line 119 returns `(filtered, outliers)`, which the caller can unpack: `clean, dirty = filter_outliers(data)`.
+
+Lines 111-118 compute outlier boundaries (mean ± threshold × std), then use list comprehensions to separate normal values from outliers. The condition `lower_bound <= x <= upper_bound` is a chained comparison—readable and Pythonic.
+
+**Lines 134-158 (`train_test_split_simple` function):**
+A simplified version of scikit-learn's `train_test_split()`. Lines 148-149 validate input: `train_ratio` must be between 0 and 1, otherwise raise `ValueError`.
+
+Lines 154-155 compute split index and slice the data. Note `int()` is used to convert the float result to an integer index.
+
+**Lines 161-263 (Using the functions):**
+This section demonstrates a complete preprocessing pipeline using all the functions:
+
+1. **Initial statistics (lines 173-181):** Call `calculate_statistics()` on raw data. The outlier (99.9) inflates mean and std significantly.
+
+2. **Outlier removal (lines 183-189):** Call `filter_outliers()` with threshold=2.0. The outlier is detected and removed because it's more than 2 standard deviations from the mean.
+
+3. **Statistics after cleaning (lines 191-199):** Recompute statistics. Mean and std are now much more reasonable, showing the outlier's impact.
+
+4. **Min-max normalization (lines 201-207):** Call `normalize()` with `method="minmax"`. All values are scaled to [0, 1] range. `zip()` is used to pair original and normalized values for display.
+
+5. **Z-score standardization (lines 209-216):** Call `normalize()` with `method="zscore"`. Values are standardized to mean≈0, std≈1.
+
+6. **Train-test split (lines 218-224):** Call `train_test_split_simple()` to divide cleaned data into train (7 samples, 80%) and test (2 samples, 20%).
+
+7. **Default parameters (lines 226-232):** Show that calling without `train_ratio` uses default 0.8, while providing explicit value overrides it.
+
+8. **Keyword arguments (lines 234-239):** Demonstrate that keyword arguments can be in any order: `normalize(cleaned, method="minmax")` and `normalize(method="zscore", data=cleaned)` are equivalent.
+
+9. **Error handling (lines 241-247):** Call `normalize()` with invalid method. The function raises `ValueError`, which is caught with `try/except`, preventing crash.
+
+### Key Insights from Examples 5
+
+1. **Functions enable code reuse:** Each operation is defined once and used multiple times with different inputs. Without functions, logic would be repeated throughout code, making bugs inevitable.
+
+2. **Docstrings document intent:** The triple-quoted strings describe what each function does, what it expects, and what it returns. This is invaluable for future reference and collaborators.
+
+3. **Default parameters add flexibility:** The `method="minmax"` default means callers can write `normalize(data)` for the common case or `normalize(data, method="zscore")` when needed. This makes functions both simple and powerful.
+
+4. **Return dictionaries for multiple values:** `calculate_statistics()` returns a dict with named keys, making the result self-documenting. Contrast with returning a tuple like `(mean, median, std, min, max)`—which value is which?
+
+5. **Handle edge cases defensively:** Empty lists, zero variance, division by zero, invalid inputs—all are handled gracefully. Defensive programming makes functions robust.
+
+6. **Scope keeps functions isolated:** Variables inside functions don't leak out. `mean` inside `calculate_statistics()` doesn't conflict with `mean` in `normalize()`. This modularity prevents bugs.
+
+7. **Functions are the building blocks of pipelines:** In real ML workflows, preprocessing functions are chained (load → clean → normalize → split → train → evaluate). The pattern shown here scales to production systems.
+
+8. **The DRY principle (Don't Repeat Yourself):** If writing similar code twice, extract it into a function. This reduces bugs (fix once, not everywhere) and improves maintainability.
+
+## Common Pitfalls
+
+### 1. Mixing Tabs and Spaces for Indentation
+
+**What beginners do wrong:**
+```python
+def greet(name):
+    print("Hello")  # 4 spaces
+	print(name)     # 1 tab (looks aligned but isn't!)
+```
+
+**Why it happens:** Some editors insert tabs, others insert spaces. They may *look* aligned but Python sees different characters and raises `IndentationError` or `TabError`.
+
+**What to do instead:**
+- Configure the editor to insert 4 spaces when Tab is pressed
+- Enable "show whitespace" to visualize spaces vs tabs
+- Use modern IDEs (VS Code, PyCharm) that enforce consistent indentation
+- PEP 8 standard: Always use 4 spaces, never tabs
+
+### 2. Forgetting That Indexing Starts at Zero
+
+**What beginners do wrong:**
+```python
+features = [2.3, 1.8, 3.1, 2.7]
+first_feature = features[1]  # Expects 2.3, gets 1.8
+```
+
+**Why it happens:** Human counting starts at 1. Python's zero-based indexing feels unnatural initially.
+
+**What to do instead:**
+- Remember: index 0 is first element, index -1 is last element
+- Use `enumerate()` to get both index and value: `for i, val in enumerate(features):`
+- For slicing, remember `[start:end]` excludes `end`: `[0:3]` gets indices 0, 1, 2 (not 3)
+- Practice: write out indices above data until it becomes second nature
+
+### 3. Confusing Mutable vs Immutable Types
+
+**What beginners do wrong:**
+```python
+def add_item(item, my_list=[]):
+    my_list.append(item)
+    return my_list
+
+print(add_item(1))  # [1]
+print(add_item(2))  # Expects [2], gets [1, 2]!
+```
+
+**Why it happens:** Default parameter `[]` is created once when function is defined, not each time it's called. Since lists are mutable, modifications persist across calls.
+
+**What to do instead:**
+- Use `None` as default for mutable types:
+```python
+def add_item(item, my_list=None):
+    if my_list is None:
+        my_list = []
+    my_list.append(item)
+    return my_list
+```
+- Understand: `int`, `float`, `str`, `tuple`, `bool` are immutable; `list`, `dict`, `set` are mutable
+- When copying lists, use `.copy()` or `list(original)`, not `new = old` (which creates a reference)
+
+### 4. Using `==` Instead of `=` for Assignment (or Vice Versa)
+
+**What beginners do wrong:**
+```python
+# Mistake 1: Using = in a condition
+if score = 100:  # SyntaxError: invalid syntax
+    print("Perfect!")
+
+# Mistake 2: Using == for assignment
+learning_rate == 0.01  # Does nothing! Should be =
+```
+
+**Why it happens:** In spoken language, "if score equals 100" sounds like assignment. The symbols look similar.
+
+**What to do instead:**
+- Remember: `=` assigns, `==` compares
+- Mnemonic: "single equals assigns, double equals asks"
+- Most modern editors highlight syntax errors immediately
+- For conditions, write `100 == score` (called "Yoda conditions")—if accidentally typing `100 = score`, an error results since assignment to a literal is impossible
+
+### 5. Forgetting Return Statements in Functions
+
+**What beginners do wrong:**
+```python
+def calculate_mean(data):
+    mean = sum(data) / len(data)
+    print(mean)  # Prints but doesn't return!
+
+result = calculate_mean([1, 2, 3, 4, 5])
+print(result * 2)  # TypeError: unsupported operand type(s) for *: 'NoneType' and 'int'
+```
+
+**Why it happens:** Beginners confuse printing with returning. The function displays output but returns `None` implicitly.
+
+**What to do instead:**
+- Use `return` to send values back to the caller:
+```python
+def calculate_mean(data):
+    mean = sum(data) / len(data)
+    return mean  # Returns the value
+```
+- Distinguish: `print()` is for human-readable output; `return` is for program-to-program communication
+- If debugging, both can be used: `print(f"Debug: {mean}")` followed by `return mean`
+
+## Practice Exercises
+
+### Practice 1: Basic Python Operations
+
+**Prompt:**
+Analyzing a small dataset requires computing basic statistics.
+
+**Given:**
+- Sample sizes: `n_train = 800`, `n_test = 200`
+- Learning rate: `alpha = 0.01`
+- Number of iterations: `max_iter = 100`
+
+1. Calculate total dataset size: `n_total = n_train + n_test`
+2. Calculate train/test split ratio: `train_ratio = n_train / n_total`
+3. Format and print: `"Training on {train_ratio:.1%} of data"`
+4. Calculate total parameter updates: `updates = n_train * max_iter`
+5. Check if using small learning rate: `is_small = alpha < 0.05` (boolean)
+6. Create a configuration dictionary with all these values
+7. Print the dictionary in a readable format using a loop
+
+**Expected output:**
+```
+Training on 80.0% of data
+Total parameter updates: 80000
+Using small learning rate: True
+Configuration: n_train=800, n_test=200, alpha=0.01, ...
+```
+
+**Checks understanding of:** Variables, arithmetic, f-strings, booleans, dictionaries, loops
+
+---
+
+### Practice 2: Data Filtering and Transformation
+
+**Prompt:**
+A list of feature importance scores from a model needs analysis.
+
+**Given:**
+```python
+importance_scores = [0.23, 0.05, 0.18, 0.02, 0.31, 0.08, 0.42, 0.12, 0.04, 0.15]
+feature_names = ["age", "income", "education", "zip", "balance", "duration",
+                 "campaign", "pdays", "previous", "job"]
+```
+
+1. Calculate mean importance: `sum(importance_scores) / len(importance_scores)`
+2. Find the maximum importance score and its index using `max()` and `.index()`
+3. Use a loop to print each feature with its importance score formatted to 2 decimals
+4. Use a list comprehension to create a list of "important" features (score >= 0.15)
+5. Create a dictionary mapping feature names to importance scores using `zip()`
+6. Use a loop to find and print the top 3 most important features (hint: sort first)
+7. Count how many features are "low importance" (score < 0.10)
+8. Create a filtered dictionary containing only features with score >= 0.15
+
+**Bonus:** Sort features by importance (descending) and print the ranked list
+
+**Expected output:**
+```
+Mean importance: 0.16
+Maximum importance: 0.42 at index 6 (campaign)
+age: 0.23
+income: 0.05
+...
+Important features (>=0.15): ['age', 'education', 'balance', 'campaign', 'job']
+Top 3: campaign (0.42), balance (0.31), age (0.23)
+Low importance count: 4
+```
+
+**Checks understanding of:** Lists, loops, conditionals, comprehensions, dictionaries, `zip()`, sorting
+
+---
+
+### Practice 3: Building a Simple Data Validation System
+
+**Prompt:**
+Create a set of functions to validate and preprocess data before training a model.
+
+**1. Write function: `validate_sample_count(n_samples, min_samples=30)`**
+- Check if `n_samples >= min_samples`
+- Return tuple: `(is_valid: bool, message: str)`
+- If valid: `"Sample count {n_samples} is sufficient"`
+- If invalid: `"Warning: Only {n_samples} samples, need at least {min_samples}"`
+
+**2. Write function: `validate_feature_range(feature_values, name, min_val=0, max_val=1)`**
+- Check if all values in `feature_values` list are in `[min_val, max_val]`
+- Return tuple: `(is_valid: bool, out_of_range_count: int)`
+- Count how many values are outside the range
+
+**3. Write function: `detect_outliers(values, threshold=3.0)`**
+- Calculate mean and standard deviation manually (use formulas from Course 1)
+- Find values that are more than `threshold` standard deviations from mean
+- Return list of `(index, value)` tuples for outliers
+
+**4. Write function: `create_train_test_split(data, train_ratio=0.8)`**
+- Split list into two lists (train and test)
+- Calculate split point: `int(len(data) * train_ratio)`
+- Return tuple: `(train_data, test_data)`
+- Handle edge cases (empty list, ratio out of `[0, 1]`)
+
+**5. Put it all together:**
+- Create test dataset: `ages = [25, 30, 28, 150, 35, 29, 31, 26, 27, 33, 24, 32]` (note the outlier 150)
+- Validate sample count (min 10 samples)
+- Detect outliers (threshold=2.0)
+- Remove outliers from list
+- Validate feature range (ages should be 0-120)
+- Split into train/test (80/20)
+- Print summary report with all validation results
+
+**Expected output:**
+```
+=== Validation Report ===
+Sample count: Valid (12 samples, minimum 10)
+Outliers detected (threshold=2.0): 1 outlier at index 3 (value=150)
+Data after outlier removal: 11 samples
+Feature range check: Valid (11/11 values in [0, 120])
+Train-test split: 8 train, 3 test samples
+```
+
+**Checks understanding of:** Functions, parameters, return values, default arguments, tuples, loops, conditionals, error handling, integration, edge cases
+
+## Solutions
+
+### Solution 1: Basic Python Operations
+
+```python
+# Given values
+n_train = 800
+n_test = 200
+alpha = 0.01
+max_iter = 100
+
+# 1. Calculate total dataset size
+n_total = n_train + n_test
+print(f"Total dataset size: {n_total}")
+# Output: Total dataset size: 1000
+
+# 2. Calculate train/test split ratio
+train_ratio = n_train / n_total
+print(f"Train ratio: {train_ratio}")
+# Output: Train ratio: 0.8
+
+# 3. Format and print with percentage
+print(f"Training on {train_ratio:.1%} of data")
+# Output: Training on 80.0% of data
+
+# 4. Calculate total parameter updates
+updates = n_train * max_iter
+print(f"Total parameter updates: {updates}")
+# Output: Total parameter updates: 80000
+
+# 5. Check if using small learning rate
+is_small = alpha < 0.05
+print(f"Using small learning rate: {is_small}")
+# Output: Using small learning rate: True
+
+# 6. Create configuration dictionary
+config = {
+    "n_train": n_train,
+    "n_test": n_test,
+    "n_total": n_total,
+    "alpha": alpha,
+    "max_iter": max_iter,
+    "train_ratio": train_ratio,
+    "total_updates": updates,
+    "is_small_alpha": is_small
+}
+
+# 7. Print dictionary in readable format
+print("\n=== Configuration ===")
+for key, value in config.items():
+    if isinstance(value, float) and value < 1:
+        print(f"{key}: {value:.4f}")
+    else:
+        print(f"{key}: {value}")
+# Output shows all configuration values formatted nicely
+```
+
+### Solution 2: Data Filtering and Transformation
+
+```python
+# Given data
+importance_scores = [0.23, 0.05, 0.18, 0.02, 0.31, 0.08, 0.42, 0.12, 0.04, 0.15]
+feature_names = ["age", "income", "education", "zip", "balance", "duration",
+                 "campaign", "pdays", "previous", "job"]
+
+# 1. Calculate mean importance
+mean_importance = sum(importance_scores) / len(importance_scores)
+print(f"Mean importance: {mean_importance:.2f}")
+# Output: Mean importance: 0.16
+
+# 2. Find maximum importance score and its index
+max_score = max(importance_scores)
+max_index = importance_scores.index(max_score)
+print(f"Maximum importance: {max_score:.2f} at index {max_index} ({feature_names[max_index]})")
+# Output: Maximum importance: 0.42 at index 6 (campaign)
+
+# 3. Print each feature with its importance score
+print("\n=== Feature Importance Scores ===")
+for i in range(len(feature_names)):
+    print(f"{feature_names[i]}: {importance_scores[i]:.2f}")
+# Output: age: 0.23, income: 0.05, etc.
+
+# 4. List comprehension for important features (score >= 0.15)
+important_features = [feature_names[i] for i in range(len(feature_names))
+                      if importance_scores[i] >= 0.15]
+print(f"\nImportant features (>=0.15): {important_features}")
+# Output: Important features (>=0.15): ['age', 'education', 'balance', 'campaign', 'job']
+
+# 5. Create dictionary mapping feature names to scores
+feature_importance_dict = dict(zip(feature_names, importance_scores))
+print(f"\nFeature importance dictionary created with {len(feature_importance_dict)} items")
+
+# 6. Find and print top 3 most important features
+# Create list of (name, score) tuples and sort by score descending
+feature_score_pairs = list(zip(feature_names, importance_scores))
+sorted_features = sorted(feature_score_pairs, key=lambda x: x[1], reverse=True)
+print("\n=== Top 3 Most Important Features ===")
+for i in range(3):
+    name, score = sorted_features[i]
+    print(f"{i+1}. {name}: {score:.2f}")
+# Output: Top 3: campaign (0.42), balance (0.31), age (0.23)
+
+# 7. Count low importance features (score < 0.10)
+low_importance_count = sum(1 for score in importance_scores if score < 0.10)
+print(f"\nLow importance count (<0.10): {low_importance_count}")
+# Output: Low importance count: 4
+
+# 8. Create filtered dictionary with only important features (>= 0.15)
+filtered_dict = {name: score for name, score in feature_importance_dict.items()
+                 if score >= 0.15}
+print(f"Filtered dictionary (>=0.15): {filtered_dict}")
+
+# Bonus: Sort features by importance (descending) and print ranked list
+print("\n=== Full Ranked List (Descending) ===")
+for rank, (name, score) in enumerate(sorted_features, start=1):
+    print(f"{rank}. {name}: {score:.2f}")
+```
+
+### Solution 3: Building a Simple Data Validation System
+
+```python
+import math
+
+def validate_sample_count(n_samples, min_samples=30):
+    """
+    Validate that sample count meets minimum requirement.
+
+    Parameters:
+    -----------
+    n_samples : int
+        Number of samples in dataset
+    min_samples : int, optional (default=30)
+        Minimum required samples
+
+    Returns:
+    --------
+    tuple : (is_valid: bool, message: str)
+    """
+    is_valid = n_samples >= min_samples
+    if is_valid:
+        message = f"Sample count {n_samples} is sufficient"
+    else:
+        message = f"Warning: Only {n_samples} samples, need at least {min_samples}"
+    return (is_valid, message)
+
+
+def validate_feature_range(feature_values, name, min_val=0, max_val=1):
+    """
+    Validate that all feature values are within specified range.
+
+    Parameters:
+    -----------
+    feature_values : list of float
+        Feature values to validate
+    name : str
+        Feature name for reporting
+    min_val : float, optional (default=0)
+        Minimum valid value
+    max_val : float, optional (default=1)
+        Maximum valid value
+
+    Returns:
+    --------
+    tuple : (is_valid: bool, out_of_range_count: int)
+    """
+    out_of_range_count = sum(1 for val in feature_values
+                             if val < min_val or val > max_val)
+    is_valid = out_of_range_count == 0
+    return (is_valid, out_of_range_count)
+
+
+def detect_outliers(values, threshold=3.0):
+    """
+    Detect outliers beyond threshold standard deviations from mean.
+
+    Parameters:
+    -----------
+    values : list of float
+        Values to check for outliers
+    threshold : float, optional (default=3.0)
+        Number of standard deviations for outlier boundary
+
+    Returns:
+    --------
+    list : List of (index, value) tuples for detected outliers
+    """
+    if not values:
+        return []
+
+    # Calculate mean
+    mean = sum(values) / len(values)
+
+    # Calculate standard deviation
+    squared_diffs = [(x - mean) ** 2 for x in values]
+    variance = sum(squared_diffs) / len(values)
+    std = math.sqrt(variance)
+
+    # Find outliers
+    outliers = []
+    for i, val in enumerate(values):
+        if abs(val - mean) > threshold * std:
+            outliers.append((i, val))
+
+    return outliers
+
+
+def create_train_test_split(data, train_ratio=0.8):
+    """
+    Split data into training and test sets.
+
+    Parameters:
+    -----------
+    data : list
+        Data to split
+    train_ratio : float, optional (default=0.8)
+        Proportion for training (0.0 to 1.0)
+
+    Returns:
+    --------
+    tuple : (train_data, test_data)
+    """
+    # Validate train_ratio
+    if not 0 < train_ratio < 1:
+        raise ValueError("train_ratio must be between 0 and 1")
+
+    # Handle empty list
+    if not data:
+        return ([], [])
+
+    # Calculate split point and split data
+    split_index = int(len(data) * train_ratio)
+    train_data = data[:split_index]
+    test_data = data[split_index:]
+
+    return (train_data, test_data)
+
+
+# ============================================================
+# PUT IT ALL TOGETHER
+# ============================================================
+
+print("=== Validation Report ===\n")
+
+# Create test dataset with outlier
+ages = [25, 30, 28, 150, 35, 29, 31, 26, 27, 33, 24, 32]
+
+# Step 1: Validate sample count (min 10 samples)
+is_valid, message = validate_sample_count(len(ages), min_samples=10)
+print(f"Sample count: {'Valid' if is_valid else 'Invalid'} ({message})")
+
+# Step 2: Detect outliers (threshold=2.0)
+outliers = detect_outliers(ages, threshold=2.0)
+if outliers:
+    print(f"Outliers detected (threshold=2.0): {len(outliers)} outlier(s)")
+    for idx, val in outliers:
+        print(f"  - Index {idx}, value={val}")
+else:
+    print("Outliers detected (threshold=2.0): None")
+
+# Step 3: Remove outliers from list
+outlier_indices = [idx for idx, val in outliers]
+ages_cleaned = [val for i, val in enumerate(ages) if i not in outlier_indices]
+print(f"Data after outlier removal: {len(ages_cleaned)} samples")
+
+# Step 4: Validate feature range (ages should be 0-120)
+is_valid_range, out_of_range = validate_feature_range(
+    ages_cleaned, "age", min_val=0, max_val=120
+)
+print(f"Feature range check: {'Valid' if is_valid_range else 'Invalid'} "
+      f"({len(ages_cleaned)-out_of_range}/{len(ages_cleaned)} values in [0, 120])")
+
+# Step 5: Split into train/test (80/20)
+train_set, test_set = create_train_test_split(ages_cleaned, train_ratio=0.8)
+print(f"Train-test split: {len(train_set)} train, {len(test_set)} test samples")
+
+print("\n=== Validation Complete ===")
+print(f"Final training data: {train_set}")
+print(f"Final test data: {test_set}")
+```
+
+## Key Takeaways
+
+- **Python transforms math into code:** The variables, operators, and control structures covered directly implement the mathematical concepts from Course 1. Variables store *n*, α, **X**; functions compute means and standard deviations; loops iterate over samples.
+
+- **Indentation is syntax, not style:** Python uses whitespace to define code blocks. Four spaces is the standard. Incorrect indentation changes program logic or causes errors. This is unique to Python and takes practice to internalize.
+
+- **Zero-based indexing requires mindfulness:** The first element is at index 0, the last at index -1. Slicing `[start:end]` excludes `end`. This convention has deep technical reasons and enables elegant slicing patterns.
+
+- **Data structures organize information efficiently:** Lists store ordered sequences (future NumPy arrays), dictionaries map keys to values (future DataFrames and configs), tuples hold immutable data, and sets track unique elements. Choosing the right structure makes code clearer and faster.
+
+- **Functions are the unit of reusability:** Every piece of logic used twice should be a function. Functions with descriptive names, docstrings, and default parameters are self-documenting and maintainable. This is how professional data science code is organized.
+
+- **Dynamic typing is powerful but requires awareness:** Python infers types automatically, making code concise. But the type each variable holds must be tracked to avoid `TypeError`. Use `type()` for debugging and consider type hints for documentation.
+
+- **Errors are feedback, not failures:** Reading tracebacks bottom-up reveals exactly what went wrong and where. Learn to embrace error messages—they guide to solutions. Every programmer encounters errors constantly; the skill is interpreting them quickly.
+
+- **Modern Python idioms improve readability:** F-strings (`f"{var}"`) for formatting, list comprehensions (`[x**2 for x in data]`) for transformations, `enumerate()` for index-value pairs, and `.get()` for safe dict access are Pythonic patterns that make code both elegant and efficient.
+
+- **These fundamentals scale to production systems:** The same loops, lists, and functions practiced here are used in systems processing billions of data points. These are not toy examples—these are the real tools used by data scientists at Google, Netflix, and research institutions worldwide.
+
+- **Next step: NumPy and pandas:** In Chapter 6, lists become arrays (vectorized operations 100× faster), dictionaries inform DataFrames (structured data manipulation), and functions compose into pipelines. Every concept here is a foundation for what comes next.

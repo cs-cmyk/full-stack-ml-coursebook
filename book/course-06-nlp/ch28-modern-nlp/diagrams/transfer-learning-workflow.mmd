@@ -1,0 +1,42 @@
+flowchart TD
+    Start([Start]) --> PreData["<b>Pre-training Data</b><br/>Billions of words<br/>Wikipedia, Books, Web<br/>Unlabeled Text"]
+
+    PreData --> PreTrain["<b>Pre-training Phase</b><br/>Self-supervised Learning<br/>• BERT: Mask words, predict them<br/>• GPT: Predict next word<br/>• T5: Text-to-text tasks"]
+
+    PreTrain --> PreModel["<b>Pre-trained Model</b><br/>General Language Understanding<br/>• Grammar<br/>• Facts<br/>• Reasoning patterns<br/>• Word relationships"]
+
+    PreModel --> Save["💾 Save Model Weights<br/>θ_pretrain"]
+
+    Save --> FTData["<b>Fine-tuning Data</b><br/>Thousands of examples<br/>Task-specific labels<br/>• Sentiment: (review, positive/negative)<br/>• NER: (text, entity tags)<br/>• QA: (question, context, answer)"]
+
+    FTData --> AddHead["<b>Add Task Head</b><br/>Classification layer for labels<br/>Initialize from θ_pretrain"]
+
+    AddHead --> FineTune["<b>Fine-tuning Phase</b><br/>Supervised Learning<br/>• Low learning rate (2e-5)<br/>• Few epochs (2-5)<br/>• Update all weights"]
+
+    FineTune --> FTModel["<b>Fine-tuned Model</b><br/>θ_task<br/>Specialized for target task<br/>Retains general knowledge"]
+
+    FTModel --> Deploy["🚀 Deploy<br/>Production Use"]
+
+    Deploy --> End([End])
+
+    %% Styling
+    style Start fill:#E8F5E9,stroke:#4CAF50
+    style PreData fill:#E3F2FD,stroke:#2196F3
+    style PreTrain fill:#2196F3,stroke:#1976D2,color:#fff
+    style PreModel fill:#E3F2FD,stroke:#2196F3
+    style Save fill:#FFF3E0,stroke:#FF9800
+    style FTData fill:#FCE4EC,stroke:#E91E63
+    style AddHead fill:#F3E5F5,stroke:#9C27B0
+    style FineTune fill:#9C27B0,stroke:#7B1FA2,color:#fff
+    style FTModel fill:#F3E5F5,stroke:#9C27B0
+    style Deploy fill:#4CAF50,stroke:#388E3C,color:#fff
+    style End fill:#E8F5E9,stroke:#4CAF50
+
+    %% Annotations
+    classDef annotation fill:#FFF,stroke:#666,stroke-dasharray: 5 5
+
+    Note1["⏱ Days/Weeks<br/>💰 $$$<br/>🔧 100s of GPUs"]:::annotation
+    Note2["⏱ Hours/Minutes<br/>💰 $<br/>🔧 1 GPU"]:::annotation
+
+    PreTrain -.-> Note1
+    FineTune -.-> Note2

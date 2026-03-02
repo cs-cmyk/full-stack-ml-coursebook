@@ -1,0 +1,25 @@
+# Agent logs
+*_log.txt
+*_log_*.txt
+*report.md
+
+# Reviews (internal process, not for public)
+reviews/
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Virtual environment
+ds-book-env/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Plans and research notes (internal)
+plan.md
+research_notes.md
+REVIEW_REPORT.md
+content.html

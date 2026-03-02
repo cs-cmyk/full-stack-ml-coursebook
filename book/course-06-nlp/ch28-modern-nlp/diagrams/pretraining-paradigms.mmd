@@ -1,0 +1,38 @@
+flowchart TB
+    subgraph BERT["BERT (Encoder-only)"]
+        B1["Input: The cat sat on the [MASK]"]
+        B2["Masked Language Modeling"]
+        B3["Predict: mat, floor, table"]
+        B4["Bidirectional Context ← →"]
+        B1 --> B2 --> B3
+        B4 -.-> B2
+    end
+
+    subgraph GPT["GPT (Decoder-only)"]
+        G1["Input: The cat sat on the"]
+        G2["Causal Language Modeling"]
+        G3["Predict: mat, floor, table"]
+        G4["Left Context Only ←"]
+        G1 --> G2 --> G3
+        G4 -.-> G2
+    end
+
+    subgraph T5["T5 (Encoder-Decoder)"]
+        T1["Input: translate English to French: Hello"]
+        T2["Sequence-to-Sequence"]
+        T3["Output: Bonjour"]
+        T4["Text-to-Text Framework"]
+        T1 --> T2 --> T3
+        T4 -.-> T2
+    end
+
+    BERT -->|Best for| U1["Understanding Tasks<br/>Classification, NER, QA"]
+    GPT -->|Best for| U2["Generation Tasks<br/>Text completion, Dialog"]
+    T5 -->|Best for| U3["Transformation Tasks<br/>Translation, Summarization"]
+
+    style BERT fill:#2196F3,stroke:#1976D2,color:#fff
+    style GPT fill:#4CAF50,stroke:#388E3C,color:#fff
+    style T5 fill:#FF9800,stroke:#F57C00,color:#fff
+    style U1 fill:#E3F2FD,stroke:#2196F3
+    style U2 fill:#E8F5E9,stroke:#4CAF50
+    style U3 fill:#FFF3E0,stroke:#FF9800

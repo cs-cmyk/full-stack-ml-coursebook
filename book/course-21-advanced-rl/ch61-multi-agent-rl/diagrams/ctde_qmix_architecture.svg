@@ -1,0 +1,138 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 700" style="max-width: 800px;">
+  <!-- Background -->
+  <rect width="800" height="700" fill="white"/>
+
+  <!-- Title -->
+  <text x="400" y="30" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#333">
+    Centralized Training, Decentralized Execution (CTDE - QMIX)
+  </text>
+
+  <!-- Training Phase Section -->
+  <text x="20" y="70" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#2196F3">
+    Training Phase (Centralized)
+  </text>
+  <rect x="20" y="80" width="760" height="320" fill="none" stroke="#2196F3" stroke-width="2" stroke-dasharray="5,5" rx="5"/>
+
+  <!-- Global State -->
+  <rect x="320" y="110" width="160" height="50" fill="#2196F3" stroke="#1976D2" stroke-width="2" rx="5"/>
+  <text x="400" y="138" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="white">
+    Global State s
+  </text>
+
+  <!-- Arrows from Global State to Agents -->
+  <line x1="350" y1="160" x2="150" y2="200" stroke="#607D8B" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="400" y1="160" x2="400" y2="200" stroke="#607D8B" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="450" y1="160" x2="650" y2="200" stroke="#607D8B" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- Agent 1 -->
+  <rect x="70" y="200" width="160" height="60" fill="#4CAF50" stroke="#388E3C" stroke-width="2" rx="5"/>
+  <text x="150" y="225" font-family="Arial, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="white">
+    Agent 1
+  </text>
+  <text x="150" y="245" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">
+    Observation o₁
+  </text>
+
+  <!-- Agent 2 -->
+  <rect x="320" y="200" width="160" height="60" fill="#4CAF50" stroke="#388E3C" stroke-width="2" rx="5"/>
+  <text x="400" y="225" font-family="Arial, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="white">
+    Agent 2
+  </text>
+  <text x="400" y="245" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">
+    Observation o₂
+  </text>
+
+  <!-- Agent n -->
+  <rect x="570" y="200" width="160" height="60" fill="#4CAF50" stroke="#388E3C" stroke-width="2" rx="5"/>
+  <text x="650" y="225" font-family="Arial, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="white">
+    Agent n
+  </text>
+  <text x="650" y="245" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">
+    Observation oₙ
+  </text>
+
+  <!-- Ellipsis -->
+  <text x="530" y="235" font-family="Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="#607D8B">
+    ⋯
+  </text>
+
+  <!-- Arrows to Q-networks -->
+  <line x1="150" y1="260" x2="150" y2="290" stroke="#607D8B" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="400" y1="260" x2="400" y2="290" stroke="#607D8B" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="650" y1="260" x2="650" y2="290" stroke="#607D8B" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- Q-networks -->
+  <rect x="70" y="290" width="160" height="50" fill="#FF9800" stroke="#F57C00" stroke-width="2" rx="5"/>
+  <text x="150" y="320" font-family="Arial, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="white">
+    Q₁(o₁, a₁)
+  </text>
+
+  <rect x="320" y="290" width="160" height="50" fill="#FF9800" stroke="#F57C00" stroke-width="2" rx="5"/>
+  <text x="400" y="320" font-family="Arial, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="white">
+    Q₂(o₂, a₂)
+  </text>
+
+  <rect x="570" y="290" width="160" height="50" fill="#FF9800" stroke="#F57C00" stroke-width="2" rx="5"/>
+  <text x="650" y="320" font-family="Arial, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="white">
+    Qₙ(oₙ, aₙ)
+  </text>
+
+  <!-- Arrows to Mixing Network -->
+  <line x1="150" y1="340" x2="300" y2="370" stroke="#607D8B" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="400" y1="340" x2="400" y2="370" stroke="#607D8B" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="650" y1="340" x2="500" y2="370" stroke="#607D8B" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- Global State arrow to Mixing Network -->
+  <path d="M 400 160 Q 750 240 720 340" stroke="#2196F3" stroke-width="2" fill="none" marker-end="url(#arrowhead-blue)"/>
+  <text x="720" y="250" font-family="Arial, sans-serif" font-size="11" fill="#2196F3">
+    state s
+  </text>
+
+  <!-- Mixing Network -->
+  <rect x="250" y="370" width="300" height="100" fill="#9C27B0" stroke="#7B1FA2" stroke-width="2" rx="5"/>
+  <text x="400" y="400" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="white">
+    Mixing Network
+  </text>
+  <text x="400" y="420" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">
+    Q_tot = f(Q₁, Q₂, ..., Qₙ; s)
+  </text>
+  <text x="400" y="440" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="white">
+    Monotonicity: ∂Q_tot/∂Qᵢ ≥ 0
+  </text>
+  <text x="400" y="455" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="white">
+    (non-negative weights)
+  </text>
+
+  <!-- Arrow to Q_tot -->
+  <line x1="400" y1="470" x2="400" y2="510" stroke="#607D8B" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- Q_tot -->
+  <rect x="320" y="510" width="160" height="50" fill="#F44336" stroke="#D32F2F" stroke-width="2" rx="5"/>
+  <text x="400" y="540" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="white">
+    Q_tot(s, a₁, ..., aₙ)
+  </text>
+
+  <!-- Execution Phase Section -->
+  <text x="20" y="600" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#F44336">
+    Execution Phase (Decentralized)
+  </text>
+  <rect x="20" y="610" width="760" height="70" fill="none" stroke="#F44336" stroke-width="2" stroke-dasharray="5,5" rx="5"/>
+
+  <!-- Execution description -->
+  <text x="400" y="635" font-family="Arial, sans-serif" font-size="13" text-anchor="middle" fill="#333">
+    Each agent receives only oᵢ → selects aᵢ using Qᵢ → no communication
+  </text>
+  <text x="400" y="660" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#666">
+    Independent decision-making based on local observations only
+  </text>
+
+  <!-- Arrow markers -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#607D8B" />
+    </marker>
+    <marker id="arrowhead-blue" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#2196F3" />
+    </marker>
+  </defs>
+</svg>

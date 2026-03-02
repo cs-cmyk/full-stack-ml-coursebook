@@ -1,0 +1,107 @@
+=================================================================================
+CONTENT.MD UPDATE INSTRUCTIONS
+=================================================================================
+
+This file describes the three image references that should be added to content.md
+to display the generated diagrams.
+
+=================================================================================
+UPDATE 1: Add frontier_overview.png reference
+=================================================================================
+
+LOCATION: After line 131 (after the code block that ends with plt.savefig)
+
+CURRENT TEXT (lines 127-133):
+```
+# Output:
+# Two plots side by side showing:
+# Left: Test-time compute scaling curves demonstrating diminishing returns
+# Right: Efficiency-accuracy Pareto frontier for quantization methods
+```
+
+The left visualization shows the fundamental insight of test-time compute: spending more computation at inference improves performance, but with diminishing returns.
+```
+
+SHOULD BECOME:
+```
+# Output:
+# Two plots side by side showing:
+# Left: Test-time compute scaling curves demonstrating diminishing returns
+# Right: Efficiency-accuracy Pareto frontier for quantization methods
+```
+
+![Frontier Overview: Test-Time Compute Scaling and Efficiency-Accuracy Trade-off](diagrams/frontier_overview.png)
+
+The left visualization shows the fundamental insight of test-time compute: spending more computation at inference improves performance, but with diminishing returns.
+```
+
+=================================================================================
+UPDATE 2: Add induction_head_attention.png reference
+=================================================================================
+
+LOCATION: After line 788 (after plt.savefig call in the mechanistic interpretability section)
+
+CURRENT TEXT (around lines 785-790):
+```
+# Visualize
+fig = visualize_attention(induction_attention, sequence,
+                         title="Induction Head Attention Pattern")
+plt.savefig('diagrams/induction_head_attention.png', dpi=150, bbox_inches='tight')
+plt.show()
+
+# Step 2: Ablation study
+```
+
+SHOULD BECOME:
+```
+# Visualize
+fig = visualize_attention(induction_attention, sequence,
+                         title="Induction Head Attention Pattern")
+plt.savefig('diagrams/induction_head_attention.png', dpi=150, bbox_inches='tight')
+plt.show()
+
+![Induction Head Attention Pattern](diagrams/induction_head_attention.png)
+
+# Step 2: Ablation study
+```
+
+=================================================================================
+UPDATE 3: Add quantization_comparison.png reference
+=================================================================================
+
+LOCATION: After line 2012 (after plt.savefig call in the quantization section)
+
+CURRENT TEXT (around lines 2010-2015):
+```
+plt.tight_layout()
+plt.savefig('diagrams/quantization_comparison.png', dpi=150, bbox_inches='tight')
+plt.show()
+
+# Output:
+# Quantization Methods Comparison
+```
+
+SHOULD BECOME:
+```
+plt.tight_layout()
+plt.savefig('diagrams/quantization_comparison.png', dpi=150, bbox_inches='tight')
+plt.show()
+
+![Quantization Methods Comparison: Accuracy vs Speedup and Memory Usage](diagrams/quantization_comparison.png)
+
+# Output:
+# Quantization Methods Comparison
+```
+
+=================================================================================
+SUMMARY
+=================================================================================
+
+Total changes: 3 image references to add
+All diagrams have been generated and are available in diagrams/ directory:
+  ✓ diagrams/frontier_overview.png (141 KB)
+  ✓ diagrams/induction_head_attention.png (60 KB)
+  ✓ diagrams/quantization_comparison.png (102 KB)
+
+These changes will display the visualizations in the rendered markdown while
+keeping the Python code blocks as documentation of how they were created.

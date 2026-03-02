@@ -1,0 +1,130 @@
+================================================================================
+CHAPTER 8: SQL DATABASES - DIAGRAM MANIFEST
+================================================================================
+
+Generated: 2026-02-28
+Agent: Diagram Agent for Data Science Textbook
+Status: COMPLETE
+
+--------------------------------------------------------------------------------
+DIAGRAMS GENERATED (5 total)
+--------------------------------------------------------------------------------
+
+1. csv_vs_database.png
+   Type: Matplotlib comparison diagram
+   Size: 95.7 KB (98,042 bytes)
+   Dimensions: ~800x600px @ 150 DPI
+   Purpose: Side-by-side comparison of CSV vs Database workflows
+   Location in content.md: Line 68 (Visual section)
+
+2. sql_execution_order.png
+   Type: Matplotlib flowchart
+   Size: 132.2 KB (135,374 bytes)
+   Dimensions: ~1000x800px @ 150 DPI
+   Purpose: Demonstrate SQL query execution order vs written order
+   Location in content.md: Line 75 (Visual section)
+
+3. where_vs_having.png
+   Type: Matplotlib process diagram
+   Size: 96.1 KB (98,356 bytes)
+   Dimensions: ~1400x600px @ 150 DPI
+   Purpose: Visual explanation of WHERE (row filter) vs HAVING (group filter)
+   Location in content.md: Line 335 (Common Pitfalls section)
+
+4. join_types.png
+   Type: Matplotlib 4-panel diagram
+   Size: 203.3 KB (208,198 bytes)
+   Dimensions: ~1400x1000px @ 150 DPI
+   Purpose: Comprehensive guide to INNER, LEFT, RIGHT, and FULL OUTER joins
+   Location in content.md: Line 659 (Appendix A)
+
+5. groupby_example.png
+   Type: Matplotlib bar chart
+   Size: 66.0 KB (67,583 bytes)
+   Dimensions: ~1000x600px @ 150 DPI
+   Purpose: Example visualization of GROUP BY query results
+   Location in content.md: Referenced in code comment at line 196
+
+--------------------------------------------------------------------------------
+SUPPORT FILES
+--------------------------------------------------------------------------------
+
+generate_diagrams.py       - Main generation script (18 KB)
+update_content.py          - Content update automation (9.2 KB)
+verify_diagrams.py         - Verification script (2.8 KB)
+README.md                  - Complete documentation (3.7 KB)
+UPDATE_INSTRUCTIONS.md     - Manual update guide (3.9 KB)
+SUMMARY.md                 - Task completion summary (4.2 KB)
+MANIFEST.txt               - This file (manifest)
+
+--------------------------------------------------------------------------------
+CONTENT.MD MODIFICATIONS
+--------------------------------------------------------------------------------
+
+Total modifications: 4 sections
+
+Section 1: Line 68
+  Old: ASCII art box diagram (35 lines)
+  New: ![CSV Files vs Database](diagrams/csv_vs_database.png)
+
+Section 2: Line 75
+  Old: ASCII art execution order table (15 lines)
+  New: ![SQL Query Execution Order](diagrams/sql_execution_order.png)
+
+Section 3: Line 335
+  Old: Text-only explanation
+  New: Added ![WHERE vs HAVING Comparison](diagrams/where_vs_having.png)
+
+Section 4: Line 659
+  Old: ASCII art JOIN examples (30 lines)
+  New: ![JOIN Types Visual Guide](diagrams/join_types.png) + text
+
+--------------------------------------------------------------------------------
+DESIGN SPECIFICATIONS
+--------------------------------------------------------------------------------
+
+Resolution: 150 DPI (suitable for print and web)
+Background: White (#FFFFFF)
+Font sizes: 12pt minimum, titles 16-18pt
+Color palette:
+  - Blue (#2196F3): Primary elements, databases
+  - Green (#4CAF50): Success, matches
+  - Orange (#FF9800): Warnings, WHERE
+  - Red (#F44336): Errors, NULL
+  - Purple (#9C27B0): Aggregates, HAVING
+  - Gray (#607D8B): Secondary text
+
+Layout: All diagrams use plt.tight_layout()
+Format: PNG (uncompressed, high quality)
+
+--------------------------------------------------------------------------------
+VERIFICATION STATUS
+--------------------------------------------------------------------------------
+
+[✓] All 5 diagrams generated successfully
+[✓] All 4 markdown references added to content.md
+[✓] All referenced files exist and are accessible
+[✓] All diagrams follow style guide (colors, fonts, DPI)
+[✓] All diagrams use white backgrounds
+[✓] All diagrams have readable text (12pt+)
+[✓] Supporting documentation created
+[✓] Regeneration script tested
+[✓] Verification script passed
+
+--------------------------------------------------------------------------------
+USAGE
+--------------------------------------------------------------------------------
+
+To regenerate all diagrams:
+  cd book/course-02-programming/ch08-sql-databases/diagrams/
+  python generate_diagrams.py
+
+To verify diagram references:
+  python verify_diagrams.py
+
+To manually update content.md:
+  python update_content.py
+
+================================================================================
+END OF MANIFEST
+================================================================================

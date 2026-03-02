@@ -1,0 +1,44 @@
+graph TB
+    Start[<b>START: Your Dataset</b>]
+
+    Step1["<b>1. FIRST LOOK</b><br/>• Shape, size, memory usage<br/>• Data types<br/>• First rows inspection"]
+
+    Step2["<b>2. INDIVIDUAL FEATURES</b><br/>• Distributions (histograms)<br/>• Missing values<br/>• Unique counts<br/>• Summary statistics"]
+
+    Step3["<b>3. TARGET VARIABLE</b><br/>• Class balance (classification)<br/>• Distribution (regression)<br/>• Range and scale"]
+
+    Step4["<b>4. RELATIONSHIPS</b><br/>• Feature-target correlations<br/>• Feature-feature interactions<br/>• Patterns and trends"]
+
+    Step5["<b>5. DATA QUALITY</b><br/>• Outliers detection<br/>• Duplicates check<br/>• Inconsistencies<br/>• Logical errors"]
+
+    Document[<b>DOCUMENT FINDINGS</b><br/>Record insights at each step]
+    Action[<b>MODELING DECISIONS</b><br/>Informed by EDA discoveries]
+
+    Start --> Step1
+    Step1 --> Step2
+    Step2 --> Step3
+    Step3 --> Step4
+    Step4 --> Step5
+
+    Step1 -.-> Document
+    Step2 -.-> Document
+    Step3 -.-> Document
+    Step4 -.-> Document
+    Step5 -.-> Document
+
+    Document --> Action
+    Step5 --> Action
+
+    Step2 -.->|New questions| Step1
+    Step3 -.->|New questions| Step2
+    Step4 -.->|New questions| Step3
+    Step5 -.->|New questions| Step4
+
+    style Start fill:#2196F3,stroke:#1976D2,color:#fff
+    style Step1 fill:#4CAF50,stroke:#388E3C,color:#fff
+    style Step2 fill:#4CAF50,stroke:#388E3C,color:#fff
+    style Step3 fill:#4CAF50,stroke:#388E3C,color:#fff
+    style Step4 fill:#4CAF50,stroke:#388E3C,color:#fff
+    style Step5 fill:#4CAF50,stroke:#388E3C,color:#fff
+    style Document fill:#FF9800,stroke:#F57C00,color:#fff
+    style Action fill:#9C27B0,stroke:#7B1FA2,color:#fff

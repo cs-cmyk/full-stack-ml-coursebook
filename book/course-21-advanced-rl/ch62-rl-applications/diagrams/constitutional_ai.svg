@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="900" height="700" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .participant-box { fill: #2196F3; stroke: #1976D2; stroke-width: 2; }
+      .process-box { fill: white; stroke: #607D8B; stroke-width: 2; rx: 5; }
+      .note-box { fill: #FFF9C4; stroke: #F9A825; stroke-width: 2; rx: 3; }
+      .title-text { font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; fill: white; }
+      .label-text { font-family: Arial, sans-serif; font-size: 14px; fill: #333; }
+      .small-text { font-family: Arial, sans-serif; font-size: 12px; fill: #666; }
+      .note-text { font-family: Arial, sans-serif; font-size: 13px; fill: #333; font-weight: bold; }
+      .arrow { stroke: #2196F3; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+      .arrow-return { stroke: #4CAF50; stroke-width: 2; fill: none; stroke-dasharray: 5,5; marker-end: url(#arrowhead-green); }
+      .lifeline { stroke: #BDBDBD; stroke-width: 2; stroke-dasharray: 5,5; }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#2196F3" />
+    </marker>
+    <marker id="arrowhead-green" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#4CAF50" />
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="450" y="30" text-anchor="middle" style="font-family: Arial; font-size: 18px; font-weight: bold; fill: #333;">Constitutional AI Self-Critique Loop</text>
+
+  <!-- Participants -->
+  <!-- Language Model -->
+  <rect x="100" y="60" width="180" height="40" class="participant-box"/>
+  <text x="190" y="85" text-anchor="middle" class="title-text">Language Model</text>
+  <line x1="190" y1="100" x2="190" y2="650" class="lifeline"/>
+
+  <!-- Constitutional Principles -->
+  <rect x="340" y="60" width="200" height="40" class="participant-box"/>
+  <text x="440" y="85" text-anchor="middle" class="title-text">Constitutional Principles</text>
+  <line x1="440" y1="100" x2="440" y2="650" class="lifeline"/>
+
+  <!-- AI Judge -->
+  <rect x="600" y="60" width="140" height="40" class="participant-box"/>
+  <text x="670" y="85" text-anchor="middle" class="title-text">AI Judge</text>
+  <line x1="670" y1="100" x2="670" y2="650" class="lifeline"/>
+
+  <!-- Supervised Learning Phase -->
+  <!-- Step 1: Generate Initial Response -->
+  <rect x="150" y="130" width="80" height="40" class="process-box"/>
+  <text x="190" y="155" text-anchor="middle" class="label-text">Generate y₀</text>
+  <path d="M 190 170 L 190 200" class="arrow"/>
+
+  <!-- Step 2: Self-Critique -->
+  <path d="M 190 200 L 440 220" class="arrow"/>
+  <text x="300" y="215" class="small-text">Self-Critique using Principles</text>
+
+  <rect x="380" y="220" width="120" height="40" class="process-box"/>
+  <text x="440" y="245" text-anchor="middle" class="label-text">Identify Issues</text>
+
+  <!-- Step 3: Return Issues -->
+  <path d="M 440 260 L 190 280" class="arrow-return"/>
+  <text x="300" y="275" class="small-text">Identified Issues</text>
+
+  <!-- Step 4: Generate Revised Response -->
+  <rect x="135" y="290" width="110" height="40" class="process-box"/>
+  <text x="190" y="310" text-anchor="middle" class="small-text">Generate Revised</text>
+  <text x="190" y="325" text-anchor="middle" class="small-text">Response y₁</text>
+
+  <!-- Separator Note: RL Phase -->
+  <rect x="50" y="360" width="800" height="35" class="note-box"/>
+  <text x="450" y="382" text-anchor="middle" class="note-text">RL Phase (RLAIF - Reinforcement Learning from AI Feedback)</text>
+
+  <!-- Step 5: Sample Response Pair -->
+  <rect x="125" y="420" width="130" height="40" class="process-box"/>
+  <text x="190" y="445" text-anchor="middle" class="label-text">Sample (y_A, y_B)</text>
+  <path d="M 255 440 L 600 460" class="arrow"/>
+  <text x="400" y="455" class="small-text">Response Pair</text>
+
+  <!-- Step 6: AI Judge Evaluates -->
+  <rect x="600" y="460" width="140" height="40" class="process-box"/>
+  <text x="670" y="480" text-anchor="middle" class="small-text">Evaluate y_A</text>
+  <text x="670" y="495" text-anchor="middle" class="small-text">vs y_B</text>
+
+  <path d="M 600 480 L 440 500" class="arrow"/>
+  <text x="500" y="495" class="small-text">Evaluate using Principles</text>
+
+  <!-- Step 7: Return Preference -->
+  <path d="M 440 520 L 670 540" class="arrow-return"/>
+  <text x="540" y="535" class="small-text">Determine Preference</text>
+
+  <rect x="600" y="540" width="140" height="40" class="process-box"/>
+  <text x="670" y="565" text-anchor="middle" class="label-text">Preference Label</text>
+
+  <path d="M 600 560 L 190 580" class="arrow-return"/>
+  <text x="370" y="575" class="small-text">Preference Label</text>
+
+  <!-- Final Notes -->
+  <rect x="100" y="600" width="280" height="35" class="note-box"/>
+  <text x="240" y="622" text-anchor="middle" class="note-text">Train Reward Model on AI Labels</text>
+
+  <rect x="420" y="600" width="280" height="35" class="note-box"/>
+  <text x="560" y="622" text-anchor="middle" class="note-text">Fine-tune with RL (same as RLHF)</text>
+
+  <!-- Description at bottom -->
+  <text x="50" y="675" class="small-text">Constitutional AI replaces human preference labels with AI-generated feedback based on</text>
+  <text x="50" y="690" class="small-text">predefined principles, enabling scalable oversight for model alignment.</text>
+</svg>
