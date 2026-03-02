@@ -12,7 +12,7 @@ Every chapter includes complete Python code examples (using scikit-learn, PyTorc
 
 **Run locally:**
 ```bash
-git clone https://github.com/YOUR_USERNAME/full-stack-ml-coursebook.git
+git clone https://github.com/cs-cmyk/full-stack-ml-coursebook.git
 cd full-stack-ml-coursebook
 pip install -r requirements.txt
 jupyter lab
