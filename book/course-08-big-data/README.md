@@ -1,18 +1,17 @@
-# Big Data & Data Engineering Fundamentals
+# Course 08: Big Data & Distributed Computing
 
-When datasets exceed single-machine capacity, traditional tools like pandas break down. Distributed computing with Apache Spark, data storage architectures (data warehouses, lakes, and lakehouses), and production data pipelines using Apache Airflow—essential skills for building scalable data systems.
+Distributed data processing at scale — Spark, data pipeline design, and the modern data engineering ecosystem.
 
 ## Prerequisites
 
-- **Course 2: Programming for Data Science** — Python, pandas, SQL fundamentals
-- **Course 3: Exploratory Data Analysis & Feature Engineering** — Data wrangling and cleaning workflows
+Course 2 (Programming for Data Science).
 
 ## Chapters
 
 | Chapter | Title | Key Topics |
 |---------|-------|------------|
-| 31 | Big Data Ecosystem | Distributed computing concepts, Hadoop/HDFS, Apache Spark (PySpark, RDDs, DataFrames), Spark MLlib, data warehouses vs. lakes vs. lakehouses, cloud platforms (AWS/GCP/Azure) |
-| 32 | Data Pipelines | ETL vs. ELT, Apache Airflow (DAGs, operators, scheduling), Kafka streaming, data quality frameworks (Great Expectations), dbt basics |
+| [31](ch31-big-data-ecosystem/) | Big Data Ecosystem | Hadoop, Spark, Dask, distributed computing concepts |
+| [32](ch32-data-pipelines/) | Data Pipelines — ETL, ELT, and Apache Airflow | ETL/ELT patterns, Airflow, streaming vs batch, data lake architecture |
 
 ## How to Use
 

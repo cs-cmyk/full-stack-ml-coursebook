@@ -1,19 +1,19 @@
-# Probabilistic Machine Learning
+# Course 12: Probabilistic Machine Learning
 
-Probabilistic machine learning moves beyond point predictions to quantify uncertainty, combining Bayesian inference with modern ML to build models that know what they don't know. Bayesian foundations, Gaussian processes, Bayesian deep learning, and probabilistic programming for principled decision-making under uncertainty.
+Move beyond point predictions to quantify uncertainty. Bayesian inference, Gaussian processes, Bayesian deep learning, and probabilistic programming for principled decision-making.
 
 ## Prerequisites
 
-Courses 1 (Foundations of Data Science), 4 (Machine Learning), and 5 (Deep Learning) or equivalent knowledge. A strong foundation in probability, statistics, calculus, and experience training neural networks.
+Courses 1 (Foundations), 4 (ML), and 5 (Deep Learning).
 
 ## Chapters
 
 | Chapter | Title | Key Topics |
 |---------|-------|------------|
-| ch32 | Bayesian Foundations for ML | Bayesian inference, priors, likelihood, posterior, MAP vs MLE, conjugate priors, Bayesian linear regression |
-| ch33 | Gaussian Processes | Kernels, covariance functions, GP regression, GP classification, sparse GPs, Bayesian optimization |
-| ch34 | Bayesian Deep Learning | Weight uncertainty, Bayes by Backprop, Monte Carlo dropout, variational inference, epistemic vs aleatoric uncertainty, calibration |
-| ch35 | Probabilistic Programming | PyMC, Numpyro, MCMC sampling, variational inference, hierarchical models, Bayesian A/B testing |
+| [32](ch32-bayesian-foundations/) | Bayesian Foundations for Machine Learning | Prior, likelihood, posterior, MAP vs MLE, conjugate priors, Bayesian regression |
+| [33](ch33-gaussian-processes/) | Gaussian Processes | Kernels, GP regression, GP classification, uncertainty quantification, sparse GPs |
+| [34](ch34-bayesian-deep-learning/) | Bayesian Deep Learning | Bayes by Backprop, MC dropout, variational inference, epistemic vs aleatoric uncertainty, KL divergence |
+| [35](ch35-probabilistic-programming/) | Probabilistic Programming with PyMC | PyMC, MCMC, variational inference, hierarchical models, Bayesian A/B testing |
 
 ## How to Use
 
@@ -22,6 +22,6 @@ Each chapter is available as:
 - **content.ipynb** — Open as Jupyter notebook (runnable code + visualizations)
 
 ```bash
-cd book/course-12/
+cd book/course-12-probabilistic-ml/
 jupyter lab
 ```

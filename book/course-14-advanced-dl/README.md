@@ -1,19 +1,18 @@
-# Advanced Deep Learning Architectures
+# Course 14: Advanced Deep Learning Architectures
 
-Cutting-edge transformer variants, generative models, and multimodal systems that power modern AI applications. Architectural innovations enabling efficient large-scale inference, state-of-the-art image generation, and cross-modal understanding.
+Cutting-edge deep learning — attention variants, mixture of experts, advanced generative models, and multimodal learning.
 
 ## Prerequisites
 
-Course 5 (Deep Learning) — neural networks, CNNs, RNNs, basic transformers
-Course 6 (NLP) for transformer background, Course 10 Module 26 (Computer Vision) for visual understanding
+Course 5 (Deep Learning) and Course 13 (Advanced Optimization).
 
 ## Chapters
 
 | Chapter | Title | Key Topics |
 |---------|-------|------------|
-| ch39 | Attention and Transformer Variants | Multi-query attention, grouped-query attention, Flash attention, positional encodings (RoPE, ALiBi), Mixture of Experts, state-space models |
-| ch40 | Advanced Generative Models | Diffusion models (DDPM, DDIM), score matching, flow matching, consistency models, classifier-free guidance, Stable Diffusion architecture |
-| ch41 | Multimodal Learning | Vision-language models (CLIP, BLIP, LLaVA), contrastive learning, cross-modal attention, text-to-image pipelines, multimodal embeddings |
+| [39](ch39-attention-transformers/) | Attention and Transformer Variants | Flash attention, RoPE, MoE, state-space models (Mamba), efficient transformers |
+| [40](ch40-generative-models/) | Advanced Generative Models | Diffusion models, flow matching, Stable Diffusion architecture, score-based models |
+| [41](ch41-multimodal-learning/) | Multimodal Learning | CLIP, LLaVA, cross-modal attention, text-to-image, vision-language models |
 
 ## How to Use
 
@@ -22,6 +21,6 @@ Each chapter is available as:
 - **content.ipynb** — Open as Jupyter notebook (runnable code + visualizations)
 
 ```bash
-cd book/course-14/
+cd book/course-14-advanced-dl/
 jupyter lab
 ```

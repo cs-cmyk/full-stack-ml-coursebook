@@ -1,21 +1,18 @@
-# Causal Machine Learning
+# Course 19: Causal Machine Learning
 
-Distinguish correlation from causation using machine learning. Estimate treatment effects, build causal models from observational data, and apply these techniques to real-world problems in marketing, healthcare, and product optimization.
+Move from correlation to causation — structural causal models, treatment effect estimation, and practical causal inference with DoWhy and EconML.
 
 ## Prerequisites
 
-- **Courses 1–11 or equivalent knowledge.
-- **Course 1**: Probability and Statistics
-- **Course 4**: Machine Learning (supervised learning, model validation)
-- **Course 10**: Causal Inference & Experimentation (A/B testing, propensity scores, basic causal graphs)
+Courses 1 (Foundations) and 4 (Machine Learning).
 
 ## Chapters
 
 | Chapter | Title | Key Topics |
 |---------|-------|------------|
-| ch54 | Structural Causal Models | DAGs, d-separation, structural equation models, do-calculus, causal discovery algorithms |
-| ch55 | Treatment Effect Estimation | ATE, CATE, ITE, double machine learning, causal forests, synthetic controls, instrumental variables |
-| ch56 | Causal ML in Practice | Uplift modeling, A/B test analysis, causal reasoning with LLMs, counterfactual explanations, DoWhy/EconML/CausalML |
+| [54](ch54-structural-causal-models/) | Structural Causal Models | DAGs, d-separation, do-calculus, back-door criterion, colliders, Simpson's paradox, causal discovery |
+| [55](ch55-treatment-effects/) | Treatment Effect Estimation | ATE/CATE, propensity scores, causal forests, synthetic control, double ML |
+| [56](ch56-causal-practice/) | Causal ML in Practice | Uplift modeling, counterfactual explanations, DoWhy, EconML, CausalML |
 
 ## How to Use
 
@@ -24,6 +21,6 @@ Each chapter is available as:
 - **content.ipynb** — Open as Jupyter notebook (runnable code + visualizations)
 
 ```bash
-cd book/course-19/
+cd book/course-19-causal-ml/
 jupyter lab
 ```

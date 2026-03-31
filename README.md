@@ -11,6 +11,7 @@ Every chapter includes complete Python code examples (using scikit-learn, PyTorc
 **Read online:** Click any `.ipynb` file — GitHub renders notebooks with code, outputs, and visualizations inline.
 
 **Run locally:**
+
 ```bash
 git clone https://github.com/cs-cmyk/full-stack-ml-coursebook.git
 cd full-stack-ml-coursebook
@@ -24,52 +25,54 @@ Each chapter is a standalone notebook.
 
 ## Curriculum
 
-### Part I: Foundations (Courses 1–3)
+### Part I: Foundations
 
 | Course | Chapters | Topics |
 |--------|----------|--------|
-| **Course 1: Mathematical Foundations** | Ch 1–5 | Linear algebra, calculus, probability, statistics, information theory |
-| **Course 2: Programming for Data Science** | Ch 6–10 | Python, NumPy, Pandas, data wrangling, APIs |
-| **Course 3: EDA & Feature Engineering** | Ch 11–14 | Exploratory analysis, visualization, feature engineering, preprocessing |
+| **Course 01: [Mathematical Foundations](book/course-01-foundations/)** | Ch 1–4 | Vectors, Derivatives, Sample spaces, Descriptive stats |
+| **Course 02: [Programming for Data Science](book/course-02-programming/)** | Ch 5–9 | Data structures, Arrays, Matplotlib, SQL queries, Git fundamentals |
+| **Course 03: [EDA & Feature Engineering](book/course-03-eda-features/)** | Ch 10–17 | Distributions, Missing values, Pearson, Scaling, Encoding methods, ... |
 
-### Part II: Core Machine Learning (Courses 4–5)
-
-| Course | Chapters | Topics |
-|--------|----------|--------|
-| **Course 4: Supervised Learning** | Ch 15–19 | Linear models, decision trees, random forests, SVMs, ensembles |
-| **Course 5: Deep Learning** | Ch 20–22 | Neural networks, CNNs, RNNs, training techniques |
-
-### Part III: Domains & Applications (Courses 6–8)
+### Part II: Core Machine Learning
 
 | Course | Chapters | Topics |
 |--------|----------|--------|
-| **Course 6: Natural Language Processing** | Ch 23–24 | Text processing, embeddings, transformers, sequence models |
-| **Course 7: Time Series & Forecasting** | Ch 25–26 | ARIMA, Prophet, deep forecasting, anomaly detection |
-| **Course 8: Big Data & Distributed Computing** | Ch 27–28 | Spark, Dask, distributed ML, data pipelines |
+| **Course 04: [Machine Learning](book/course-04-ml/)** | Ch 18–21 | OLS, Logistic regression, K-means, Cross-validation strategies |
+| **Course 05: [Deep Learning](book/course-05-deep-learning/)** | Ch 22–26 | Perceptrons, Convolutions, LSTMs, Self-attention, VAEs |
 
-### Part IV: Production & Practice (Courses 9–11)
-
-| Course | Chapters | Topics |
-|--------|----------|--------|
-| **Course 9: MLOps & Deployment** | Ch 29–30 | Model serving, CI/CD, monitoring, Docker, cloud deployment |
-| **Course 10: Advanced Topics** | Ch 31 | Reinforcement learning, computer vision, graphs, causal inference |
-| **Course 11: Ethics & Communication** | Ch 32 | Fairness, bias, explainability, data storytelling |
-
-### Part V: Advanced & Expert (Courses 12–22)
+### Part III: Domains & Applications
 
 | Course | Chapters | Topics |
 |--------|----------|--------|
-| **Course 12: Probabilistic ML** | Ch 32–35 | Bayesian inference, Gaussian processes, variational inference, PyMC |
-| **Course 13: Advanced Optimization** | Ch 36–38 | Convex optimization, distributed training, Bayesian optimization, AutoML |
-| **Course 14: Advanced Deep Learning** | Ch 39–41 | Attention variants, MoE, diffusion models, multimodal learning |
-| **Course 15: Large Language Models** | Ch 42–45 | Tokenization, scaling laws, RLHF, LoRA, RAG, agents, evaluation |
-| **Course 16: Advanced Computer Vision** | Ch 46–47 | YOLO, DETR, SAM, 3D vision, medical imaging, document AI |
-| **Course 17: Advanced NLP & Retrieval** | Ch 48–50 | Knowledge graphs, dense retrieval, speech & audio |
-| **Course 18: Production ML Systems** | Ch 51–53 | Feature stores, model serving, drift detection, observability |
-| **Course 19: Causal Machine Learning** | Ch 54–56 | Do-calculus, causal forests, uplift modeling, DoWhy/EconML |
-| **Course 20: Geometric & Structured Learning** | Ch 57–59 | Advanced GNNs, molecular ML, equivariant networks |
-| **Course 21: Advanced Reinforcement Learning** | Ch 60–62 | Model-based RL, multi-agent, offline RL, RLHF internals |
-| **Course 22: Research & Frontier Topics** | Ch 63–65 | Reading papers, mechanistic interpretability, agentic AI, AI safety |
+| **Course 06: [Natural Language Processing](book/course-06-nlp/)** | Ch 27–28 | Tokenization, BERT |
+| **Course 07: [Time Series & Forecasting](book/course-07-time-series/)** | Ch 29–30 | Stationarity, Deep forecasting |
+| **Course 08: [Big Data & Distributed Computing](book/course-08-big-data/)** | Ch 31–32 | Hadoop, ETL/ELT patterns |
+
+### Part IV: Production & Practice
+
+| Course | Chapters | Topics |
+|--------|----------|--------|
+| **Course 09: [MLOps & Deployment](book/course-09-mlops/)** | Ch 33–34 | FastAPI, Experiment tracking |
+| **Course 10: [Advanced Topics Survey](book/course-10-advanced/)** | Ch 35–39 | Collaborative filtering, MDPs, Image preprocessing, Graph representations, A/B testing |
+| **Course 11: [Ethics, Interpretability & Communication](book/course-11-ethics-comms/)** | Ch 40–42 | Fairness metrics, SHAP, Data storytelling |
+
+### Part V: Advanced & Expert
+
+| Course | Chapters | Topics |
+|--------|----------|--------|
+| **Course 12: [Probabilistic Machine Learning](book/course-12-probabilistic-ml/)** | Ch 32–35 | Prior, Kernels, Bayes by Backprop, PyMC |
+| **Course 13: [Advanced Optimization](book/course-13-optimization/)** | Ch 36–38 | Convex optimization, Learning rate schedules, Acquisition functions |
+| **Course 14: [Advanced Deep Learning Architectures](book/course-14-advanced-dl/)** | Ch 39–41 | Flash attention, Diffusion models, CLIP |
+| **Course 15: [Large Language Models](book/course-15-llms/)** | Ch 42–45 | Tokenization (BPE), SFT, RAG, Benchmarks (MMLU |
+| **Course 16: [Advanced Computer Vision](book/course-16-advanced-cv/)** | Ch 46–47 | YOLO, 3D vision |
+| **Course 17: [Advanced NLP & Information Retrieval](book/course-17-advanced-nlp/)** | Ch 48–50 | Knowledge graphs, Dense retrieval, Whisper |
+| **Course 18: [Production ML Systems](book/course-18-production-ml/)** | Ch 51–53 | Feature stores, Data versioning (DVC, Data drift (PSI |
+| **Course 19: [Causal Machine Learning](book/course-19-causal-ml/)** | Ch 54–56 | DAGs, ATE/CATE, Uplift modeling |
+| **Course 20: [Geometric & Structured Learning](book/course-20-geometric-learning/)** | Ch 57–59 | GCN, Drug discovery, Point clouds |
+| **Course 21: [Advanced Reinforcement Learning](book/course-21-advanced-rl/)** | Ch 60–62 | World models, Multi-agent RL, RLHF internals |
+| **Course 22: [Research Methods & Frontier Topics](book/course-22-research-frontiers/)** | Ch 64–65 | Test-time compute, The alignment problem |
+
+> **Note on chapter numbering:** Chapters are numbered sequentially within the full coursebook. Courses 10–11 (Part IV) and Courses 12–14 (Part V) cover different topics at different depths but share some chapter number ranges in their directory names. This reflects the coursebook's design: Part IV provides survey-level introductions, while Part V offers deep dives. Always navigate by course directory for clarity.
 
 ---
 
@@ -90,6 +93,25 @@ Every chapter follows a consistent structure:
 
 ---
 
+## Quick Topic Index
+
+Looking for a specific topic? Here's where to find it:
+
+| Topic | Chapter | Course |
+|-------|---------|--------|
+| KL Divergence & Cross-Entropy | Ch 22, 26, 34, 43 | Courses 5, 12, 15 |
+| Feature Importance (SHAP, LIME, Permutation) | Ch 41 | Course 11 |
+| Bayesian A/B Testing | Ch 35 | Course 12 |
+| Data Drift & Concept Drift | Ch 53 | Course 18 |
+| Simpson's Paradox & DAGs | Ch 54 | Course 19 |
+| Mechanistic Interpretability | Ch 64 | Course 22 |
+| LLM Evaluation & Red-Teaming | Ch 45 | Course 15 |
+| Model Calibration | Ch 41 | Course 11 |
+| RAG & Agents | Ch 44 | Course 15 |
+| RLHF Internals | Ch 43, 62 | Courses 15, 21 |
+
+---
+
 ## Requirements
 
 Full list in `requirements.txt`. Python 3.10+ recommended.
@@ -100,16 +122,18 @@ Full list in `requirements.txt`. Python 3.10+ recommended.
 
 Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
 
-Copyright (c) 2026- Chirag Shinde
+Copyright (c) 2026 Chirag Shinde
 
 You are free to:
-- Share: copy and redistribute the material in any medium or format
-- Adapt: remix, transform, and build upon the material
+
+- **Share:** copy and redistribute the material in any medium or format
+- **Adapt:** remix, transform, and build upon the material
 
 Under the following terms:
-- Attribution: You must provide appropriate credit
-- Non-Commercial: You may not use the material for commercial purposes
-- ShareAlike: If you remix, you must distribute under the same license
+
+- **Attribution:** You must provide appropriate credit
+- **Non-Commercial:** You may not use the material for commercial purposes
+- **ShareAlike:** If you remix, you must distribute under the same license
 
 Full license text: https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
 

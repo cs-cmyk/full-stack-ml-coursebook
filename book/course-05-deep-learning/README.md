@@ -1,22 +1,20 @@
-# Deep Learning
+# Course 05: Deep Learning
 
-Neural networks from foundations to modern architectures including transformers and generative models. Build, train, and deploy deep learning systems using PyTorch and TensorFlow/Keras.
+Neural network fundamentals through advanced architectures — from perceptrons to transformers and generative models.
 
 ## Prerequisites
 
-- Course 4: Machine Learning (supervised and unsupervised learning fundamentals)
-- Solid understanding of linear algebra, calculus, and probability
-- Python programming with NumPy and data manipulation skills
+Courses 1 (Math Foundations) and 4 (Machine Learning).
 
 ## Chapters
 
 | Chapter | Title | Key Topics |
 |---------|-------|------------|
-| ch22-nn-foundations | Neural Network Foundations | Perceptrons, activation functions, backpropagation, optimizers, regularization, PyTorch/Keras |
-| ch23-cnns | Convolutional Neural Networks | Convolution, pooling, ResNet, transfer learning, image classification, object detection |
-| ch24-rnns | Recurrent Neural Networks | LSTMs, GRUs, sequence-to-sequence, attention mechanism, vanishing gradients |
-| ch25-transformers | Transformers & Modern Architectures | Self-attention, BERT, GPT, Vision Transformers, fine-tuning, LLMs, prompt engineering |
-| ch26-generative | Generative Models | Autoencoders, VAEs, GANs, diffusion models |
+| [22](ch22-nn-foundations/) | Neural Network Foundations | Perceptrons, backpropagation, activation functions, cross-entropy loss, PyTorch |
+| [23](ch23-cnns/) | Convolutional Neural Networks (CNNs) | Convolutions, pooling, transfer learning, image classification |
+| [24](ch24-rnns/) | Recurrent Neural Networks | LSTMs, GRUs, sequence modeling, attention basics |
+| [25](ch25-transformers/) | Transformers | Self-attention, positional encoding, encoder-decoder, BERT, GPT |
+| [26](ch26-generative/) | Generative Models | VAEs, GANs, diffusion basics, KL divergence in generative modeling |
 
 ## How to Use
 

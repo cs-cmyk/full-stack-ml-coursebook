@@ -1,19 +1,18 @@
-# Ethics, Interpretability & Communication
+# Course 11: Ethics, Interpretability & Communication
 
-Responsible AI practices, model explainability techniques, and effective communication of technical results. Identify and mitigate bias, interpret model decisions, and translate insights into actionable business recommendations.
+Responsible AI practices, model explainability, and communicating data science results to stakeholders.
 
 ## Prerequisites
 
-Course 4 (Machine Learning)
-Familiarity with classification, regression, and model evaluation.
+Course 4 (Machine Learning).
 
 ## Chapters
 
 | Chapter | Title | Key Topics |
 |---------|-------|------------|
-| ch40 | Responsible AI & Ethics | Bias detection, fairness metrics, debiasing, privacy, differential privacy, federated learning, AI regulations (EU AI Act, GDPR), ethical frameworks |
-| ch41 | Model Interpretability & Explainability | Interpretable vs. black-box models, feature importance (permutation, SHAP, LIME), partial dependence plots, ICE plots, attention visualization, counterfactual explanations |
-| ch42 | Communication & Business Impact | Translating technical results for stakeholders, dashboard design (Tableau, Power BI, Streamlit), report writing, framing data science as business value, portfolio building, interview prep |
+| [40](ch40-responsible-ai/) | Responsible AI | Fairness metrics, bias detection, ethical frameworks, AI governance |
+| [41](ch41-interpretability/) | Model Interpretability & Explainability | SHAP, LIME, permutation importance, partial dependence, calibration, counterfactual explanations |
+| [42](ch42-communication/) | Communicating Data Science Results | Data storytelling, stakeholder presentations, technical writing, dashboards |
 
 ## How to Use
 

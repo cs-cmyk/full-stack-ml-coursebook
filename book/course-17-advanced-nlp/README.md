@@ -1,20 +1,18 @@
-# Advanced NLP and Information Retrieval
+# Course 17: Advanced NLP & Information Retrieval
 
-State-of-the-art techniques for extracting knowledge from text, building production-grade search systems, and processing speech. Construct knowledge graphs from unstructured text, hybrid retrieval systems for RAG applications, and deploy modern ASR models like Whisper.
+Knowledge extraction, modern retrieval systems, and speech/audio processing.
 
 ## Prerequisites
 
-- Course 6: Natural Language Processing (classical NLP foundations)
-- Course 15: Large Language Models — Deep Dive (LLM architecture and applications)
-- Familiarity with Transformers, embeddings, and vector databases
+Course 6 (NLP) and Course 15 (LLMs).
 
 ## Chapters
 
 | Chapter | Title | Key Topics |
 |---------|-------|------------|
-| ch48 | Information Extraction and Knowledge | Relation extraction, knowledge graph construction, event extraction, coreference resolution, entity linking and disambiguation, open information extraction |
-| ch49 | Advanced Retrieval Systems | Dense retrieval (bi-encoder, cross-encoder), learned sparse retrieval (SPLADE), hybrid search (BM25 + dense), re-ranking architectures, conversational search and query reformulation, evaluation metrics (MRR, nDCG, recall@k) |
-| ch50 | Speech and Audio | Automatic speech recognition (Whisper architecture), text-to-speech synthesis, speaker diarization and identification, audio classification and sound event detection, multimodal speech-text models |
+| [48](ch48-information-extraction/) | Information Extraction | Knowledge graphs, relation extraction, entity linking, named entity recognition |
+| [49](ch49-retrieval-systems/) | Advanced Retrieval Systems | Dense retrieval, SPLADE, hybrid search, re-ranking, ColBERT |
+| [50](ch50-speech-audio/) | Speech and Audio | Whisper, TTS, speaker diarization, audio classification, ASR architecture |
 
 ## How to Use
 
@@ -23,6 +21,6 @@ Each chapter is available as:
 - **content.ipynb** — Open as Jupyter notebook (runnable code + visualizations)
 
 ```bash
-cd book/course-17/
+cd book/course-17-advanced-nlp/
 jupyter lab
 ```

@@ -1,23 +1,23 @@
-# Exploratory Data Analysis & Feature Engineering
+# Course 03: EDA & Feature Engineering
 
-Understand your data deeply and transform it for machine learning. Detect data quality issues, explore relationships, and engineer features that improve model performance.
+Explore, clean, and transform raw data into features that machine learning models can learn from. Covers numerical, categorical, text, and time features plus feature selection.
 
 ## Prerequisites
 
-**Course 1** (Foundations) and **Course 2** (Programming) or equivalent knowledge of Python (NumPy, Pandas), statistics, and data visualization.
+Course 2 (Programming for Data Science).
 
 ## Chapters
 
 | Chapter | Title | Key Topics |
 |---------|-------|------------|
-| ch10 | Exploratory Data Analysis | Data profiling, univariate/bivariate/multivariate analysis, summary statistics |
-| ch11 | Data Quality | Missing data imputation, outlier detection, duplicate handling, data validation |
-| ch12 | Correlation & Relationships | Pearson/Spearman/Kendall correlations, correlation vs. causation, visual exploration |
-| ch13 | Numerical Features | Scaling, transformations (log, Box-Cox, Yeo-Johnson), binning, polynomial features |
-| ch14 | Categorical Features | One-hot/label/ordinal encoding, target/frequency encoding, high-cardinality handling |
-| ch15 | Text Features | Bag-of-words, TF-IDF, tokenization, stemming, lemmatization |
-| ch16 | Time Features | Date/time decomposition, lag features, rolling statistics, seasonality |
-| ch17 | Feature Selection | Filter/wrapper/embedded methods, PCA, t-SNE, UMAP |
+| [10](ch10-eda/) | Exploratory Data Analysis | Distributions, outlier detection, summary statistics, visual exploration |
+| [11](ch11-data-quality/) | Data Quality and Cleaning | Missing values, duplicates, inconsistencies, data validation |
+| [12](ch12-correlation/) | Correlation and Relationships | Pearson, Spearman, mutual information, correlation pitfalls |
+| [13](ch13-numerical-features/) | Numerical Feature Engineering | Scaling, binning, interactions, polynomial features, transformations |
+| [14](ch14-categorical-features/) | Categorical Features | Encoding methods, target encoding, high-cardinality handling |
+| [15](ch15-text-features/) | Text Features | TF-IDF, tokenization, text preprocessing, bag-of-words |
+| [16](ch16-time-features/) | Time Features | Lag features, rolling statistics, cyclical encoding, time-based splits |
+| [17](ch17-feature-selection/) | Feature Selection | Filter, wrapper, and embedded methods, mutual information, RFE |
 
 ## How to Use
 

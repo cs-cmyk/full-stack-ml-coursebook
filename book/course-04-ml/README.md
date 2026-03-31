@@ -1,21 +1,19 @@
-# Machine Learning
+# Course 04: Machine Learning
 
-Supervised and unsupervised learning fundamentals: regression, classification, clustering, and model selection techniques. Build, evaluate, and tune predictive models using scikit-learn.
+Core machine learning algorithms — regression, classification, unsupervised learning, and model selection with rigorous evaluation methodology.
 
 ## Prerequisites
 
-- **Foundations of Data Science** — Linear algebra, calculus, probability, statistics
-- **Programming for Data Science** — Python, NumPy, Pandas, Matplotlib
-- **EDA & Feature Engineering** — Data cleaning, feature scaling, encoding, selection
+Courses 1–3 (Foundations, Programming, EDA & Features).
 
 ## Chapters
 
 | Chapter | Title | Key Topics |
 |---------|-------|------------|
-| 18 | Linear Regression | Simple & multiple regression, regularization (Ridge, Lasso, Elastic Net), polynomial regression, evaluation metrics (MSE, RMSE, R²) |
-| 19 | Classification | Logistic regression, KNN, Naive Bayes, SVM, decision trees, ensemble methods, evaluation (precision, recall, F1, ROC-AUC), imbalanced classes |
-| 20 | Unsupervised Learning | K-Means, hierarchical clustering, DBSCAN, Gaussian Mixture Models, PCA, t-SNE, UMAP, anomaly detection, cluster evaluation |
-| 21 | Model Selection | Bias-variance tradeoff, k-fold cross-validation, hyperparameter tuning (GridSearch, RandomSearch, Optuna), learning curves, pipelines |
+| [18](ch18-regression/) | Linear Regression | OLS, regularization (Ridge, Lasso, Elastic Net), assumptions, diagnostics |
+| [19](ch19-classification/) | Classification Fundamentals | Logistic regression, decision trees, random forests, SVMs, ensembles (XGBoost, LightGBM), cross-entropy loss, metrics |
+| [20](ch20-unsupervised/) | Unsupervised Learning — Clustering | K-means, DBSCAN, hierarchical clustering, Gaussian mixtures, evaluation |
+| [21](ch21-model-selection/) | Model Selection and Cross-Validation | Cross-validation strategies, hyperparameter tuning, bias-variance tradeoff, learning curves |
 
 ## How to Use
 

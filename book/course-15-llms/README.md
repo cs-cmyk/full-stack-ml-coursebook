@@ -1,21 +1,19 @@
-# Course 15: Large Language Models — Deep Dive
+# Course 15: Large Language Models
 
-This course takes you from understanding LLM architectures to building production-ready systems. How to train LLMs, how to align them with human preferences, and how to engineer reliable applications using RAG, tool use, and safety mechanisms. Evaluate and red-team models for real-world deployment.
+LLM architecture, alignment, applications, and evaluation — from tokenization and scaling laws to RAG, agents, and red-teaming.
 
 ## Prerequisites
 
-- **Course 5**: Deep Learning (neural networks, transformers, attention mechanisms)
-- **Course 6**: Natural Language Processing (text preprocessing, embeddings, sentiment analysis)
-- **Course 14**: Advanced Deep Learning Architectures (transformer variants, attention mechanisms, generative models)
+Course 5 (Deep Learning) and Course 14 (Advanced DL Architectures).
 
 ## Chapters
 
 | Chapter | Title | Key Topics |
 |---------|-------|------------|
-| ch42 | LLM Architecture and Training | Tokenization (BPE, WordPiece, SentencePiece), pre-training objectives, scaling laws, training infrastructure, emergent abilities |
-| ch43 | Alignment and Fine-Tuning | Supervised fine-tuning (SFT), RLHF, DPO, parameter-efficient fine-tuning (LoRA, QLoRA), instruction tuning, evaluation benchmarks |
-| ch44 | LLM Applications and Engineering | RAG architecture, vector databases, chunking strategies, agentic frameworks (ReAct, tool use), structured output, guardrails, cost optimization |
-| ch45 | LLM Evaluation and Red-Teaming | Benchmark suites (MMLU, HumanEval), hallucination detection, adversarial prompting, bias measurement, toxicity evaluation |
+| [42](ch42-llm-architecture/) | LLM Architecture and Training | Tokenization (BPE), scaling laws, pre-training objectives, compute-optimal training |
+| [43](ch43-alignment-finetuning/) | Alignment and Fine-Tuning | SFT, RLHF, DPO, LoRA/QLoRA, instruction tuning, KL divergence in alignment |
+| [44](ch44-llm-applications/) | LLM Applications and Engineering | RAG, vector databases, agents, function calling, guardrails, prompt engineering |
+| [45](ch45-llm-evaluation/) | LLM Evaluation and Red-Teaming | Benchmarks (MMLU, HumanEval), hallucination detection, bias measurement, LLM-as-judge, safety evaluation |
 
 ## How to Use
 
@@ -24,6 +22,6 @@ Each chapter is available as:
 - **content.ipynb** — Open as Jupyter notebook (runnable code + visualizations)
 
 ```bash
-cd book/course-15/
+cd book/course-15-llms/
 jupyter lab
 ```

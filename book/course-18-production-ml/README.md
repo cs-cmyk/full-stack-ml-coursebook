@@ -1,18 +1,18 @@
-# Production ML Systems
+# Course 18: Production ML Systems
 
-Build, deploy, and maintain reliable machine learning systems at scale. System design patterns, data engineering practices, and monitoring strategies to go from research prototypes from production systems handling millions of predictions.
+Build, deploy, and maintain reliable ML systems at scale — system design, data engineering, drift detection, and observability.
 
 ## Prerequisites
 
-Courses 8 (Big Data & Data Engineering Fundamentals) and 9 (MLOps & Production Machine Learning) or experience with distributed systems, model deployment, and ML pipelines.
+Courses 8 (Big Data) and 9 (MLOps).
 
 ## Chapters
 
 | Chapter | Title | Key Topics |
 |---------|-------|------------|
-| ch51 | System Design for ML | Batch vs. real-time inference, feature stores, model serving architectures, GPU optimization, edge deployment, cost modeling |
-| ch52 | Data Engineering for ML | Data versioning (DVC, LakeFS), feature pipelines (Spark, Flink), data quality at scale, labeling pipelines, active learning, synthetic data, privacy-preserving techniques |
-| ch53 | Monitoring and Reliability | Data drift detection (PSI, KS test, Wasserstein), concept drift, shadow deployments, canary releases, online evaluation, incident response, ML observability platforms |
+| [51](ch51-system-design/) | System Design for ML | Feature stores, model serving (Triton, vLLM), batch vs real-time inference, edge deployment, cost modeling |
+| [52](ch52-data-engineering/) | Data Engineering for ML | Data versioning (DVC, LakeFS), labeling pipelines, active learning, synthetic data, privacy-preserving ML |
+| [53](ch53-monitoring-reliability/) | Monitoring and Reliability | Data drift (PSI, KS test), concept drift, prediction drift, shadow deployments, canary releases, incident response, ML observability |
 
 ## How to Use
 
@@ -21,6 +21,6 @@ Each chapter is available as:
 - **content.ipynb** — Open as Jupyter notebook (runnable code + visualizations)
 
 ```bash
-cd book/course-18/
+cd book/course-18-production-ml/
 jupyter lab
 ```

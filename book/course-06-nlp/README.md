@@ -1,19 +1,17 @@
-# Natural Language Processing (NLP)
+# Course 06: Natural Language Processing
 
-Classical and modern techniques for processing human language, statistical methods like TF-IDF and word embeddings to transformer-based models like BERT and GPT. Extract meaning from text, build sentiment classifiers, and fine-tune pre-trained language models for real-world NLP tasks.
+From classical text processing to modern transformer-based NLP — tokenization, embeddings, and language model fine-tuning.
 
 ## Prerequisites
 
-- **Course 4: Machine Learning** — Understanding of supervised learning algorithms and evaluation metrics
-- **Course 5: Deep Learning** — Familiarity with neural networks, particularly transformers and attention mechanisms
-- Python programming with NumPy, Pandas, and PyTorch/TensorFlow
+Course 5 (Deep Learning).
 
 ## Chapters
 
 | Chapter | Title | Key Topics |
 |---------|-------|------------|
-| ch27 | Classical NLP | Text preprocessing, bag-of-words, TF-IDF, Word2Vec/GloVe/FastText, sentiment analysis, NER, topic modeling (LDA, NMF) |
-| ch28 | Modern NLP (Transformers and Language Models) | Contextual embeddings, BERT/GPT architectures, pre-training paradigms, fine-tuning, Hugging Face library, LLM fine-tuning (LoRA, QLoRA), evaluation metrics (BLEU, ROUGE) |
+| [27](ch27-classical-nlp/) | Classical NLP | Tokenization, TF-IDF, Word2Vec, GloVe, text classification |
+| [28](ch28-modern-nlp/) | Modern NLP (Transformers and Language Models) | BERT, fine-tuning, Hugging Face, sequence labeling, text generation |
 
 ## How to Use
 

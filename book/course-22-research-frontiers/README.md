@@ -1,19 +1,17 @@
-# Research Methods and Frontier Topics
+# Course 22: Research Methods & Frontier Topics
 
-Navigate cutting-edge AI research and stay current with rapidly evolving techniques. 2025-2026 frontier methods like test-time compute scaling and agentic systems. Understand the critical technical challenges in AI safety and alignment.
+Reading and writing ML papers, frontier research topics (2025–2026), and AI safety & alignment.
 
 ## Prerequisites
 
-Courses 1–21 or equivalent knowledge. 
-Foundations in machine learning, deep learning, NLP, computer vision, reinforcement learning, and production ML systems.
+Broad familiarity with Courses 1–18.
 
 ## Chapters
 
 | Chapter | Title | Key Topics |
 |---------|-------|------------|
-| ch63 | Reading and Reproducing Research | Three-pass reading method, ablation studies, experiment design, statistical significance, technical writing |
-| ch64 | Frontier Topics (2025–2026) | Test-time compute, agentic AI, reasoning models, mechanistic interpretability, sparse autoencoders, model merging, synthetic data, efficiency techniques |
-| ch65 | AI Safety and Alignment | Alignment problem (outer/inner), scalable oversight, constitutional AI, interpretability for safety, governance frameworks, societal impact |
+| [64](ch64-frontier-topics/) | Frontier Topics (2025–2026) | Test-time compute, agentic AI, mechanistic interpretability, sparse autoencoders, model merging, quantization, synthetic data |
+| [65](ch65-ai-safety/) | AI Safety and Alignment | The alignment problem, scalable oversight, governance, societal impact, RLHF limitations |
 
 ## How to Use
 
@@ -22,6 +20,6 @@ Each chapter is available as:
 - **content.ipynb** — Open as Jupyter notebook (runnable code + visualizations)
 
 ```bash
-cd book/course-22/
+cd book/course-22-research-frontiers/
 jupyter lab
 ```

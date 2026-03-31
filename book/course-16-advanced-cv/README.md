@@ -1,19 +1,17 @@
-# Advanced Computer Vision
+# Course 16: Advanced Computer Vision
 
-Cutting-edge computer vision techniques beyond basic classification and detection. Anchor-free detection methods, self-supervised learning, foundation models, 3D vision, medical imaging, and document AI—technologies that power autonomous vehicles, healthcare diagnostics, and enterprise automation.
+State-of-the-art detection, segmentation, and advanced vision tasks — from YOLO to medical imaging and document AI.
 
 ## Prerequisites
 
-- **Course 5**: Deep Learning (neural networks, CNNs, ResNet, transfer learning)
-- **Course 14**: Advanced Deep Learning Architectures (transformers, attention mechanisms)
-Familiarity with PyTorch/TensorFlow and basic object detection concepts.
+Course 5 (Deep Learning), specifically Ch 23 (CNNs).
 
 ## Chapters
 
 | Chapter | Title | Key Topics |
 |---------|-------|------------|
-| ch46 | Detection and Segmentation | Anchor-free detection (FCOS, CenterNet), YOLO family evolution (v5-v11), DETR and detection transformers, panoptic segmentation, instance segmentation (Mask R-CNN, SAM), video object tracking |
-| ch47 | Advanced Vision Tasks | 3D vision (depth estimation, point clouds, NeRF), self-supervised learning (DINO, MAE), vision foundation models (SAM, DINOv2), medical imaging (volumetric analysis, radiology AI), document AI (OCR, layout analysis, table extraction), synthetic data generation |
+| [46](ch46-detection-segmentation/) | Detection and Segmentation | YOLO, DETR, FCOS, Mask R-CNN, SAM, anchor-free detection, video tracking |
+| [47](ch47-advanced-vision/) | Advanced Vision Tasks | 3D vision, NeRF, DINO, medical imaging, document AI, depth estimation |
 
 ## How to Use
 
@@ -22,6 +20,6 @@ Each chapter is available as:
 - **content.ipynb** — Open as Jupyter notebook (runnable code + visualizations)
 
 ```bash
-cd book/course-16/
+cd book/course-16-advanced-cv/
 jupyter lab
 ```

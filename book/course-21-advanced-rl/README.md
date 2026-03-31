@@ -1,23 +1,18 @@
-# Advanced Reinforcement Learning
+# Course 21: Advanced Reinforcement Learning
 
-Extends foundational RL to handle real-world complexity: learning world models for efficient planning, multi-agent coordination, offline learning from fixed datasets, hierarchical task decomposition, and scaling RL to language models and industrial applications. Master the techniques behind AlphaGo, ChatGPT's RLHF alignment, and autonomous robot control.
+Model-based RL, multi-agent systems, offline RL, and RL applications to language models and real-world problems.
 
 ## Prerequisites
 
-**Required:**
-- Course 10, Module 25: Reinforcement Learning basics (MDPs, Q-learning, policy gradients, DQN, actor-critic)
-- Course 4: Machine Learning fundamentals
-- Course 5: Deep learning and neural networks
-- Course 15: Large Language Models (for understanding RLHF in depth)
-- Experience with PyTorch or TensorFlow
+Course 10, Ch 36 (RL Foundations) and Course 5 (Deep Learning).
 
 ## Chapters
 
 | Chapter | Title | Key Topics |
 |---------|-------|------------|
-| ch60 | Model-Based Reinforcement Learning | World models, learned dynamics, model-predictive control, Dyna architecture, Dreamer, imagination-based learning, planning with learned models |
-| ch61 | Multi-Agent and Advanced Methods | Multi-agent RL (cooperative/competitive), inverse RL, offline RL (CQL, batch constraints), hierarchical RL (options framework), reward shaping, safety constraints |
-| ch62 | RL for LLMs and Real-World Applications | RLHF pipeline (SFT, reward modeling, PPO), Constitutional AI, RLAIF, robotics sim-to-real transfer, combinatorial optimization, chip design, scientific discovery |
+| [60](ch60-model-based-rl/) | Model-Based Reinforcement Learning | World models, model-predictive control, Dreamer, planning with learned dynamics |
+| [61](ch61-multi-agent-rl/) | Multi-Agent and Advanced RL Methods | Multi-agent RL, inverse RL, offline RL, hierarchical RL, safe RL |
+| [62](ch62-rl-applications/) | RL for Language Models and Real-World Applications | RLHF internals, KL divergence in policy optimization, robotics, chip design, scientific discovery |
 
 ## How to Use
 
@@ -26,6 +21,6 @@ Each chapter is available as:
 - **content.ipynb** — Open as Jupyter notebook (runnable code + visualizations)
 
 ```bash
-cd book/course-21/
+cd book/course-21-advanced-rl/
 jupyter lab
 ```
