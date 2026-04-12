@@ -1,4 +1,4 @@
-# Chapter 60: Model-Based Reinforcement Learning
+# Chapter 71: Model-Based Reinforcement Learning
 
 **Course 21: Advanced Reinforcement Learning**
 
