@@ -10,8 +10,8 @@ Course 5 (Deep Learning), specifically Ch 23 (CNNs).
 
 | Chapter | Title | Key Topics |
 |---------|-------|------------|
-| [46](ch46-detection-segmentation/) | Detection and Segmentation | YOLO, DETR, FCOS, Mask R-CNN, SAM, anchor-free detection, video tracking |
-| [47](ch47-advanced-vision/) | Advanced Vision Tasks | 3D vision, NeRF, DINO, medical imaging, document AI, depth estimation |
+| [56](ch57-detection-segmentation/) | Detection and Segmentation | YOLO, DETR, FCOS, Mask R-CNN, SAM, anchor-free detection, video tracking |
+| [57](ch58-advanced-vision/) | Advanced Vision Tasks | 3D vision, NeRF, DINO, medical imaging, document AI, depth estimation |
 
 ## How to Use
 
