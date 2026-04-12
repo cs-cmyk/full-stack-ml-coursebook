@@ -1,4 +1,4 @@
-# Chapter 40: Advanced Generative Models
+# Chapter 51: Advanced Generative Models
 
 **Course 14: Advanced Deep Learning Architectures**
 
