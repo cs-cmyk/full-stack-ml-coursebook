@@ -1,4 +1,4 @@
-# Chapter 57: Advanced Graph Neural Networks
+# Chapter 68: Advanced Graph Neural Networks
 
 **Course 20: Geometric & Structured Learning**
 
