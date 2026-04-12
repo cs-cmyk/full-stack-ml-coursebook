@@ -1,4 +1,4 @@
-# Chapter 47: Advanced Vision Tasks
+# Chapter 58: Advanced Vision Tasks
 
 **Course 16: Advanced Computer Vision**
 
