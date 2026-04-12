@@ -1,4 +1,4 @@
-# Chapter 59: Other Structured Domains
+# Chapter 70: Other Structured Domains
 
 **Course 20: Geometric & Structured Learning**
 
