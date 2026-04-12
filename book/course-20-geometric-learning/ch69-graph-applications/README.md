@@ -1,4 +1,4 @@
-# Chapter 58: Applications of Graph ML
+# Chapter 69: Applications of Graph ML
 
 **Course 20: Geometric & Structured Learning**
 
