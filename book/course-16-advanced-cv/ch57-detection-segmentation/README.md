@@ -1,4 +1,4 @@
-# Chapter 46: Detection and Segmentation
+# Chapter 57: Detection and Segmentation
 
 **Course 16: Advanced Computer Vision**
 
