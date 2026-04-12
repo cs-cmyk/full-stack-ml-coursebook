@@ -1,4 +1,4 @@
-# Chapter 41: Multimodal Learning
+# Chapter 52: Multimodal Learning
 
 **Course 14: Advanced Deep Learning Architectures**
 
