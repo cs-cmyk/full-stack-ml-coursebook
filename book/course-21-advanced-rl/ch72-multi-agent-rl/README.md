@@ -1,4 +1,4 @@
-# Chapter 61: Multi-Agent and Advanced RL Methods
+# Chapter 72: Multi-Agent and Advanced RL Methods
 
 **Course 21: Advanced Reinforcement Learning**
 
