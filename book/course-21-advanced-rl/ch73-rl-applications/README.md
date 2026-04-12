@@ -1,4 +1,4 @@
-# Chapter 62: RL for Language Models and Real-World Applications
+# Chapter 73: RL for Language Models and Real-World Applications
 
 **Course 21: Advanced Reinforcement Learning**
 
