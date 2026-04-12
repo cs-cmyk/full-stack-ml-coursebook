@@ -1,4 +1,4 @@
-# Chapter 39: Attention and Transformer Variants
+# Chapter 50: Attention and Transformer Variants
 
 **Course 14: Advanced Deep Learning Architectures**
 
