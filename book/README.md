@@ -1,6 +1,6 @@
 # Full-Stack ML Coursebook
 
-A comprehensive Data Science & Machine Learning coursebook — from linear algebra to production systems and frontier research. 22 courses, 65+ chapters with runnable code, visualizations, and practice exercises.
+A comprehensive Data Science & Machine Learning coursebook — from linear algebra to production systems and frontier research. 22 courses, 75 chapters with runnable code, visualizations, and practice exercises.
 
 Every chapter includes complete Python code examples (using scikit-learn, PyTorch, and real datasets), mathematical foundations, intuitive explanations, common pitfalls, and practice exercises with solutions.
 
