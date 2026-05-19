@@ -66,9 +66,9 @@ Each chapter is a standalone notebook.
 | **Course 15: [Large Language Models](book/course-15-llms/)** | Ch 53–56 | Tokenization (BPE), SFT, RAG, Benchmarks (MMLU |
 | **Course 16: [Advanced Computer Vision](book/course-16-advanced-cv/)** | Ch 57–58 | YOLO, 3D vision |
 | **Course 17: [Advanced NLP & Information Retrieval](book/course-17-advanced-nlp/)** | Ch 59–61 | Knowledge graphs, Dense retrieval, Whisper |
-| **Course 18: [Production ML Systems](book/course-18-production-ml/)** | Ch 51–53 | Feature stores, Data versioning (DVC, Data drift (PSI |
-| **Course 19: [Causal Machine Learning](book/course-19-causal-ml/)** | Ch 54–56 | DAGs, ATE/CATE, Uplift modeling |
-| **Course 20: [Geometric & Structured Learning](book/course-20-geometric-learning/)** | Ch 57–59 | GCN, Drug discovery, Point clouds |
+| **Course 18: [Production ML Systems](book/course-18-production-ml/)** | Ch 62–64 | Feature stores, Data versioning (DVC, Data drift (PSI |
+| **Course 19: [Causal Machine Learning](book/course-19-causal-ml/)** | Ch 65–67 | DAGs, ATE/CATE, Uplift modeling |
+| **Course 20: [Geometric & Structured Learning](book/course-20-geometric-learning/)** | Ch 68–70 | GCN, Drug discovery, Point clouds |
 | **Course 21: [Advanced Reinforcement Learning](book/course-21-advanced-rl/)** | Ch 71–73 | World models, Multi-agent RL, RLHF internals |
 | **Course 22: [Research Methods & Frontier Topics](book/course-22-research-frontiers/)** | Ch 74–75 | Test-time compute, The alignment problem |
 
