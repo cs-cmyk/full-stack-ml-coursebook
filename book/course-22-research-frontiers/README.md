@@ -10,8 +10,8 @@ Broad familiarity with Courses 1–18.
 
 | Chapter | Title | Key Topics |
 |---------|-------|------------|
-| [64](ch64-frontier-topics/) | Frontier Topics (2025–2026) | Test-time compute, agentic AI, mechanistic interpretability, sparse autoencoders, model merging, quantization, synthetic data |
-| [65](ch65-ai-safety/) | AI Safety and Alignment | The alignment problem, scalable oversight, governance, societal impact, RLHF limitations |
+| [74](ch64-frontier-topics/) | Frontier Topics (2025–2026) | Test-time compute, agentic AI, mechanistic interpretability, sparse autoencoders, model merging, quantization, synthetic data |
+| [75](ch65-ai-safety/) | AI Safety and Alignment | The alignment problem, scalable oversight, governance, societal impact, RLHF limitations |
 
 ## How to Use
 
