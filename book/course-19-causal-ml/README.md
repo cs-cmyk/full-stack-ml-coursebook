@@ -10,9 +10,9 @@ Courses 1 (Foundations) and 4 (Machine Learning).
 
 | Chapter | Title | Key Topics |
 |---------|-------|------------|
-| [54](ch54-structural-causal-models/) | Structural Causal Models | DAGs, d-separation, do-calculus, back-door criterion, colliders, Simpson's paradox, causal discovery |
-| [55](ch55-treatment-effects/) | Treatment Effect Estimation | ATE/CATE, propensity scores, causal forests, synthetic control, double ML |
-| [56](ch56-causal-practice/) | Causal ML in Practice | Uplift modeling, counterfactual explanations, DoWhy, EconML, CausalML |
+| [65](ch54-structural-causal-models/) | Structural Causal Models | DAGs, d-separation, do-calculus, back-door criterion, colliders, Simpson's paradox, causal discovery |
+| [66](ch55-treatment-effects/) | Treatment Effect Estimation | ATE/CATE, propensity scores, causal forests, synthetic control, double ML |
+| [67](ch56-causal-practice/) | Causal ML in Practice | Uplift modeling, counterfactual explanations, DoWhy, EconML, CausalML |
 
 ## How to Use
 
