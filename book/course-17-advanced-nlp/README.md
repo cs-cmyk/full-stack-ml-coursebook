@@ -10,9 +10,9 @@ Course 6 (NLP) and Course 15 (LLMs).
 
 | Chapter | Title | Key Topics |
 |---------|-------|------------|
-| [48](ch48-information-extraction/) | Information Extraction | Knowledge graphs, relation extraction, entity linking, named entity recognition |
-| [49](ch49-retrieval-systems/) | Advanced Retrieval Systems | Dense retrieval, SPLADE, hybrid search, re-ranking, ColBERT |
-| [50](ch50-speech-audio/) | Speech and Audio | Whisper, TTS, speaker diarization, audio classification, ASR architecture |
+| [59](ch48-information-extraction/) | Information Extraction | Knowledge graphs, relation extraction, entity linking, named entity recognition |
+| [60](ch49-retrieval-systems/) | Advanced Retrieval Systems | Dense retrieval, SPLADE, hybrid search, re-ranking, ColBERT |
+| [61](ch50-speech-audio/) | Speech and Audio | Whisper, TTS, speaker diarization, audio classification, ASR architecture |
 
 ## How to Use
 
