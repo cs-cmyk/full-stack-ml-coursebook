@@ -60,17 +60,17 @@ Each chapter is a standalone notebook.
 
 | Course | Chapters | Topics |
 |--------|----------|--------|
-| **Course 12: [Probabilistic Machine Learning](book/course-12-probabilistic-ml/)** | Ch 32–35 | Prior, Kernels, Bayes by Backprop, PyMC |
-| **Course 13: [Advanced Optimization](book/course-13-optimization/)** | Ch 36–38 | Convex optimization, Learning rate schedules, Acquisition functions |
-| **Course 14: [Advanced Deep Learning Architectures](book/course-14-advanced-dl/)** | Ch 39–41 | Flash attention, Diffusion models, CLIP |
-| **Course 15: [Large Language Models](book/course-15-llms/)** | Ch 42–45 | Tokenization (BPE), SFT, RAG, Benchmarks (MMLU |
-| **Course 16: [Advanced Computer Vision](book/course-16-advanced-cv/)** | Ch 46–47 | YOLO, 3D vision |
-| **Course 17: [Advanced NLP & Information Retrieval](book/course-17-advanced-nlp/)** | Ch 48–50 | Knowledge graphs, Dense retrieval, Whisper |
+| **Course 12: [Probabilistic Machine Learning](book/course-12-probabilistic-ml/)** | Ch 43–46 | Prior, Kernels, Bayes by Backprop, PyMC |
+| **Course 13: [Advanced Optimization](book/course-13-optimization/)** | Ch 47–49 | Convex optimization, Learning rate schedules, Acquisition functions |
+| **Course 14: [Advanced Deep Learning Architectures](book/course-14-advanced-dl/)** | Ch 50–52 | Flash attention, Diffusion models, CLIP |
+| **Course 15: [Large Language Models](book/course-15-llms/)** | Ch 53–56 | Tokenization (BPE), SFT, RAG, Benchmarks (MMLU |
+| **Course 16: [Advanced Computer Vision](book/course-16-advanced-cv/)** | Ch 57–58 | YOLO, 3D vision |
+| **Course 17: [Advanced NLP & Information Retrieval](book/course-17-advanced-nlp/)** | Ch 59–61 | Knowledge graphs, Dense retrieval, Whisper |
 | **Course 18: [Production ML Systems](book/course-18-production-ml/)** | Ch 51–53 | Feature stores, Data versioning (DVC, Data drift (PSI |
 | **Course 19: [Causal Machine Learning](book/course-19-causal-ml/)** | Ch 54–56 | DAGs, ATE/CATE, Uplift modeling |
 | **Course 20: [Geometric & Structured Learning](book/course-20-geometric-learning/)** | Ch 57–59 | GCN, Drug discovery, Point clouds |
-| **Course 21: [Advanced Reinforcement Learning](book/course-21-advanced-rl/)** | Ch 60–62 | World models, Multi-agent RL, RLHF internals |
-| **Course 22: [Research Methods & Frontier Topics](book/course-22-research-frontiers/)** | Ch 64–65 | Test-time compute, The alignment problem |
+| **Course 21: [Advanced Reinforcement Learning](book/course-21-advanced-rl/)** | Ch 71–73 | World models, Multi-agent RL, RLHF internals |
+| **Course 22: [Research Methods & Frontier Topics](book/course-22-research-frontiers/)** | Ch 74–75 | Test-time compute, The alignment problem |
 
 > **Note on chapter numbering:** Chapters are numbered sequentially within the full coursebook. Courses 10–11 (Part IV) and Courses 12–14 (Part V) cover different topics at different depths but share some chapter number ranges in their directory names. This reflects the coursebook's design: Part IV provides survey-level introductions, while Part V offers deep dives. Always navigate by course directory for clarity.
 
